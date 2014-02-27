@@ -41,24 +41,8 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 <body>
 	<div id="container">
 		<div id="header">
+			<?php echo $this->element('student_menu'); ?>
 			 <h1><?php //echo $this->Html->link($cakeDescription, 'http://cakephp.org'); ?></h1> 
-
-				<div>
-				    <ul>
-				    	  <li><?php 
-							echo $this->Html->link('Login', 
-									array('controller' => 'users', 'action' => 'login'));
-				          ?></li>
-				          <li><?php 
-							echo $this->Html->link('Thread', 
-									array('controller' => 'threads', 'action' => 'index'));				   
-				           ?></li>
-				          <li><?php 
-							echo $this->Html->link('Logout', 
-									array('controller' => 'users', 'action' => 'logout'));
-				          ?></li>
-				    </ul>
-				</div>
 		</div>
 		<div id="content">
 

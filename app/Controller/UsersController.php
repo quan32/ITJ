@@ -21,6 +21,7 @@ class UsersController extends AppController{
 
 	public function add($id = null){
 		if($this->request->is('post')){
+			//var_dump($this->request->data);die;
 			$this->User->create();
 			if($this->User->save($this->request->data)){
 				$this->Session->setFlash(__('The user has been saved'));
@@ -86,6 +87,11 @@ class UsersController extends AppController{
 		}
 	}
 
+	public function signin(){
+
+	}
+
+	
 	public function logout(){
 		$this->Session->setFlash('Good-Bye');
 		return $this->redirect($this->Auth->logout());
