@@ -12,22 +12,21 @@ class SourcesController extends AppController{
 			$this->request->data['Source']['lecture_id']=$id;
 			$this->request->data['Source']['type']=$this->request->data['Source']['filename']['type'];
 			$data = $this->request->data;
-			var_dump($data);
+			// var_dump($data);
 
-			if($data['Source']['type']=='application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
-				$data['Source']['type']=='application/vnd.oasis.opendocument.text'){
+			// if($data['Source']['type']=='application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+			// 	$data['Source']['type']=='application/vnd.oasis.opendocument.text'){
 				
-				$file=$data['Source']['filename']['tmp_name'];
-				// var_dump($file);die;
-		        // $FilePath='/var/www/ITJ/app/webroot/uploads/'.$file;
-		        $FilePath = $file;
-		        $DirPath ='/var/www/ITJ/app/webroot/uploads'; 
-			    $command = 'unoconv --format %s --output %s %s';
-		        $command = sprintf($command,"pdf", $DirPath, $FilePath);
-		        system($command, $output);
-			}
+			// 	$file=$data['Source']['filename']['tmp_name'];
+			// 	// var_dump($file);die;
+		 //        // $FilePath='/var/www/ITJ/app/webroot/uploads/'.$file;
+		 //        $FilePath = $file;
+		 //        $DirPath ='/var/www/ITJ/app/webroot/uploads'; 
+			//     $command = 'unoconv --format %s --output %s %s';
+		 //        $command = sprintf($command,"pdf", $DirPath, $FilePath);
+		 //        system($command, $output);
+			// }
 
-			die;
 
 			$this->Source->create();
 
