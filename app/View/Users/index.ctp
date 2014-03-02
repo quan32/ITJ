@@ -1,4 +1,26 @@
-<h1>Blog Post</h1>
+<?php
+	if($role=='student'){
+		//home page of student
+		echo '<h1>Student</h1>';
+	}else if($role =='teacher'){
+		//home page of teacher
+		echo '<h1>Teacher</h1>';
+		echo $this->Html->link('Add new Lecture', array('controller'=>'Lectures', 'action'=>'add'));
+	}else{
+		//home page of admin
+		echo '<h1>Admin</h1>';
+	}
+
+?>
+
+
+
+
+
+
+
+
+<!-- <h1>Blog Post</h1>
 
 <table>
 <tr>
@@ -32,4 +54,4 @@
 		echo '</tr>';
 	}
 ?>
-</table>
+</table> -->
