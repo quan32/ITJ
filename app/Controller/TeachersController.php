@@ -1,4 +1,6 @@
 <?php
+App::uses('SimplePasswordHasher', 'Controller/Component/Auth');
+
 class TeachersController extends AppController{
 
 	public function beforeFilter(){
@@ -63,9 +65,47 @@ class TeachersController extends AppController{
 		    }
 	}
 
+	/**
+	* function change teacher's password
+	*
+	* @author lucnd
+	*/
 	public function changePassword($id =null){
+		$userId = $this->Auth->user('id');
+		$this->loadModel('User');
+		$this->User->id = $userId;
+		// current user
+		$currUser = $this->User->findById($userId);
 
+		if(!$this->User->exists()){
+			throw new NotFoundException(__('Invalid user'));
+		}
+
+		if($this->request->is(array('post','put'))){
+			// hash default sha1
+			$passwordHasher = new SimplePasswordHasher();
+			$arrPass = $this->request->data;
+			// check current password
+			if($passwordHasher->check($arrPass['User']['currPassword'],$currUser['User']['password'])){
+				// check new password and confirm password
+				if($arrPass['User']['newPassword'] == $arrPass['User']['confPassword']){
+					// assign new password to password
+					$currUser['User']['password'] = $arrPass['User']['newPassword'];
+					// save user, run function beforeSave() to hash new password
+					if($this->User->save($currUser)){
+						$this->Session->setFlash(__('Password has been updated'));
+						return $this->redirect(array('action' => 'info'));
+					}
+					$this->Session->setFlash(__('Change password fail'));
+				}
+				$this->Session->setFlash(__('Confirm password fail'));
+			}
+			$this->Session->setFlash(__('Current password fail'));
+		}else{
+			$this->request->data = $this->User->read(null, $id);
+		}
 	}
+
 
 
 }
