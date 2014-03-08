@@ -61,6 +61,7 @@ class TestsController extends AppController {
 
 	public function add($lecture_id = null){
 		if($this->request->is('post')){
+			$this->request->data['Test']['lecture_id']=$lecture_id;
 			//TODO check if not select file
 			//upload file
 			$filename = UPLOAD_FOLDER.DS.$this->data['Test']['lecture_id']."Test.tsv";
@@ -83,7 +84,7 @@ class TestsController extends AppController {
           	} else {
 	            $this->Session->setFlash('There was a problem uploading file. Please try again.');
           	}
-
+          	// $this->set('lecture_id',$lecture_id);
 			//$this->Session->setFlash(__('The test could no be saved. Please try again'));
 		}
 	}
@@ -124,7 +125,9 @@ class TestsController extends AppController {
 		if(!$this->Test->exists())
 			throw new NotFoundException(__('Invalid test'));
 		
-		$tsv_file = new File(UPLOAD_FOLDER.DS.$this->Test->read(null, $id)['TsvFile']['name']);
+			$filename = $this->Test->read(null, $id);
+		$filename= $filename['TsvFile']['name'];
+		$tsv_file = new File(UPLOAD_FOLDER.DS.$filename);
 		if($this->Test->delete()){
 			//delete file
 			$tsv_file->delete();

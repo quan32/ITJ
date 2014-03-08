@@ -14,10 +14,12 @@ class LecturesController extends AppController{
 
 	public function index(){
 		$user_id = $this->Auth->user('id');
-		$this->loadModel('User');
-		$data = $this->User->read(null,$user_id, array('order'=>array('Source.id'=>'desc')));
-		$lectures = $data['Lecture'];
-		krsort($lectures);
+		// $this->loadModel('User');
+		// $data = $this->User->read(null,$user_id, array('order'=>array('Source.id'=>'desc')));
+		$lectures = $this->Lecture->findAllByUserId($user_id);
+		// debug($data[0]);die;
+		// $lectures = $data['Lecture'];
+		// krsort($lectures);
 		// debug($lectures);die;
 		$this->set("lectures",$lectures);
 	}
@@ -93,11 +95,19 @@ class LecturesController extends AppController{
 
 	}
 
-	public function view($id = null){
-		$this->Lecture->id =$id;
-		if(!$this->Lecture->exists()){
-			throw new NotFoundException(__('Invalid Lecture'));
+	public function view($id = null){// TODO hien thi bai giang, file , 
+		$lecture = $this->Lecture->read(null, $id);
+		$sources = $lecture['Source'];
+		foreach ($sources as $source) {
+			if(in_array($source['type'], array('application/pdf'))){
+				$src=$this->Common->view_pdf($source['filename']);
+				$this->set('src',$src);
+			}
 		}
+
+		$this->set('sources', $sources);
+
+		//Hien thi comment
 		$this->set('lecture_id', $id);
 		$this->set('comments', $this->Lecture->Comment->findAllByLectureId($id));
 	}

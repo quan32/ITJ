@@ -2,11 +2,6 @@
 class Lecture extends AppModel {
 	var $name='Lecture';
 	public $belongsTo = array('User');
-	public $hasMany = array(
-		'Source' => array(
-			'className' => 'Source'
-			),
-		'Comment'
-		);
+	public $hasMany = array('Source','Comment', 'Test');
 	
 }

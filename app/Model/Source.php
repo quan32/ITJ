@@ -1,6 +1,5 @@
 <?php
 class Source extends AppModel{
-	public $belongsTo = array('Lecture');
 	public $belongsTo = array(
 		'Lecture' => array(
 			'className' => 'Lecture',
