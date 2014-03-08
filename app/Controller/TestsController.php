@@ -14,9 +14,10 @@ class TestsController extends AppController {
 		return false;
 	}
 
-	public function index(){
-		$this->Test->recursive = 0;
-		$this->set('tests', $this->paginate());
+	public function index($lecture_id = null){
+		$tests = $this->Test->findAllByLectureId($lecture_id);
+		$this->set('tests', $tests);
+		$this->set('lecture_id', $lecture_id);
 	}
 
 	public function view($id = null){
@@ -57,6 +58,7 @@ class TestsController extends AppController {
         $file_path = UPLOAD_FOLDER.DS.'[result]['.$result_id.'].html';
         $file = new File($file_path, true);	
         $file->write( $viewdata );
+        return $this->redirect(array('controller'=>'results','action'=>'view',$result_id));
 	}
 
 	public function add($lecture_id = null){
@@ -64,17 +66,17 @@ class TestsController extends AppController {
 			$this->request->data['Test']['lecture_id']=$lecture_id;
 			//TODO check if not select file
 			//upload file
-			$filename = UPLOAD_FOLDER.DS.$this->data['Test']['lecture_id']."Test.tsv";
-      		if (move_uploaded_file($this->data['Test']['tsv_file']['tmp_name'],$filename)) {	        
+			$filename = "[Test][".$this->data['Test']['lecture_id']."][".time()."].tsv";
+			$file_path = UPLOAD_FOLDER.DS.$filename;
+      		if (move_uploaded_file($this->data['Test']['tsv_file']['tmp_name'],$file_path)) {	        
 		        //create test
 				$this->Test->create();
 				if($this->Test->save($this->request->data)){
 					//create file
 					$this->Test->TsvFile->create();
-					$test_file_name = $this->data['Test']['lecture_id']."Test.tsv";
-					if($this->Test->TsvFile->save(array('name' => $test_file_name, 'type' => "TSV", 'test_id' => $this->Test->id))){					
+					if($this->Test->TsvFile->save(array('name' => $filename, 'type' => "TSV", 'test_id' => $this->Test->id))){					
 						$this->Session->setFlash(__('The test has been saved'));
-						return $this->redirect(array('action'=>'index'));
+						return $this->redirect(array('action'=>'index',$lecture_id));
 					} else{
 						$this->Session->setFlash('There was a problem saving file. Please try again.');
 					}
@@ -98,8 +100,9 @@ class TestsController extends AppController {
 		if ($this->request->is('post') || $this->request->is('put')) {
 			//TODO check if not select file
 			//upload file
+			$test = $this->Test->read(null, $id);
 			if(!empty($this->data['Test']['tsv_file']['name'])){
-				$filename = UPLOAD_FOLDER.DS.$this->data['Test']['lecture_id']."Test.tsv";
+				$filename = UPLOAD_FOLDER.DS.$test['TsvFile']['name'];
 	      		if (move_uploaded_file($this->data['Test']['tsv_file']['tmp_name'],$filename)) {
 
 	      		}
@@ -107,7 +110,7 @@ class TestsController extends AppController {
       		//update normal data
 			if ($this->Test->save($this->request->data)) {
 		            $this->Session->setFlash(__('The test has been saved'));
-					return $this->redirect(array('action' => 'index')); 
+					return $this->redirect(array('action'=>'index',$test['Test']['lecture_id'])); 
 			}
 	        $this->Session->setFlash(
 	            __('The test could not be saved. Please, try again.'));
@@ -124,17 +127,15 @@ class TestsController extends AppController {
 		$this->Test->id = $id;
 		if(!$this->Test->exists())
 			throw new NotFoundException(__('Invalid test'));
-		
-			$filename = $this->Test->read(null, $id);
-		$filename= $filename['TsvFile']['name'];
-		$tsv_file = new File(UPLOAD_FOLDER.DS.$filename);
+		$test = $this->Test->read(null, $id);
+		$filename = UPLOAD_FOLDER.DS.$test['TsvFile']['name'];
 		if($this->Test->delete()){
 			//delete file
-			$tsv_file->delete();
+			unlink($filename);
 			//delete link to file in db
 			$this->Test->TsvFile->deleteAll(array('TsvFile.test_id' => $id), false);
 			$this->Session->setFlash(__('Test deleted'));
-			return $this->redirect(array('action'=>'index'));
+			return $this->redirect(array('action'=>'index',$test['Test']['lecture_id'])); 
 		}
 		$this->Session->setFlash(__('Test was not deleted'));
 		return $this->redirect(array('action' => 'index'));

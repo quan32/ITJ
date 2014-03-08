@@ -58,21 +58,15 @@
 		font-weight: bold;
 	}
 </style>
-noi dung bai giang o day
-	
-	
-
-
-
-<hr>
 <div id="container">
 	<div id="lecture_content">
-		<h1>Preview</h1>
-		<?
+		<h1 id="lecture-title"><?=$lecture['Lecture']['name']?></h1>
+		<div id="description"><?=$lecture['Lecture']['description']?></div>
+		<?php
 		if(isset($src)){
 		?>
 			<iframe width="723" height="756" src="<?php echo $src;?>"></iframe>
-		<?}?>
+		<?php }?>
 
 		<h1>Media file</h1>
 		<?php
@@ -93,13 +87,20 @@ noi dung bai giang o day
 						?>
 							<h2>Image <? echo $source['id'];?></h2>
 							<img src="http://localhost/ITJ/app/webroot/uploads/<?echo $source['filename'];?>">
-						<?
+						<?php
 					}
 				}
 		?>
 	</div>
+	<?php if($isLiked==0): ?>
+		<button id="like_button">Like</button>
+		<button id="dislike_button" style="display:none">Dislike</button>
+	<?php else: ?>
+		<button id="like_button" style="display:none">Like</button>
+		<button id="dislike_button">Dislike</button>
+	<?php endif ?>
+<em id="num_liked"><?=$num_liked?></em> nguoi da thich bai nay
 	<ul class="nested-comments-complex">
-
 		<?php foreach ($comments as $value): ?>
 			<li>
 				<div class="comment">
@@ -127,16 +128,19 @@ noi dung bai giang o day
 			</li>
 		<?php endforeach; ?>
 
-		<li class="comment<?= $lecture_id; ?>">					
+		<li class="comment<?= $lecture['Lecture']['id']; ?>">					
 			<div class="comment_text">
 				<p><a href="" class="author">Current User</a></p>
-				<textarea class="comment_text" id="<?= $lecture_id; ?>">Write your comment here...</textarea>
+				<textarea class="comment_text" id="<?= $lecture['Lecture']['id']; ?>">Write your comment here...</textarea>
 			</div>
 		</li>
 	</ul>
 </div>
 <script type="text/javascript">
 $(document).ready(function(){
+	var lecture_id = <?=$lecture['Lecture']['id']?>;
+    var l = window.location;
+	var base_url = l.protocol + "//" + l.host + "/" + l.pathname.split('/')[1];
   	$(".reply-link").click(function(){
     	var id = $(this).attr('id');
     	$("li#"+id).toggle();
@@ -145,7 +149,6 @@ $(document).ready(function(){
   	//textarea event
   	$('textarea').keydown(function(event) {
 	    if (event.keyCode == 13 && ! event.shiftKey) {
-	        //$(this.form).submit()
 	        var data = {};
 	        data['Comment'] ={};
 	        data['Comment']['content'] = $(this).val();
@@ -156,8 +159,6 @@ $(document).ready(function(){
 	        }
 	        var send_data = {};
 	        send_data['data'] = data;
-	        var l = window.location;
-			var base_url = l.protocol + "//" + l.host + "/" + l.pathname.split('/')[1];
 	        $.ajax({
 		        url: base_url+"/comments/add",//TODO thay bang duong dan khac
 		        type: "POST",
@@ -178,5 +179,36 @@ $(document).ready(function(){
 	         this.value = "Write your comment here...";
 	    }
 	});
+	$('#like_button').click(function(){
+        $.ajax({
+	        url: base_url+"/favorites/add",
+	        type: "POST",
+	        data: {'lecture_id': lecture_id},
+	        success: function(data) {
+	            console.log(data);
+	            num_liked = parseInt($('#num_liked').html());
+	            $('#num_liked').html(num_liked+1);
+	            $('#like_button').hide();
+	            $('#dislike_button').show();
+	        }
+	    });
+
+  	});
+  	$('#dislike_button').click(function(){
+        $.ajax({
+	        url: base_url+"/favorites/delete",
+	        type: "POST",
+	        data: {'lecture_id': lecture_id},
+	        success: function(data) {
+	            console.log(data);
+	            num_liked = parseInt($('#num_liked').html());
+	            $('#num_liked').html(num_liked-1);
+	            $('#dislike_button').hide();
+	            $('#like_button').show();
+
+	        }
+	    });
+
+  	});
 });
 </script>
