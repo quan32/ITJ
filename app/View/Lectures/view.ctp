@@ -92,7 +92,14 @@
 				}
 		?>
 	</div>
-Like button here, number ò user liked here
+	<?php if($isLiked==0): ?>
+		<button id="like_button">Like</button>
+		<button id="dislike_button" style="display:none">Dislike</button>
+	<?php else: ?>
+		<button id="like_button" style="display:none">Like</button>
+		<button id="dislike_button">Dislike</button>
+	<?php endif ?>
+<em id="num_liked"><?=$num_liked?></em> nguoi da thich bai nay
 	<ul class="nested-comments-complex">
 		<?php foreach ($comments as $value): ?>
 			<li>
@@ -131,6 +138,9 @@ Like button here, number ò user liked here
 </div>
 <script type="text/javascript">
 $(document).ready(function(){
+	var lecture_id = <?=$lecture['Lecture']['id']?>;
+    var l = window.location;
+	var base_url = l.protocol + "//" + l.host + "/" + l.pathname.split('/')[1];
   	$(".reply-link").click(function(){
     	var id = $(this).attr('id');
     	$("li#"+id).toggle();
@@ -139,7 +149,6 @@ $(document).ready(function(){
   	//textarea event
   	$('textarea').keydown(function(event) {
 	    if (event.keyCode == 13 && ! event.shiftKey) {
-	        //$(this.form).submit()
 	        var data = {};
 	        data['Comment'] ={};
 	        data['Comment']['content'] = $(this).val();
@@ -150,8 +159,6 @@ $(document).ready(function(){
 	        }
 	        var send_data = {};
 	        send_data['data'] = data;
-	        var l = window.location;
-			var base_url = l.protocol + "//" + l.host + "/" + l.pathname.split('/')[1];
 	        $.ajax({
 		        url: base_url+"/comments/add",//TODO thay bang duong dan khac
 		        type: "POST",
@@ -172,5 +179,36 @@ $(document).ready(function(){
 	         this.value = "Write your comment here...";
 	    }
 	});
+	$('#like_button').click(function(){
+        $.ajax({
+	        url: base_url+"/favorites/add",
+	        type: "POST",
+	        data: {'lecture_id': lecture_id},
+	        success: function(data) {
+	            console.log(data);
+	            num_liked = parseInt($('#num_liked').html());
+	            $('#num_liked').html(num_liked+1);
+	            $('#like_button').hide();
+	            $('#dislike_button').show();
+	        }
+	    });
+
+  	});
+  	$('#dislike_button').click(function(){
+        $.ajax({
+	        url: base_url+"/favorites/delete",
+	        type: "POST",
+	        data: {'lecture_id': lecture_id},
+	        success: function(data) {
+	            console.log(data);
+	            num_liked = parseInt($('#num_liked').html());
+	            $('#num_liked').html(num_liked-1);
+	            $('#dislike_button').hide();
+	            $('#like_button').show();
+
+	        }
+	    });
+
+  	});
 });
 </script>

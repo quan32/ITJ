@@ -58,6 +58,7 @@ class TestsController extends AppController {
         $file_path = UPLOAD_FOLDER.DS.'[result]['.$result_id.'].html';
         $file = new File($file_path, true);	
         $file->write( $viewdata );
+        return $this->redirect(array('controller'=>'results','action'=>'view',$result_id));
 	}
 
 	public function add($lecture_id = null){
