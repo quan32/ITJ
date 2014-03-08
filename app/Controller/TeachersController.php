@@ -5,7 +5,7 @@ class TeachersController extends AppController{
 
 	public function beforeFilter(){
 		parent::beforeFilter();
-		$this->Auth->allow('index','info','edit','register','changePassword');
+		$this->Auth->allow('index','info','edit','register','changePassword','viewResult');
 	}
 
 
@@ -106,7 +106,49 @@ class TeachersController extends AppController{
 		}
 	}
 
+	/**
+	* function view result of student who do current teacher's test
+	* 
+	*
+	* @author lucnd
+	*/
+	public function viewResult($id = null){
+		$userId = $this->Auth->user('id');
+		$this->loadModel('User');
+		$this->User->id = $userId;
 
+		$this->loadModel('Test');
+		$tests = $this->Test->find('all',array('conditions'=>array('Test.user_id'=>$userId)));
+
+		$studs = $this->User->find('all',array('conditions'=>array('User.role'=>'student')));
+		$data = array();
+		$i = 0;
+
+		if(!empty($tests)){
+			foreach ($tests as $test) {
+				if(!empty($test['Result'])){
+					foreach ($test['Result'] as $result) {
+						foreach ($studs as $stud) {
+							if ($result['user_id'] == $stud['User']['id']) {
+								$data[$i]['testName'] = $test['Test']['name'];
+								$data[$i]['studName'] = $stud['User']['username'];
+								$data[$i]['time'] = $result['time'];
+								$data[$i]['score'] = $result['score'];
+								$i++;
+							}
+						}	
+					}
+				}
+			}
+			$this->set('data',$data);
+			pr($data);
+		}
+
+	}
+
+	
+
+	
 
 }
 ?>

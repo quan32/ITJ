@@ -7,6 +7,9 @@ class User extends AppModel{
 			),
 		'Result' => array(
 			'className' => 'Result'
+			),
+		'Test' => array(
+			'className' => 'Test'
 			)
 		);
 
