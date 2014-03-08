@@ -1,5 +1,4 @@
 <?php
-
 if($info==NULL){
     echo "<h2>Dada Empty</h2>";
 }
