@@ -4,7 +4,7 @@
 	echo '<table>
 		<tr>
 			<td>テスト数</td>
-			<td>'.count($tests).'</td>
+			<td>'.$countTest.'</td>
 		</tr>
 		<tr>
 			<td>講義数名</td>

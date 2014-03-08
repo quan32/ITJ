@@ -22,12 +22,14 @@ if(!empty($results)){
         
         // loop through the result's records
         foreach ($results as $result) {
-			echo '<tr>';
-			echo '<td>'.$result['Test']['name'] .'</td>';
-			echo '<td>'.$result['User']['username'] .'</td>';
-			echo '<td>'.$result['Result']['created'] .'</td>';
-			echo '<td>'.$result['Result']['score'] .'</td>';
-			echo '</tr>';
+            if($result['User']['state'] == 'normal'){
+                echo '<tr>';
+                echo '<td>'.$result['Test']['name'] .'</td>';
+                echo '<td>'.$result['User']['username'] .'</td>';
+                echo '<td>'.$result['Result']['created'] .'</td>';
+                echo '<td>'.$result['Result']['score'] .'</td>';
+                echo '</tr>';
+            }
 		}
         
     echo "</table>";
