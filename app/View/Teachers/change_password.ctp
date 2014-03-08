@@ -1,4 +1,6 @@
+
 <h1>パスワード変更</h1>
+
 <?php
 	echo $this->Form->create('User');
 	echo $this->Form->input('currPassword', array('label' =>'古いパスワード ','type' => 'password'));

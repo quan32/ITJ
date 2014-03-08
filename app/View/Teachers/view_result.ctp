@@ -1,3 +1,4 @@
+
 <h1>テストの結果を見る</h1>
 
 
@@ -7,7 +8,7 @@
 
 $paginator = $this->Paginator;
 
-if(isset($results)){
+if(!empty($results)){
 
     //creating our table
     echo '<table>
@@ -51,4 +52,5 @@ if(isset($results)){
 else{
     echo "No results found.";
 }
+
 ?>

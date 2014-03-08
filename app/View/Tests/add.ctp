@@ -3,7 +3,6 @@
 	<fieldset>
 		<legend><?php echo __('Add New Test'); ?></legend>
 		<?php
-		echo $this->Form->input('lecture_id',array( 'type' => 'number'));
 		echo $this->Form->input('name');
 		echo $this->Form->input('time');
 		echo $this->Form->input('tsv_file',array( 'type' => 'file'));

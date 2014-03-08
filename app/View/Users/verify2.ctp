@@ -13,5 +13,5 @@
 </div>
 <?php
 	echo $this->Html->link('Ban mat ma xac nhan?', 
-		array('controller' => 'managers', 'action' => 'info1'));
+		array('controller' => 'manages', 'action' => 'info1'));
 ?>

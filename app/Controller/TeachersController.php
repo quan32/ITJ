@@ -5,9 +5,7 @@ class TeachersController extends AppController{
 
 	public function beforeFilter(){
 		parent::beforeFilter();
-
-		$this->Auth->allow('index','info','edit','register','changePassword','viewResult','statistic');
-
+		$this->Auth->allow('register');
 	}
 
 	public function isAuthorized($user){
@@ -19,13 +17,140 @@ class TeachersController extends AppController{
 	}
 
 
+	
 	public function index (){
+	
+
 		$user_id = $this->Auth->user('id');
 		// var_dump($user_id);
 		$this->loadModel('User');
-		$data = $this->User->read(null,$user_id);
-		$lectures = $data['Lecture'];
-		$this->set("lectures",$lectures);
+		$data = $this->User->findById($user_id);
+
+// ------------Lay 5 bai moi nhat---------------------------------
+		$this->loadModel('Lecture');
+		$this->loadModel('Register');
+		$fiveNewestLecture = $this->Lecture->find('all', array(
+		    'conditions' => array(
+			        'user_id' => $user_id),
+
+		    'order' => 'Lecture.created DESC',
+		    'limit' => '5',
+		    'recursive' => '-1'
+		    		));
+
+// Tinh so hoc sinh dang ki cua cac lecture tren (5 leture moi nhat)
+		$i = 0 ;
+		foreach ($fiveNewestLecture as $oneLecture) {
+			$numberStudent = $this->Register->find('count',
+					array(
+						'conditions' => array(
+					'lecture_id' => $oneLecture['Lecture']['id'])
+					)
+
+				);
+			
+		$fiveNewestLecture[$i]['Lecture']['numberStudent'] = $numberStudent;
+		
+		$i = $i + 1;
+		}
+
+		$this->set("lectures",$fiveNewestLecture);
+//
+// -----------------------------------------------------------------------
+
+
+//-------xuan-----------------Tinh so tien + So hoc sinh dang ki--------------------------------
+//------------tien + so hoc sinh dang ki thang nay
+		$allLecture = $this->Lecture->find('all',array(
+		    'conditions' => array(
+			        'user_id' => $user_id),
+					'recursive' => '-1'
+						    ));
+
+
+		$moneyTemp =  0.0;
+		$numberStudent = 0;
+		foreach ($allLecture as $oneLecture) {
+			$numberTemp = $this->Register->find('count',
+					array(
+						'conditions' => array(
+					'lecture_id' => $oneLecture['Lecture']['id'],
+					'MONTH(Register.created)' => date('n')
+					)
+					)
+
+				);
+
+			
+		$moneyTemp = $moneyTemp + $numberTemp * $oneLecture['Lecture']['cost'];
+		$numberStudent = $numberStudent + $numberTemp;
+			
+		}
+		$moneyThisMonth = $moneyTemp * 0.6;
+		$this->set('numberStudentThisMonth', $numberStudent);
+		$this->set('moneyThisMonth',$moneyThisMonth);
+//----tien + so hoc sinh dang ki thang truoc---------
+	$allLecture = $this->Lecture->find('all',array(
+			    'conditions' => array(
+				        'user_id' => $user_id),
+						'recursive' => '-1'
+							    ));
+
+
+			$moneyTemp =  0.0;
+			$numberStudentLastMonth = 0;
+			foreach ($allLecture as $oneLecture) {
+				$numberTemp = $this->Register->find('count',
+						array(
+							'conditions' => array(
+						'lecture_id' => $oneLecture['Lecture']['id'],
+						'MONTH(Register.created)' => date('n',strtotime("-1 month"))
+						)
+						)
+
+					);
+
+			
+			$moneyTemp = $moneyTemp + $numberTemp * $oneLecture['Lecture']['cost'];
+			$numberStudentLastMonth = $numberStudentLastMonth + $numberTemp;
+				
+			}
+			$moneyLastMonth = $moneyTemp * 0.6;
+			
+			$this->set('numberStudentLastMonth', $numberStudentLastMonth);
+			$this->set('moneyLastMonth',$moneyLastMonth);
+// Tinh tong so tien va hoc sinh hoc bai:
+			$allLecture = $this->Lecture->find('all',array(
+			    'conditions' => array(
+				        'user_id' => $user_id),
+						'recursive' => '-1'
+							    ));
+
+
+			$moneyTemp =  0.0;
+			$numberStudentLearned = 0;
+			foreach ($allLecture as $oneLecture) {
+				$numberTemp = $this->Register->find('count',
+						array(
+							'conditions' => array(
+						'lecture_id' => $oneLecture['Lecture']['id'],
+						)
+						)
+
+					);
+
+			
+			$moneyTemp = $moneyTemp + $numberTemp * $oneLecture['Lecture']['cost'];
+			$numberStudentLearned = $numberStudentLearned + $numberTemp;
+				
+			}
+			$moneySum = $moneyTemp * 0.6;
+			
+			$this->set('moneySum', $moneySum);
+			$this->set('numberOfAllLearnedStudent',$numberStudentLearned);
+
+
+
 	}
 
 	public function info(){
@@ -75,7 +200,6 @@ class TeachersController extends AppController{
 		      //  unset($this->request->data['User']['password']);
 		    }
 	}
-
 
 	/**
 	* function change teacher's password
@@ -156,12 +280,16 @@ class TeachersController extends AppController{
 			$this->set('results',$results);
 			//pr($results);
 		}
-		
-		
-
+		else{
+			$this->set('results',null);
+		}
 	}
 
-
+	/**
+	* function view statistic of current teacher
+	* 
+	* @author lucnd
+	*/
 	public function statistic(){
 		$this->pageTitle = "Statistic";
 
@@ -174,7 +302,7 @@ class TeachersController extends AppController{
 		$tests = $this->Test->find('all',array('conditions'=>array('Test.user_id'=>$userId)));
 		$lectures = $this->Lecture->find('all',array('conditions'=>array('Lecture.user_id'=>$userId)));
 		$countRegister = 0;
-		pr($lectures);
+		//pr($lectures);
 		// pr($tests);
 		foreach ($lectures as $lecture) {
 			$countRegister += count($lecture['Register']);

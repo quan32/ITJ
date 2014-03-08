@@ -1,6 +1,8 @@
 
 <?php
 echo $this->element('teacher_menu');
+// debug($)
+
 // 5 bai giang moi tao nhat
 if($lectures==NULL){
     echo "<h2>Dada Empty</h2>";
@@ -8,6 +10,8 @@ if($lectures==NULL){
 else{
 
     echo "<table>
+    <caption>登録した学生の人数 : </caption>
+
           <tr>
             <th>Id</th>
             <th>タイトル</th>
@@ -15,13 +19,13 @@ else{
             <th>作成日</th>
             <th>so hoc sinh dang ki</th>
           </tr>";
-    foreach($lectures as $lecture){
+        foreach($lectures as $lecture){
         echo "<tr>";
-        echo "<td>".$lecture['id']."</td>";
-        echo "<td>".$lecture['name']."</td>";
-        echo "<td>".$lecture['cost']."</td>";
-        echo "<td>".$lecture['created']."</td>";
-        echo "<td>10</td>";
+        echo "<td>".$lecture['Lecture']['id']."</td>";
+        echo "<td>".$lecture['Lecture']['name']."</td>";
+        echo "<td>".$lecture['Lecture']['cost']."</td>";
+        echo "<td>".$lecture['Lecture']['created']."</td>";
+        echo "<td>".$lecture['Lecture']['numberStudent']."</td>";
         echo "</tr>";
     }
     echo "</table>";
@@ -29,75 +33,72 @@ else{
 
 echo $this->Html->link('All', array('controller'=>'lectures', 'action'=>'index'));
 //Bang thong tin ve thu nhap
-//
-// if($data1==NULL){
-//     echo "<h2>Dada Empty</h2>";
-// }
-// else{
-    
+
+if($moneyThisMonth==NULL){
+    $moneyThisMonth = 0 ;
+ }
+ if($moneyLastMonth == Null)
+    $moneyLastMonth = 0;
+if(!isset($moneySum)) $moneySum = 0;
+   
     
     echo "<br><br><br><br>";
     echo "<table>
         <caption>報酬情報 : </caption>
           <tr>
-            <th>id</th>
-            <th>Title</th>
+            <th>Time</th>
+            <th>Money</th>
           </tr>";
    
         echo "<tr>";
         echo "<td>"."先月"."</td>";
-        echo "<td>"."Null"."</td>";
+        echo "<td>".$moneyLastMonth."</td>";
         echo "</tr>";
     
         echo "<tr>";
         echo "<td>"."今月"."</td>";
-        echo "<td>"."Null"."</td>";
+        echo "<td>".$moneyThisMonth."</td>";
         echo "</tr>";
 
         echo "<tr>";
         echo "<td>"."全部"."</td>";
-        echo "<td>"."Null"."</td>";
+        echo "<td>".$moneySum."</td>";
         echo "</tr>";
+        echo "</table>";
 
-        echo "<tr>";
-        echo "<td>".""."</td>";
-        echo " <td>"."<a href=''>All</a>"."</td>";
-        echo "</tr>";
 
-//}
 
 //Thong ke so hoc sinh dang ki
 
+if($numberStudentThisMonth == Null) $numberStudentThisMonth = 0;
+if($numberStudentLastMonth == Null) $numberStudentLastMonth = 0;
+if($numberOfAllLearnedStudent == Null) $numberOfAllLearnedStudent = 0;
 
-    echo "<br><br><br><br>";
+    echo "<br><br><br>";
     echo "<table>
-        <caption>登録した学生の人数 : </caption>
-
-          <tr>
-            <th>id</th>
-            <th>Title</th>
-          </tr>";
+        <caption>登録した学生の人数 : </caption> 
+        <tr>
+            <th>Time</th>
+            <th>Value</th>
+        </tr>";
+        
    
         echo "<tr>";
         echo "<td>"."先月"."</td>";
-        echo "<td>"."Null"."</td>";
+        echo "<td>".$numberStudentLastMonth."</td>";
         echo "</tr>";
     
         echo "<tr>";
         echo "<td>"."今月"."</td>";
-        echo "<td>"."Null"."</td>";
+        echo "<td>".$numberStudentThisMonth."</td>";
         echo "</tr>";
 
         echo "<tr>";
         echo "<td>"."全部"."</td>";
-        echo "<td>"."Null"."</td>";
+        echo "<td>".$numberOfAllLearnedStudent."</td>";
         echo "</tr>";
-
-        echo "<tr>";
-        echo "<td>".""."</td>";
-        echo " <td>"."<a href=''>All</a>"."</td>";
-        echo "</tr>";
+        echo "</table>";
+        
 
 
 ?>
-

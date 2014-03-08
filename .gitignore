@@ -3,6 +3,8 @@
 /app/Config/database.php
 /app/tmp
 /app/webroot/uploads
+/app/webroot/files
+/app/Config/database.php
 /lib/Cake/Console/Templates/skel/tmp/
 /plugins
 /vendors

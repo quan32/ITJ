@@ -1,3 +1,4 @@
+
 <h1>統計表示</h1>
 <?php
 	echo '<table>
@@ -16,5 +17,4 @@
 		;
 
 echo $this->Html->link('戻る', array('controller'=>'teachers','action'=>'info'));
-
 ?>

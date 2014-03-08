@@ -6,8 +6,6 @@
 	<th>Name</th>
 	<th>Time</th>
 	<th>Lecture ID</th>
-	<th>User ID</th>
-	<th>File ID</th>
 	<th>Created Time</th>
 	<th>Action</th>
 </tr>
@@ -22,8 +20,6 @@
 				array('controller' => 'tests','action' => 'view',$value['id'])).'</td>';
 			echo '<td>'.$value["time"].'</td>';
 			echo '<td>'.$value["lecture_id"].'</td>';			
-			echo '<td>'.$value["user_id"].'</td>';			
-			echo '<td>'.$value["file_id"].'</td>';
 			echo '<td>'.$value["created"].'</td>';
 			echo '<td>'.$this->Html->link('Edit', 
 				array('action' => 'edit', $value["id"]));

@@ -4,8 +4,7 @@ class Source extends AppModel{
 		'Lecture' => array(
 			'className' => 'Lecture',
 			'foreignKey' => 'lecture_id'
-			),
-		'Test'
+			)
 		);
 
 	public $validate = array(

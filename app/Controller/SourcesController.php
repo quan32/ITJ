@@ -16,7 +16,6 @@ class SourcesController extends AppController{
 			// debug($this->request->data);die;
 			$this->request->data['Source']['lecture_id']=$id;
 			$this->request->data['Source']['type']=$this->request->data['Source']['filename']['type'];
-
 			$this->Source->create();
 			// attempt to save
 			if ($this->Source->save($this->request->data)) {

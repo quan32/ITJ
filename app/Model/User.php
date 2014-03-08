@@ -2,9 +2,7 @@
 App::uses('SimplePasswordHasher', 'Controller/Component/Auth');
 class User extends AppModel{
 
-
 	public $hasMany = array('Lecture','Ip','Result','Test','Register');
-
 
 	public $validate = array(
 		'username' => array(
@@ -36,11 +34,8 @@ class User extends AppModel{
 				'rule' => 'notEmpty',
 				'message' => 'Confirm password must not empty'
 				),
-			),
-
+			)
 		);
-
-	
 
 	public function beforeSave($options = array()){
 		if(isset($this->data[$this->alias]['password'])){

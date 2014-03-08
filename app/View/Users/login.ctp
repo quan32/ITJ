@@ -9,7 +9,7 @@
 		<?php echo $this->Form->input('username', array('label'=>'ユーザ名'));
 		echo $this->Form->input('password', array('label'=>'パスワード'));
 		echo $this->Html->link('Quen mat khau?', 
-			array('controller' => 'managers', 'action' => 'info2'));
+			array('controller' => 'manages', 'action' => 'info2'));
 		?>
 	</fieldset>
 	<?php echo $this->Form->end(array('label'=>'ログイン')); ?>
