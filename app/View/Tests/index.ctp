@@ -1,5 +1,4 @@
 <h1>Tests List</h1>
-
 <table>
 <tr>
 	<th>ID</th>
@@ -33,3 +32,5 @@
 	}
 ?>
 </table>
+<?=	$this->Html->link('Add new test',
+				array('controller' => 'tests','action' => 'add',$lecture_id)); ?>

@@ -58,21 +58,15 @@
 		font-weight: bold;
 	}
 </style>
-noi dung bai giang o day
-	
-	
-
-
-
-<hr>
 <div id="container">
 	<div id="lecture_content">
-		<h1>Preview</h1>
-		<?
+		<h1 id="lecture-title"><?=$lecture['Lecture']['name']?></h1>
+		<div id="description"><?=$lecture['Lecture']['description']?></div>
+		<?php
 		if(isset($src)){
 		?>
 			<iframe width="723" height="756" src="<?php echo $src;?>"></iframe>
-		<?}?>
+		<?php }?>
 
 		<h1>Media file</h1>
 		<?php
@@ -93,13 +87,13 @@ noi dung bai giang o day
 						?>
 							<h2>Image <? echo $source['id'];?></h2>
 							<img src="http://localhost/ITJ/app/webroot/uploads/<?echo $source['filename'];?>">
-						<?
+						<?php
 					}
 				}
 		?>
 	</div>
+Like button here, number ò user liked here
 	<ul class="nested-comments-complex">
-
 		<?php foreach ($comments as $value): ?>
 			<li>
 				<div class="comment">
@@ -127,10 +121,10 @@ noi dung bai giang o day
 			</li>
 		<?php endforeach; ?>
 
-		<li class="comment<?= $lecture_id; ?>">					
+		<li class="comment<?= $lecture['Lecture']['id']; ?>">					
 			<div class="comment_text">
 				<p><a href="" class="author">Current User</a></p>
-				<textarea class="comment_text" id="<?= $lecture_id; ?>">Write your comment here...</textarea>
+				<textarea class="comment_text" id="<?= $lecture['Lecture']['id']; ?>">Write your comment here...</textarea>
 			</div>
 		</li>
 	</ul>

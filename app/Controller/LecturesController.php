@@ -104,11 +104,10 @@ class LecturesController extends AppController{
 				$this->set('src',$src);
 			}
 		}
-
 		$this->set('sources', $sources);
 
 		//Hien thi comment
-		$this->set('lecture_id', $id);
+		$this->set('lecture', $lecture);
 		$this->set('comments', $this->Lecture->Comment->findAllByLectureId($id));
 	}
 
