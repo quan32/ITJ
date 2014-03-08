@@ -3,7 +3,14 @@ define ('UPLOAD_FOLDER', realpath(dirname(__FILE__).DS.'..'.DS.'webroot'.DS.'fil
 class TestsController extends AppController {
 	public function beforeFilter(){
 		parent::beforeFilter();
-		$this->Auth->allow('index','add','edit','view','view_result', 'delete');
+		// $this->Auth->allow('index','add','edit','view','view_result', 'delete');
+	}
+
+	public function isAuthorized($user){
+		// Only teacher can use teacher's function
+		if($user['role']=='student')
+			return true;
+		return false;
 	}
 
 	public function index(){
