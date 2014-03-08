@@ -4,15 +4,15 @@
 	<th>name</th>
 	<th>Action</th>
 </tr>
+<h1>File da upload:</h1>
 <?php
-	// print_r($sources);
 	foreach ($sources as $source) {
 		echo '<tr>';
 		echo '<td>'.$source["Source"]["id"].'</td>';
 		echo '<td>'.$source["Source"]["filename"].'</td>';
 		echo '<td>';
-		echo $this->Html->link('Delete', 
-			array('action' => 'delete', $source["Source"]["id"]));
+		echo $this->Form->postLink('Delete', array('controller'=>'sources', 'action'=>'delete', 
+			$source["Source"]["id"]), array('confirm'=>'Ban co chac khong?'));
 		echo '</td>';
 		echo '</tr>';
 	}
@@ -20,7 +20,7 @@
 </table> 
 
 <fieldset>
-	<legend>Them file</legend>
+	<legend>Them file:</legend>
 
 	<?php 
 		echo $this->Form->create('Source', array('type'=>'file'));
@@ -41,7 +41,7 @@
 	<?php endif; ?>
 
 	<?php
-		echo $this->Form->end('Continue to upload file');
+		echo $this->Form->end('Upload');
 		echo "<button onclick='window.history.back();'>Back</button>";
 		echo $this->Html->link('Finish', array('controller'=>'teachers', 'action'=>'index'));
 	?>

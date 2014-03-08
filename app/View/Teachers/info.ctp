@@ -36,7 +36,10 @@ else{
 
     echo $this->Html->link('Edit', array('controller'=>'teachers','action'=>'edit',$user_id));
     echo $this->Html->link('Change password', array('controller'=>'teachers','action'=>'changePassword'));
+    echo $this->Html->link('Statistic', array('controller'=>'teachers','action'=>'statistic'));
     echo $this->Html->link('View result', array('controller'=>'teachers','action'=>'viewResult'));
+    echo $this->Form->postLink('Delete', array('controller'=>'users','action'=>'delete',$user_id),
+        array('confirm'=>'Ban co chac khong?'));
 
     echo "</div>";
 

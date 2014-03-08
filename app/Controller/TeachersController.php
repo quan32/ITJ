@@ -5,7 +5,17 @@ class TeachersController extends AppController{
 
 	public function beforeFilter(){
 		parent::beforeFilter();
-		$this->Auth->allow('index','info','edit','register','changePassword','viewResult');
+
+		$this->Auth->allow('index','info','edit','register','changePassword','viewResult','statistic');
+
+	}
+
+	public function isAuthorized($user){
+		// Only teacher can use teacher's function
+		if($user['role']=='teacher')
+			return true;
+		return false;
+
 	}
 
 
@@ -29,12 +39,13 @@ class TeachersController extends AppController{
 	public function register($role =null){
 
 		if($this->request->is('post')){
-			// var_dump($this->request->data);die;
 			$this->request->data['User']['role']=$role;
+			$this->request->data['User']['prevIP']=$this->request->clientIp();
+			$this->loadModel('User');
 			$this->User->create();
 			if($this->User->save($this->request->data)){
 				$this->Session->setFlash(__('The user has been saved'));
-				return $this->redirect(array('action'=>'login'));
+				return $this->redirect(array('controller'=>'users','action'=>'login'));
 			}
 
 			$this->Session->setFlash(__('The user could no be saved. Please try again'));
@@ -65,12 +76,15 @@ class TeachersController extends AppController{
 		    }
 	}
 
+
 	/**
 	* function change teacher's password
 	*
 	* @author lucnd
 	*/
 	public function changePassword($id =null){
+		$this->pageTitle = "Change password";
+
 		$userId = $this->Auth->user('id');
 		$this->loadModel('User');
 		$this->User->id = $userId;
@@ -113,42 +127,61 @@ class TeachersController extends AppController{
 	* @author lucnd
 	*/
 	public function viewResult($id = null){
+		$this->pageTitle = "View test result";
+
 		$userId = $this->Auth->user('id');
 		$this->loadModel('User');
 		$this->User->id = $userId;
 
 		$this->loadModel('Test');
+		$this->loadModel('Result');
+
+		
 		$tests = $this->Test->find('all',array('conditions'=>array('Test.user_id'=>$userId)));
-
 		$studs = $this->User->find('all',array('conditions'=>array('User.role'=>'student')));
-		$data = array();
-		$i = 0;
-
+		$testId = array();
 		if(!empty($tests)){
 			foreach ($tests as $test) {
-				if(!empty($test['Result'])){
-					foreach ($test['Result'] as $result) {
-						foreach ($studs as $stud) {
-							if ($result['user_id'] == $stud['User']['id']) {
-								$data[$i]['testName'] = $test['Test']['name'];
-								$data[$i]['studName'] = $stud['User']['username'];
-								$data[$i]['time'] = $result['time'];
-								$data[$i]['score'] = $result['score'];
-								$i++;
-							}
-						}	
-					}
-				}
+				array_push($testId, $test['Test']['id']);
 			}
-			$this->set('data',$data);
-			pr($data);
+
+		    $this->paginate = array(
+		        'conditions' => array('Result.test_id' => $testId),
+		        'limit' => 5,
+		        'order' => array('id' => 'desc')
+		    );
+		    
+		    $results = $this->paginate('Result');  
+		    
+			$this->set('results',$results);
+			//pr($results);
 		}
+		
+		
 
 	}
 
-	
 
-	
+	public function statistic(){
+		$this->pageTitle = "Statistic";
 
+		$userId = $this->Auth->user('id');
+		$this->loadModel('User');
+		$this->User->id = $userId;
+		$this->loadModel('Test');
+		$this->loadModel('Lecture');
+
+		$tests = $this->Test->find('all',array('conditions'=>array('Test.user_id'=>$userId)));
+		$lectures = $this->Lecture->find('all',array('conditions'=>array('Lecture.user_id'=>$userId)));
+		$countRegister = 0;
+		pr($lectures);
+		// pr($tests);
+		foreach ($lectures as $lecture) {
+			$countRegister += count($lecture['Register']);
+		}
+		$this->set('tests',$tests);
+		$this->set('lectures',$lectures);
+		$this->set('countRegister',$countRegister);
+	}
 }
 ?>

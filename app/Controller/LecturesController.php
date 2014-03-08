@@ -3,14 +3,22 @@ class LecturesController extends AppController{
 	var $components = array('Common');
 	public function beforeFilter(){
 		parent::beforeFilter();
-		$this->Auth->allow('index', 'add', 'edit', 'delete','preview');
+	}
+
+	public function isAuthorized($user){
+		// Only teacher can use teacher's function
+		if($user['role']=='teacher')
+			return true;
+		return false;
 	}
 
 	public function index(){
 		$user_id = $this->Auth->user('id');
 		$this->loadModel('User');
-		$data = $this->User->read(null,$user_id);
+		$data = $this->User->read(null,$user_id, array('order'=>array('Source.id'=>'desc')));
 		$lectures = $data['Lecture'];
+		krsort($lectures);
+		// debug($lectures);die;
 		$this->set("lectures",$lectures);
 	}
 
@@ -23,7 +31,7 @@ class LecturesController extends AppController{
 			if ($this->Lecture->save($this->request->data)) {
 				$lecture = $this->Lecture->find('first', array('order'=>array('Lecture.id'=>'desc')));
 				$id=$lecture['Lecture']['id'];
-				$this->redirect(array('controller'=>'sources','action' => 'add',$id));
+				$this->redirect(array('controller'=>'sources','action' => 'add1',$id));
 			} 
 		}
 	}
@@ -48,27 +56,50 @@ class LecturesController extends AppController{
 	}
 
 	public function delete($id =null){
+		if ($this->request->is('post')){
+			$this->Lecture->id = $id;
+			$this->loadModel('Source');
+			$this->Source->deleteAll(array('lecture_id'=>$id));
+			
 
-		$this->Lecture->id = $id;
-		$this->loadModel('Source');
-		$this->Source->deleteAll(array('lecture_id'=>$id));
-		
+			if(!$this->Lecture->exists())
+				throw new NotFoundException(__('Invalid lecture'));
 
-		if(!$this->Lecture->exists())
-			throw new NotFoundException(__('Invalid lecture'));
-
-		if($this->Lecture->delete()){
-			$this->Session->setFlash(__('Lecture deleted'));
-			return $this->redirect(array('action'=>'index'));
+			if($this->Lecture->delete()){
+				$this->Session->setFlash(__('Lecture deleted'));
+				return $this->redirect(array('action'=>'index'));
+			}
+			$this->Session->setFlash(__('Lecture was not deleted'));
+				return $this->redirect(array('action' => 'index'));
+		}else{
+			$this->Session->setFlash(__('Thao tac loi'));
+				return $this->redirect(array('controller'=>'teachers','action' => 'index'));
 		}
-		$this->Session->setFlash(__('Lecture was not deleted'));
-			return $this->redirect(array('action' => 'index'));
+		
 	}
 
-	public function preview($filename =null){
-		$data = $this->Common->view_pdf($filename); // dữ liệu sau khi chuyển đổi không dấu
-        $this->set("data",$data); // gán dữ liệu để hiển thị bên view 
+	public function preview($id =null){
+		$lecture = $this->Lecture->read(null, $id);
+		$sources = $lecture['Source'];
+		foreach ($sources as $source) {
+			if(in_array($source['type'], array('application/pdf'))){
+				$src=$this->Common->view_pdf($source['filename']);
+				$this->set('src',$src);
+			}
+		}
 
+		$this->set('sources', $sources);
+		
+
+	}
+
+	public function view($id = null){
+		$this->Lecture->id =$id;
+		if(!$this->Lecture->exists()){
+			throw new NotFoundException(__('Invalid Lecture'));
+		}
+		$this->set('lecture_id', $id);
+		$this->set('comments', $this->Lecture->Comment->findAllByLectureId($id));
 	}
 
 }

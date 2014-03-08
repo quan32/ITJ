@@ -42,11 +42,6 @@ class AppController extends Controller {
 		'Paginator'
 		);
 
-	public function isAuthorized($user){
-		// Phan quyen cho admin, teacher, user
-		if(isset($user['role']) && $user['role'] === 'admin')
-			return true;
-	}
 	public function beforeFilter(){
 		$this->Auth->allow('display');
 	}

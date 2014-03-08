@@ -1,17 +1,10 @@
 <?php
 App::uses('SimplePasswordHasher', 'Controller/Component/Auth');
 class User extends AppModel{
-	public $hasMany = array(
-		'Lecture' => array(
-			'className' => 'Lecture'
-			),
-		'Result' => array(
-			'className' => 'Result'
-			),
-		'Test' => array(
-			'className' => 'Test'
-			)
-		);
+
+
+	public $hasMany = array('Lecture','Ip','Result','Test','Register');
+
 
 	public $validate = array(
 		'username' => array(

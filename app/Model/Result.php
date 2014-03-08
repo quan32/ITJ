@@ -1,5 +1,11 @@
 <?php
-class Result extends AppModel{
-	
-}
+
+	class Result extends AppModel{
+		public $belongsTo = array(
+	        'Test',
+	        'User'
+    	);
+	}
+
+
 ?>
