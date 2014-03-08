@@ -93,6 +93,15 @@ class LecturesController extends AppController{
 
 	}
 
+	public function view($id = null){
+		$this->Lecture->id =$id;
+		if(!$this->Lecture->exists()){
+			throw new NotFoundException(__('Invalid Lecture'));
+		}
+		$this->set('lecture_id', $id);
+		$this->set('comments', $this->Lecture->Comment->findAllByLectureId($id));
+	}
+
 }
 
 ?>

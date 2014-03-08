@@ -1,6 +1,13 @@
 <?php
 class Source extends AppModel{
 	public $belongsTo = array('Lecture');
+	public $belongsTo = array(
+		'Lecture' => array(
+			'className' => 'Lecture',
+			'foreignKey' => 'lecture_id'
+			),
+		'Test'
+		);
 
 	public $validate = array(
 		'filename' => array(

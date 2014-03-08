@@ -1,31 +1,19 @@
 <meta http-equiv="Content-Type" content="text/html; charset=SJIS">
-<?php
-	$file = UPLOAD_FOLDER.DS.$test['File']['name'];
-	$f = fopen($file, "r");
-	
-	$tests=array();
-	$test_title = substr(fgets($f, 1000),10);
-	$test_sub_title = substr(fgets($f, 1000),13);
-	
-	while ( $line = fgets($f, 1000) ) {
-		$line_first_char = substr($line, 0, 1);
-		if($line_first_char == '#') continue; //bo qua comments
-		if($line_first_char == 'Q'){
-			$i = substr($line,2,1);
-			$type_first_char = substr($line,5,1);
-			if($type_first_char == 'Q'){
-				$tests[$i]['qs'] = substr($line,8);
-			}
-			if($type_first_char == 'S'){
-				$tests[$i]['s'][] = substr($line,10);
-			}
-			if($type_first_char == 'K'){
-				$tests[$i]['ks'] = substr($line,10,1) -1;
-				$tests[$i]['point'] = substr($line,13,2);
-			}
-		}
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<style type="text/css">
+	.correct{
+		color:red;
 	}
-?>
+	table{
+		border-collapse:collapse;
+	}
+	table, td, th{
+		border: 1px solid black;
+	}
+	td{
+		text-align: right;
+	}
+</style>
 <h1>Your choice</h1>
 <?php
 	//Hien thi form with answered choice
@@ -35,7 +23,6 @@
 		echo $count.". ".$question['qs']."<br>";
 		//hidden field
 		echo $this->Form->input($count.'.ks', array('value'=>$question['ks'] ,'type'=>'hidden') );
-		echo $this->Form->input($count.'.point', array('value'=>$question['point'] ,'type'=>'hidden') );
 		$attributes = array(
 		    'legend' => false,
 		    'value' => $result[$count]['answer'],
@@ -44,6 +31,7 @@
 		echo $this->Form->radio($count.'.answer', $question['s'], $attributes);
 		$count++;
 	}
+	echo $this->Form->input('num_row', array('value'=>$count ,'type'=>'hidden') );
 ?>
 <hr>
 <h1>Test Result</h1>
@@ -61,7 +49,44 @@
 		$count++;
 		$tongdiem+=$question['point'];
 	}
-//var_dump($tests);
 echo "So cau dung: ".$caudung."/".($count-1)."<br>";
-echo "Diem dat duoc: ".$diem."/".$tongdiem." ~ ".round($diem/$tongdiem*10,2)."<br>";
+echo "Diem dat duoc: ".$diem."/".$tongdiem." ~ ".round($diem/$tongdiem*100,0)."<br>";
 ?>
+<table>
+<tr>
+	<th>STT</th>
+	<th>So diem</th>
+	<th>Dung=1/Sai=0</th>
+	<th>Thanh Diem</th>
+</tr>
+<?php
+	$count = 1;
+	foreach ($tests as $question) {
+		echo "<tr>";
+		echo "<td>".$count."</td>";
+		echo "<td>".$question['point']."</td>";
+		$correct = $result[$count]['answer'] == strval($question['ks']) ? 1: 0;
+		echo "<td>".$correct."</td>";
+		echo "<td>".($correct*$question['point'])."</td>";
+		echo "</tr>";
+		$count++;
+	}	
+?>
+<tr>
+	<td>Tong cong</td>
+	<td><?=$tongdiem;?></td>
+	<td><?=$caudung;?>/<?=$count-1;?></td>
+	<td><?=$diem;?></td>
+</tr>
+</table>
+
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		var num_row = $("[name='data[num_row]']").val();
+		for(i=1;i<=num_row;i++){
+			answer_value = $("#"+i+"Ks").val();
+			$("label[for='"+i+"Answer"+answer_value+"']").addClass("correct");
+		}
+	});
+</script>

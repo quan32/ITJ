@@ -1,5 +1,5 @@
 <?php
-class File extends AppModel{
+class TsvFile extends AppModel{
 	public $belongsTo = 'Test';
 }
 ?>
