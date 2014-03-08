@@ -198,48 +198,6 @@ class TeachersController extends AppController{
 		    }
 	}
 
-	/**
-	* function change teacher's password
-	*
-	* @author lucnd
-	*/
-	public function changePassword($id =null){
-		$this->pageTitle = "Change password";
-
-		$userId = $this->Auth->user('id');
-		$this->loadModel('User');
-		$this->User->id = $userId;
-		// current user
-		$currUser = $this->User->findById($userId);
-
-		if(!$this->User->exists()){
-			throw new NotFoundException(__('Invalid user'));
-		}
-
-		if($this->request->is(array('post','put'))){
-			// hash default sha1
-			$passwordHasher = new SimplePasswordHasher();
-			$arrPass = $this->request->data;
-			// check current password
-			if($passwordHasher->check($arrPass['User']['currPassword'],$currUser['User']['password'])){
-				// check new password and confirm password
-				if($arrPass['User']['newPassword'] == $arrPass['User']['confPassword']){
-					// assign new password to password
-					$currUser['User']['password'] = $arrPass['User']['newPassword'];
-					// save user, run function beforeSave() to hash new password
-					if($this->User->save($currUser)){
-						$this->Session->setFlash(__('Password has been updated'));
-						return $this->redirect(array('action' => 'info'));
-					}
-					$this->Session->setFlash(__('Change password fail'));
-				}
-				$this->Session->setFlash(__('Confirm password fail'));
-			}
-			$this->Session->setFlash(__('Current password fail'));
-		}else{
-			$this->request->data = $this->User->read(null, $id);
-		}
-	}
 
 	/**
 	* function view result of student who do current teacher's test
@@ -247,36 +205,40 @@ class TeachersController extends AppController{
 	*
 	* @author lucnd
 	*/
-	public function viewResult($id = null){
+	public function viewResult(){
 		$this->pageTitle = "View test result";
 
 		$userId = $this->Auth->user('id');
 		$this->loadModel('User');
 		$this->User->id = $userId;
 
-		$this->loadModel('Test');
-		$this->loadModel('Result');
+		// $this->loadModel('Test');
+		// $this->loadModel('Result');
+		// $this->loadModel('User');
+
+		$user = $this->User->findById($userId);
+		debug($user);die;
 
 		
-		$tests = $this->Test->find('all',array('conditions'=>array('Test.user_id'=>$userId)));
-		$studs = $this->User->find('all',array('conditions'=>array('User.role'=>'student')));
-		$testId = array();
-		if(!empty($tests)){
-			foreach ($tests as $test) {
-				array_push($testId, $test['Test']['id']);
-			}
+		// $tests = $this->Test->find('all',array('conditions'=>array('Test.user_id'=>$userId)));
+		// $studs = $this->User->find('all',array('conditions'=>array('User.role'=>'student')));
+		// $testId = array();
+		// if(!empty($tests)){
+		// 	foreach ($tests as $test) {
+		// 		array_push($testId, $test['Test']['id']);
+		// 	}
 
-		    $this->paginate = array(
-		        'conditions' => array('Result.test_id' => $testId),
-		        'limit' => 5,
-		        'order' => array('id' => 'desc')
-		    );
+		//     $this->paginate = array(
+		//         'conditions' => array('Result.test_id' => $testId),
+		//         'limit' => 5,
+		//         'order' => array('id' => 'desc')
+		//     );
 		    
-		    $results = $this->paginate('Result');  
+		//     $results = $this->paginate('Result');  
 		    
-			$this->set('results',$results);
+		// 	$this->set('results',$results);
 			//pr($results);
-		}
+		// }
 		
 		
 

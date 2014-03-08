@@ -82,6 +82,7 @@ class UsersController extends AppController{
 	}
 
 	public function login(){
+		// var_dump($this->request->data);die;
 		// $this->layout='ajax';
 		$max=3;//so lan dang nhap that bai thi bi khoa tai khoan tam thoi
 		$time=7200;//7200(s)=2(h)
@@ -240,31 +241,15 @@ class UsersController extends AppController{
 		}
 	}
 
-	public function role(){
-		// $this->layout='ajax';
-		if($this->request->is('post')){
-			if($this->request->data['User']['role']=="student")
-				return $this->redirect(array('controller'=>'students','action'=>'register','student'));
-			else
-				return $this->redirect(array('controller'=>'teachers','action'=>'register','teacher'));	
-		}
-	}
-	
-	public function logout(){	
-		$this->Session->setFlash('Good-Bye');
-		return $this->redirect($this->Auth->logout());
-	}
-
 	/**
 	* function change teacher's password
 	*
 	* @author lucnd
 	*/
-	public function changePassword($id =null){
+	public function changePassword(){
 		$this->pageTitle = "Change password";
 
 		$userId = $this->Auth->user('id');
-		$this->loadModel('User');
 		$this->User->id = $userId;
 		// current user
 		$currUser = $this->User->findById($userId);
@@ -286,7 +271,13 @@ class UsersController extends AppController{
 					// save user, run function beforeSave() to hash new password
 					if($this->User->save($currUser)){
 						$this->Session->setFlash(__('Password has been updated'));
-						return $this->redirect(array('action' => 'info'));
+						if($this->Auth->user('role')=='manager')
+							return $this->redirect(array('controller'=>'manages','action'=>'info'));
+						elseif($this->Auth->user('role')=='teacher')
+							return $this->redirect(array('controller'=>'teachers','action'=>'info'));
+						else
+							return $this->redirect(array('controller'=>'students','action'=>'view_info'));
+
 					}
 					$this->Session->setFlash(__('Change password fail'));
 				}
@@ -294,72 +285,23 @@ class UsersController extends AppController{
 			}
 			$this->Session->setFlash(__('Current password fail'));
 		}else{
-			$this->request->data = $this->User->read(null, $id);
+			$this->request->data = $this->User->read(null, $userId);
 		}
 	}
 
-	/**
-	* function view result of student who do current teacher's test
-	* 
-	*
-	* @author lucnd
-	*/
-	public function viewResult($id = null){
-		$this->pageTitle = "View test result";
-
-		$userId = $this->Auth->user('id');
-		$this->loadModel('User');
-		$this->User->id = $userId;
-
-		$this->loadModel('Test');
-		$this->loadModel('Result');
-
-		
-		$tests = $this->Test->find('all',array('conditions'=>array('Test.user_id'=>$userId)));
-		$studs = $this->User->find('all',array('conditions'=>array('User.role'=>'student')));
-		$testId = array();
-		if(!empty($tests)){
-			foreach ($tests as $test) {
-				array_push($testId, $test['Test']['id']);
-			}
-
-		    $this->paginate = array(
-		        'conditions' => array('Result.test_id' => $testId),
-		        'limit' => 5,
-		        'order' => array('id' => 'desc')
-		    );
-		    
-		    $results = $this->paginate('Result');  
-		    
-			$this->set('results',$results);
-			//pr($results);
+	public function role(){
+		// $this->layout='ajax';
+		if($this->request->is('post')){
+			if($this->request->data['User']['role']=="student")
+				return $this->redirect(array('controller'=>'students','action'=>'register','student'));
+			else
+				return $this->redirect(array('controller'=>'teachers','action'=>'register','teacher'));	
 		}
-		
-		
-
 	}
-
-
-	public function statistic(){
-		$this->pageTitle = "Statistic";
-
-		$userId = $this->Auth->user('id');
-		$this->loadModel('User');
-		$this->User->id = $userId;
-		$this->loadModel('Test');
-		$this->loadModel('Lecture');
-
-		$tests = $this->Test->find('all',array('conditions'=>array('Test.user_id'=>$userId)));
-		$lectures = $this->Lecture->find('all',array('conditions'=>array('Lecture.user_id'=>$userId)));
-		$countRegister = 0;
-		pr($lectures);
-		// pr($tests);
-		foreach ($lectures as $lecture) {
-			$countRegister += count($lecture['Register']);
-		}
-		$this->set('tests',$tests);
-		$this->set('lectures',$lectures);
-		$this->set('countRegister',$countRegister);
+	
+	public function logout(){	
+		$this->Session->setFlash('Good-Bye');
+		return $this->redirect($this->Auth->logout());
 	}
 
 }

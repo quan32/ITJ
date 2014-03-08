@@ -17,7 +17,7 @@
 
 		<li><?php 
 		echo $this->Html->link('Change Password', 
-			array('controller' => 'teachers', 'action' => 'changePassword'));
+			array('controller' => 'users', 'action' => 'changePassword'));
 		?></li>
 
 		<li><?php 
