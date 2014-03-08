@@ -3,7 +3,14 @@ class TeachersController extends AppController{
 
 	public function beforeFilter(){
 		parent::beforeFilter();
-		$this->Auth->allow('index','info','edit','register','changePassword');
+		$this->Auth->allow('register');
+	}
+
+	public function isAuthorized($user){
+		// Only teacher can use teacher's function
+		if($user['role']=='teacher')
+			return true;
+		return false;
 	}
 
 
@@ -27,12 +34,13 @@ class TeachersController extends AppController{
 	public function register($role =null){
 
 		if($this->request->is('post')){
-			// var_dump($this->request->data);die;
 			$this->request->data['User']['role']=$role;
+			$this->request->data['User']['prevIP']=$this->request->clientIp();
+			$this->loadModel('User');
 			$this->User->create();
 			if($this->User->save($this->request->data)){
 				$this->Session->setFlash(__('The user has been saved'));
-				return $this->redirect(array('action'=>'login'));
+				return $this->redirect(array('controller'=>'users','action'=>'login'));
 			}
 
 			$this->Session->setFlash(__('The user could no be saved. Please try again'));
@@ -62,11 +70,6 @@ class TeachersController extends AppController{
 		      //  unset($this->request->data['User']['password']);
 		    }
 	}
-
-	public function changePassword($id =null){
-
-	}
-
 
 }
 ?>

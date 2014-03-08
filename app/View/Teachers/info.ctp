@@ -36,8 +36,8 @@ else{
 
     echo $this->Html->link('Edit', array('controller'=>'teachers','action'=>'edit',$user_id));
     echo $this->Html->link('Change password', array('controller'=>'teachers','action'=>'changePassword'));
-
-
+    echo $this->Form->postLink('Delete', array('controller'=>'users','action'=>'delete',$user_id),
+        array('confirm'=>'Ban co chac khong?'));
     echo "</div>";
 
 

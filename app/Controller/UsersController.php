@@ -1,16 +1,30 @@
 <?php
+App::uses('SimplePasswordHasher', 'Controller/Component/Auth');
+App::uses('CakeTime', 'Utility');
 class UsersController extends AppController{
 
 	public function beforeFilter(){
 		parent::beforeFilter();
-		$this->Auth->allow('logout', 'reset', 'role', 'register');
+		$this->Auth->allow('login', 'role', 'verify1','verify2');
+	}
+	public function isAuthorized($user){
+		// Only teacher can use teacher's function
+		if($user['role']=='student' || $user['role']=='teacher' || $user['role']=='manager')
+			return true;
+		return false;
 	}
 
-	// public function index($role ='student'){
-	// 	$this->set('role',$role);
-	// 	// $this->User->recursive = 0;
-	// 	// $this->set('users', $this->paginate());
-	// }
+
+	public function vidu(){
+		if($this->request->is('post')){
+			debug($this->request->data);
+		}
+		
+	}
+	public function index(){
+		// $this->User->recursive = 0;
+		// $this->set('users', $this->paginate());
+	}
 	
 
 
@@ -42,83 +56,192 @@ class UsersController extends AppController{
 
 	}
 
-
 	public function delete($id =null){
-		$this->request->onlyAllow('post');
+		if($this->request->is('post')){
 
-		$this->User->id = $id;
-		if(!$this->User->exists())
-			throw new NotFoundException(__('Invalid user'));
+			$this->User->id = $id;
+			if(!$this->User->exists())
+				throw new NotFoundException(__('Nguoi dung nay chua ton tai'));
 
-		if($this->User->delete()){
-			$this->Session->setFlash(__('User deleted'));
-			return $this->redirect(array('action'=>'index'));
-		}
-		$this->Session->setFlash(__('User was not deleted'));
-		return $this->redirect(array('action' => 'index'));
-
+			if($this->User->saveField('state','deleted')){
+				$this->Session->setFlash(__('User deleted'));
+				return $this->redirect($this->Auth->logout());
+			}
+			$this->Session->setFlash(__('User was not deleted'));
+				if($this->Auth->user('role')=='teacher')
+					return $this->redirect(array('controller'=>'teachers','action'=>'index'));
+				elseif($this->Auth->user('role')=='student')
+					return $this->redirect(array('controller'=>'students','action'=>'index'));
+			}
 	}
 
 	public function login(){
+		$max=3;//so lan dang nhap that bai thi bi khoa tai khoan tam thoi
+		$time=7200;//7200(s)=2(h)
+
+		// Check session
+		if($this->Auth->loggedIN() && $this->Auth->user('state')=="normal"){
+			if($this->Auth->user('role')=='manager')
+					return $this->redirect(array('controller'=>'managers','action'=>'index'));
+				elseif($this->Auth->user('role')=='teacher')
+					return $this->redirect(array('controller'=>'teachers','action'=>'index'));
+				else
+					return $this->redirect(array('controllers'=>'students','action'=>'index'));
+			}
+
+		// If there is not session -> check usrname & password -> create session
+
 		if($this->request->is('post')){
-			//var_dump($this->Auth);
+
+			$IP = $this->request->clientIp();
+
 			if($user=$this->User->findByUsername($this->request->data['User']['username'])){
-				if($user['User']['admit_state']=='no'){
-					$this->Session->setFlash(__('Your account have not admited by Admin! Come back later'));
-					return $this->redirect(array('action'=>'login'));
-				}else{
-					if($this->Auth->login()){
-						$this->Session->setFlash('Your are logged in');
-						// var_dump($this->Auth->user('role'));die;
-						if($this->Auth->user('role')=='admin')
-							return $this->redirect(array('manages','action'=>'index'));
-						elseif($this->Auth->user('role')=='teacher')
-							return $this->redirect(array('controller'=>'teachers','action'=>'index'));
-						else
-							return $this->redirect(array('controllers','action'=>'index'));
+				$passwordHasher = new SimplePasswordHasher();
+				$password = $passwordHasher->hash($this->request->data['User']['password']);
+				
+				//Check user's state
+				if($password == $user['User']['password']){
+					if($user['User']['role']=='teacher'){
+						if($user['User']['state']=='new'){//Trang thai moi dang nhap dang cho xac nhan
+							$this->Session->setFlash(__('Tai khoan chua duoc quan tri chap nhan, hay quay lai sau'));
+							return $this->redirect(array('action'=>'login'));
+						}elseif ($user['User']['state']=='blocked') {//Trang thai bi khoa tam thoi do qua 3 lan dang nhap that bai
+							$time_now = intval(strtotime(date('H:i:s d-m-Y')));
+  							$temp_time = intval(strtotime($user['User']['modified']));
+  							$distance_time = $time_now - $temp_time;
+
+							if($distance_time > $time){
+								$this->User->id=$user['User']['id'];
+								$this->User->saveField('failedNo',0);
+								$this->Session->setFlash(__('Tai khoan cua ban vua qua khoi thoi gian khoa tam thoi, hay nhap verify code'));
+								return $this->redirect(array('controller'=>'users','action'=>'verify1',$user['User']['id']));
+							}else{
+								$this->Session->setFlash(__('Tai khoan dang tam thoi bi khoa hay tro lai sau'));
+							return $this->redirect(array('action'=>'login'));
+							}			
+						}elseif($user['User']['state']=='deleted'){//Tai khoan da bi khoa
+							$this->Session->setFlash(__('Tai khoan da bi xoa, hay tao tai khoan moi'));
+							return $this->redirect(array('action'=>'login'));
+						}elseif($user['User']['prevIP']!=$IP && $user['User']['prevIP']!=null){//Dia chi Ip su dung khac voi lan su dung truoc
+							$this->Session->setFlash(__('Dia chi IP ban dang su dung khac dia chi IP su dung lan truoc, hay nhap ma xac thuc'));
+							return $this->redirect(array('controller'=>'users','action'=>'verify2',$user['User']['id'], $IP));
+							}
+						
+					}elseif ($user['User']['role']=='student') {
+						if($user['User']['state']=='new'){//Trang thai moi dang nhap dang cho xac nhan
+							$this->Session->setFlash(__('Tai khoan chua duoc quan tri chap nhan, hay quay lai sau'));
+							return $this->redirect(array('action'=>'login'));
+						}elseif ($user['User']['state']=='blocked') {//Trang thai bi khoa tam thoi do qua 3 lan dang nhap that bai
+							$time_now = intval(strtotime(date('H:i:s d-m-Y')));
+  							$temp_time = intval(strtotime($user['User']['modified']));
+  							$distance_time = $time_now - $temp_time;
+
+							if($distance_time > $time){
+								$this->User->id=$user['User']['id'];
+								$this->User->saveField('failedNo',0);
+								$this->Session->setFlash(__('Tai khoan cua ban vua qua khoi thoi gian khoa tam thoi, hay nhap dang nhap lai'));
+								return $this->redirect(array('action'=>'login'));
+							}else{
+								$this->Session->setFlash(__('Tai khoan dang tam thoi bi khoa hay tro lai sau'));
+								return $this->redirect(array('action'=>'login'));
+							}			
+						}elseif($user['User']['state']=='deleted'){//Tai khoan da bi khoa
+							$this->Session->setFlash(__('Tai khoan da bi xoa, hay tao tai khoan moi'));
+							return $this->redirect(array('action'=>'login'));
 						}
-					else 
-						$this->Session->setFlash(__('Invalid username or password, try again'));
+					}else{//Xu ly dang nhap cho manager
+						$count=0;
+
+						// debug($user);die;
+						foreach ($user['Ip'] as $ip) {
+							if($ip['ip']==$IP)
+								$count++;
 						}
+						if($count==0){
+							$this->Session->setFlash(__('Dia chi IP khong dung'));
+							return $this->redirect(array('action'=>'login'));
+						}
+					}
+					
+				}
+
+				if($this->Auth->login()){
+					$this->Session->setFlash('Your are logged in');
+					
+					if($this->Auth->user('role')=='manager')
+						return $this->redirect(array('controller'=>'managers','action'=>'index'));
+					elseif($this->Auth->user('role')=='teacher')
+						return $this->redirect(array('controller'=>'teachers','action'=>'index'));
+					else
+						return $this->redirect(array('controller'=>'students','action'=>'index'));
+					}
+				else{
+					$this->Session->setFlash(__('Invalid username or password, try again'));
+
+					if($user['User']['failedNo'] == $max){
+						$this->Session->setFlash(__('Ban da dang nhap that bai qua 3 lan.
+							Tai khoan cua ban se bi khoa tam thoi trong thoi gian 2(h)'));
+
+						$this->User->id=$user['User']['id'];
+						$this->User->saveField('state','blocked');
+						$this->User->saveField('failedNo',0);
+						}else{
+							$this->User->id=$user['User']['id'];
+							$failedNo=$user['User']['failedNo']+1;
+							$this->User->saveField('failedNo', $failedNo);
+						}
+					}
+					
+
+					
 				}else{
 					$this->Session->setFlash(__('Your account is not exist! Register new account, please'));
 					}	
 		}
 	}
 
+	public function verify1($id =null){
+		if($this->request->is('post')){
+			$user= $this->User->findById($id);
+			if($user['User']['verify']==$this->request->data['User']['verify']){
+
+				$this->Session->setFlash(__('The verify code is correct'));
+				$this->User->id=$id;
+				$this->User->saveField('state','normal');
+				return $this->redirect(array('controller'=>'users','action'=>'login'));	
+			}else{
+				$this->Session->setFlash(__('The verify code is incorrect'));
+			}
+		}
+	}
+
+	public function verify2($id =null, $IP =null){
+		// var_dump($id);die;
+		if($this->request->is('post')){
+			$user= $this->User->findById($id);
+			if($user['User']['verify']==$this->request->data['User']['verify']){
+
+				$this->Session->setFlash(__('The verify code is correct'));
+				$this->User->id = $id;
+				$this->User->saveField('prevIP',$IP);
+				return $this->redirect(array('controller'=>'users','action'=>'login'));
+				
+			}else{
+				$this->Session->setFlash(__('The verify code is incorrect'));
+			}
+		}
+	}
+
 	public function role(){
 		if($this->request->is('post')){
-			var_dump($this->request->data);
 			if($this->request->data['User']['role']=="student")
 				return $this->redirect(array('controller'=>'students','action'=>'register','student'));
 			else
 				return $this->redirect(array('controller'=>'teachers','action'=>'register','teacher'));	
 		}
 	}
-
-	public function register($role= "student"){
-		 // var_dump($role);
-		if($role == "student"){
-			$this->set('role', 'student');
-		}else if($role == "teacher"){
-			$this->set('role', 'teacher');
-		}
-
-		if($this->request->is('post')){
-			// var_dump($this->request->data);die;
-			$this->request->data['User']['role']=$role;
-			$this->User->create();
-			if($this->User->save($this->request->data)){
-				$this->Session->setFlash(__('The user has been saved'));
-				return $this->redirect(array('action'=>'login'));
-			}
-
-			$this->Session->setFlash(__('The user could no be saved. Please try again'));
-		}
-	}
-
 	
-	public function logout(){
+	public function logout(){	
 		$this->Session->setFlash('Good-Bye');
 		return $this->redirect($this->Auth->logout());
 	}

@@ -7,8 +7,8 @@
 	<th>Cost</th>
 	<th>Created Time</th>
 	<th>Modified Time</th>
-	<th>Detail</th>
-	<th>Action</h1>
+	<th>View</th>
+	<th>Action</th>
 </tr>
 <?php
 	// var_dump($lectures);
@@ -22,18 +22,16 @@
 
 			echo '<td>';
 			echo $this->Html->link('View', 
-				array('controller'=>'lectures','action' => 'preview', 'xxx.pdf'));
+				array('controller'=>'lectures','action' => 'preview',$lecture["id"]));
 			echo '</td>';
 
 			echo '<td>';
 			echo $this->Html->link('Edit', 
 				array('action' => 'edit', $lecture["id"]));
 			echo " ";
-			echo $this->Html->link('Delete', 
-				array('action' => 'delete', $lecture["id"]));
-			// echo $this->Form->postLink('Delete', 
-			// 	array('action' => 'delete',$value["id"]),
-			// 	array('confirm' => 'Are you sure?'));
+			echo $this->Form->postLink('Delete', 
+				array('controller'=>'lectures','action' => 'delete',$lecture["id"]),
+				array('confirm' => 'Are you sure?'));
 			echo '</td>';
 		echo '</tr>';
 	}

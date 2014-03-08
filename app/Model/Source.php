@@ -1,11 +1,6 @@
 <?php
 class Source extends AppModel{
-	public $belongsTo = array(
-		'Lecture' => array(
-			'className' => 'Lecture',
-			'foreignKey' => 'lecture_id'
-			)
-		);
+	public $belongsTo = array('Lecture');
 
 	public $validate = array(
 		'filename' => array(
@@ -18,23 +13,20 @@ class Source extends AppModel{
 			),
 			// http://book.cakephp.org/2.0/en/models/data-validation.html#Validation::mimeType
 			'mimeType' => array(
-				'rule' => array('mimeType', array('application/msword','image/gif','image/png','image/jpg','image/jpeg','application/pdf','application/msword','text/tab-separated-values',
-					'audio/mpeg', 'audio/x-mpeg', 'audio/mp3', 'audio/x-mp3', 'audio/mpeg3', 'audio/x-mpeg3', 'audio/mpg', 'audio/x-mpg', 'audio/x-mpegaudio',
-					'video/mpeg','video/x-mpeg','video/mp4','video/mp4v-es', 'audio/mp4')),
-				'message' => 'Invalid file, only images allowed',
+				'rule' => array('mimeType', array('application/msword','image/gif','image/png','image/jpg','image/jpeg',
+					'text/tab-separated-values','video/x-flv','audio/mp4', 'audio/mpeg')),
+				'message' => 'Invalid file',
 				'required' => FALSE,
 				'allowEmpty' => TRUE,
 			),
 			// custom callback to deal with the file upload
-			'processUpload' => array(
 				'rule' => 'processUpload',
 				'message' => 'Something went wrong processing your file',
 				'required' => FALSE,
 				'allowEmpty' => TRUE,
 				'last' => TRUE,
 			)
-		)
-	);
+		);
 
 	/**
 	 * Upload Directory relative to WWW_ROOT
@@ -76,6 +68,7 @@ class Source extends AppModel{
 	 * @return boolean
 	 */
 	public function processUpload($check=array()) {
+		$rdnumber=rand(1,1000000).'_';
 		// deal with uploaded file
 		if (!empty($check['filename']['tmp_name'])) {
 
@@ -85,18 +78,20 @@ class Source extends AppModel{
 			}
 
 			// build full filename
-			$filename = WWW_ROOT . $this->uploadDir . DS . Inflector::slug(pathinfo($check['filename']['name'], PATHINFO_FILENAME)).'.'.pathinfo($check['filename']['name'], PATHINFO_EXTENSION);
+			// $filename = WWW_ROOT . $this->uploadDir . DS . Inflector::slug(pathinfo($check['filename']['name'], PATHINFO_FILENAME)).'.'.pathinfo($check['filename']['name'], PATHINFO_EXTENSION);
+			$filename =$rdnumber.Inflector::slug(pathinfo($check['filename']['name'], PATHINFO_FILENAME)).'.'.pathinfo($check['filename']['name'], PATHINFO_EXTENSION);
+			$fullpath = WWW_ROOT . $this->uploadDir . DS .$rdnumber. Inflector::slug(pathinfo($check['filename']['name'], PATHINFO_FILENAME)).'.'.pathinfo($check['filename']['name'], PATHINFO_EXTENSION);
 
 			// @todo check for duplicate filename
 
 			// try moving file
-			if (!move_uploaded_file($check['filename']['tmp_name'], $filename)) {
+			if (!move_uploaded_file($check['filename']['tmp_name'], $fullpath)) {
 				return FALSE;
 
 			// file successfully uploaded
 			} else {
 				// save the file path relative from WWW_ROOT e.g. uploads/example_filename.jpg
-				$this->data[$this->alias]['filepath'] = str_replace(DS, "/", str_replace(WWW_ROOT, "", $filename) );
+				$this->data[$this->alias]['filepath'] = $filename;
 			}
 		}
 

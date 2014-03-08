@@ -8,10 +8,8 @@
 		</legend>
 		<?php echo $this->Form->input('username', array('label'=>'ユーザ名'));
 		echo $this->Form->input('password', array('label'=>'パスワード'));
-		echo $this->Form->checkbox('Save', array('checked'=>false));
-		echo "保存する";
-		echo $this->Html->link('初期パスワードに設定する', 
-			array('controller' => 'users', 'action' => 'reset'));
+		echo $this->Html->link('Quen mat khau?', 
+			array('controller' => 'managers', 'action' => 'info2'));
 		?>
 	</fieldset>
 	<?php echo $this->Form->end(array('label'=>'ログイン')); ?>
