@@ -16,8 +16,18 @@
 		?></li>
 
 		<li><?php 
-		echo $this->Html->link('Add', 
-			array('controller' => 'lectures', 'action' => 'add'));
+		echo $this->Html->link('Change Password', 
+			array('controller' => 'teachers', 'action' => 'changePassword'));
+		?></li>
+
+		<li><?php 
+		echo $this->Html->link('result', 
+			array('controller' => 'teachers', 'action' => 'viewResult'));
+		?></li>
+
+		<li><?php 
+		echo $this->Html->link('Statistic', 
+			array('controller' => 'teachers', 'action' => 'statistic'));
 		?></li>
 
 	</ul>

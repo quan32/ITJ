@@ -7,7 +7,7 @@ class LecturesController extends AppController{
 
 	public function isAuthorized($user){
 		// Only teacher can use teacher's function
-		if($user['role']=='teacher')
+		if(($user['role']=='teacher') || (($user['role']=='student') && ($this->action=='view')))
 			return true;
 		return false;
 	}

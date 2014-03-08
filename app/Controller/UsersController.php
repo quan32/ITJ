@@ -57,7 +57,8 @@ class UsersController extends AppController{
 	}
 
 	public function delete($id =null){
-		if($this->request->is('post')){
+		// if($this->request->is('post')){
+			// debug($id);die;
 
 			$this->User->id = $id;
 			if(!$this->User->exists())
@@ -65,24 +66,30 @@ class UsersController extends AppController{
 
 			if($this->User->saveField('state','deleted')){
 				$this->Session->setFlash(__('User deleted'));
-				return $this->redirect($this->Auth->logout());
+				if($this->Auth->user('role')!='manager')
+					return $this->redirect($this->Auth->logout());
+				return $this->redirect(array('controller'=>'manages','action'=>'index'));
 			}
 			$this->Session->setFlash(__('User was not deleted'));
 				if($this->Auth->user('role')=='teacher')
 					return $this->redirect(array('controller'=>'teachers','action'=>'index'));
 				elseif($this->Auth->user('role')=='student')
 					return $this->redirect(array('controller'=>'students','action'=>'index'));
-			}
+				elseif($this->Auth->user('role')=='manager')
+					return $this->redirect(array('controller'=>'manages','action'=>'index'));
+
+			// }
 	}
 
 	public function login(){
+		// $this->layout='ajax';
 		$max=3;//so lan dang nhap that bai thi bi khoa tai khoan tam thoi
 		$time=7200;//7200(s)=2(h)
 
 		// Check session
 		if($this->Auth->loggedIN() && $this->Auth->user('state')=="normal"){
 			if($this->Auth->user('role')=='manager')
-					return $this->redirect(array('controller'=>'managers','action'=>'index'));
+					return $this->redirect(array('controller'=>'manages','action'=>'index'));
 				elseif($this->Auth->user('role')=='teacher')
 					return $this->redirect(array('controller'=>'teachers','action'=>'index'));
 				else
@@ -169,7 +176,7 @@ class UsersController extends AppController{
 					$this->Session->setFlash('Your are logged in');
 					
 					if($this->Auth->user('role')=='manager')
-						return $this->redirect(array('controller'=>'managers','action'=>'index'));
+						return $this->redirect(array('controller'=>'manages','action'=>'index'));
 					elseif($this->Auth->user('role')=='teacher')
 						return $this->redirect(array('controller'=>'teachers','action'=>'index'));
 					else
@@ -201,6 +208,7 @@ class UsersController extends AppController{
 	}
 
 	public function verify1($id =null){
+		// $this->layout='ajax';
 		if($this->request->is('post')){
 			$user= $this->User->findById($id);
 			if($user['User']['verify']==$this->request->data['User']['verify']){
@@ -216,7 +224,7 @@ class UsersController extends AppController{
 	}
 
 	public function verify2($id =null, $IP =null){
-		// var_dump($id);die;
+		// $this->layout='ajax';
 		if($this->request->is('post')){
 			$user= $this->User->findById($id);
 			if($user['User']['verify']==$this->request->data['User']['verify']){
@@ -233,6 +241,7 @@ class UsersController extends AppController{
 	}
 
 	public function role(){
+		// $this->layout='ajax';
 		if($this->request->is('post')){
 			if($this->request->data['User']['role']=="student")
 				return $this->redirect(array('controller'=>'students','action'=>'register','student'));
@@ -244,6 +253,113 @@ class UsersController extends AppController{
 	public function logout(){	
 		$this->Session->setFlash('Good-Bye');
 		return $this->redirect($this->Auth->logout());
+	}
+
+	/**
+	* function change teacher's password
+	*
+	* @author lucnd
+	*/
+	public function changePassword($id =null){
+		$this->pageTitle = "Change password";
+
+		$userId = $this->Auth->user('id');
+		$this->loadModel('User');
+		$this->User->id = $userId;
+		// current user
+		$currUser = $this->User->findById($userId);
+
+		if(!$this->User->exists()){
+			throw new NotFoundException(__('Invalid user'));
+		}
+
+		if($this->request->is(array('post','put'))){
+			// hash default sha1
+			$passwordHasher = new SimplePasswordHasher();
+			$arrPass = $this->request->data;
+			// check current password
+			if($passwordHasher->check($arrPass['User']['currPassword'],$currUser['User']['password'])){
+				// check new password and confirm password
+				if($arrPass['User']['newPassword'] == $arrPass['User']['confPassword']){
+					// assign new password to password
+					$currUser['User']['password'] = $arrPass['User']['newPassword'];
+					// save user, run function beforeSave() to hash new password
+					if($this->User->save($currUser)){
+						$this->Session->setFlash(__('Password has been updated'));
+						return $this->redirect(array('action' => 'info'));
+					}
+					$this->Session->setFlash(__('Change password fail'));
+				}
+				$this->Session->setFlash(__('Confirm password fail'));
+			}
+			$this->Session->setFlash(__('Current password fail'));
+		}else{
+			$this->request->data = $this->User->read(null, $id);
+		}
+	}
+
+	/**
+	* function view result of student who do current teacher's test
+	* 
+	*
+	* @author lucnd
+	*/
+	public function viewResult($id = null){
+		$this->pageTitle = "View test result";
+
+		$userId = $this->Auth->user('id');
+		$this->loadModel('User');
+		$this->User->id = $userId;
+
+		$this->loadModel('Test');
+		$this->loadModel('Result');
+
+		
+		$tests = $this->Test->find('all',array('conditions'=>array('Test.user_id'=>$userId)));
+		$studs = $this->User->find('all',array('conditions'=>array('User.role'=>'student')));
+		$testId = array();
+		if(!empty($tests)){
+			foreach ($tests as $test) {
+				array_push($testId, $test['Test']['id']);
+			}
+
+		    $this->paginate = array(
+		        'conditions' => array('Result.test_id' => $testId),
+		        'limit' => 5,
+		        'order' => array('id' => 'desc')
+		    );
+		    
+		    $results = $this->paginate('Result');  
+		    
+			$this->set('results',$results);
+			//pr($results);
+		}
+		
+		
+
+	}
+
+
+	public function statistic(){
+		$this->pageTitle = "Statistic";
+
+		$userId = $this->Auth->user('id');
+		$this->loadModel('User');
+		$this->User->id = $userId;
+		$this->loadModel('Test');
+		$this->loadModel('Lecture');
+
+		$tests = $this->Test->find('all',array('conditions'=>array('Test.user_id'=>$userId)));
+		$lectures = $this->Lecture->find('all',array('conditions'=>array('Lecture.user_id'=>$userId)));
+		$countRegister = 0;
+		pr($lectures);
+		// pr($tests);
+		foreach ($lectures as $lecture) {
+			$countRegister += count($lecture['Register']);
+		}
+		$this->set('tests',$tests);
+		$this->set('lectures',$lectures);
+		$this->set('countRegister',$countRegister);
 	}
 
 }

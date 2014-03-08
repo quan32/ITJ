@@ -1,7 +1,7 @@
 <?php
 App::uses('SimplePasswordHasher', 'Controller/Component/Auth');
 class User extends AppModel{
-	public $hasMany = array('Lecture','Ip');
+	public $hasMany = array('Lecture','Ip','Result','Test','Register');
 
 	public $validate = array(
 		'username' => array(
@@ -16,7 +16,26 @@ class User extends AppModel{
 				'rule' => 'notEmpty',
 				'message' => 'A password is required'
 				)
+			),
+		'currPassword' => array(
+			'rule1' => array(
+				'rule' => 'notEmpty',
+				'message' => 'Current password is not empty'
+				),
+			),
+		'newPassword' => array(
+			'rule1' => array(
+				'rule' => 'notEmpty',
+				'message' => 'New password must not empty'
+				),
+			),
+		'confPassword' => array(
+			'rule1' => array(
+				'rule' => 'notEmpty',
+				'message' => 'Confirm password must not empty'
+				),
 			)
+
 
 		);
 
