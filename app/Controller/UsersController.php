@@ -14,21 +14,8 @@ class UsersController extends AppController{
 		return false;
 	}
 
-
-	public function vidu(){
-		if($this->request->is('post')){
-			debug($this->request->data);
-		}
-		
-	}
-	public function index(){
-		// $this->User->recursive = 0;
-		// $this->set('users', $this->paginate());
-	}
-	
-
-
 	public function view($id = null){
+		$this->set('menu_type','menu');
 		$this->User->id = $id;
 		if(!$this->User->exists())
 			throw new NotFoundException(__('Invalid user'));
@@ -37,6 +24,7 @@ class UsersController extends AppController{
 	}
 
 	public function edit($id = null){
+		$this->set('menu_type','menu');
 		$this->User->id =$id;
 		if(!$this->User->exists()){
 			throw new NotFoundException(__('Invalid user'));
@@ -86,6 +74,7 @@ class UsersController extends AppController{
 		// $this->layout='ajax';
 		$max=3;//so lan dang nhap that bai thi bi khoa tai khoan tam thoi
 		$time=7200;//7200(s)=2(h)
+		$this->set('menu_type','empty');
 
 		// Check session
 		if($this->Auth->loggedIN() && $this->Auth->user('state')=="normal"){
@@ -209,7 +198,7 @@ class UsersController extends AppController{
 	}
 
 	public function verify1($id =null){
-		// $this->layout='ajax';
+		$this->set('menu_type','menu');
 		if($this->request->is('post')){
 			$user= $this->User->findById($id);
 			if($user['User']['verify']==$this->request->data['User']['verify']){
@@ -225,7 +214,7 @@ class UsersController extends AppController{
 	}
 
 	public function verify2($id =null, $IP =null){
-		// $this->layout='ajax';
+		$this->set('menu_type','menu');
 		if($this->request->is('post')){
 			$user= $this->User->findById($id);
 			if($user['User']['verify']==$this->request->data['User']['verify']){
@@ -247,6 +236,7 @@ class UsersController extends AppController{
 	* @author lucnd
 	*/
 	public function changePassword(){
+		$this->set('menu_type','menu');
 		$this->pageTitle = "Change password";
 
 		$userId = $this->Auth->user('id');
@@ -290,6 +280,7 @@ class UsersController extends AppController{
 	}
 
 	public function role(){
+		$this->set('menu_type','menu');
 		// $this->layout='ajax';
 		if($this->request->is('post')){
 			if($this->request->data['User']['role']=="student")

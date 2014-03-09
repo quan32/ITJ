@@ -43,16 +43,9 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 		<div id="header">
 
 			<?php 
-				echo $this->element('menu');
-
-				// if($this->Auth->user('role')=='teacher')
-					echo $this->element('teacher_menu');
-				// elseif($this->Auth->user('role')=='student')
-					// echo $this->element('manager_menu');
-				// else
-				// 	echo $this->element('manager_menu');
-
-				 ?>
+				echo $this->element($menu_type);
+				// echo $this->element($search);
+			?>
 			 <h1><?php //echo $this->Html->link($cakeDescription, 'http://cakephp.org'); ?></h1> 
 		</div>
 		<div id="content">

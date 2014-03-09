@@ -17,7 +17,7 @@ class TeachersController extends AppController{
 	
 	public function index (){
 	
-
+		$this->set('menu_type','teacher_menu');
 		$user_id = $this->Auth->user('id');
 		// var_dump($user_id);
 		$this->loadModel('User');
@@ -151,6 +151,7 @@ class TeachersController extends AppController{
 	}
 
 	public function info(){
+		$this->set('menu_type','teacher_menu');
 		$user_id = $this->Auth->user('id');
 		$this->loadModel('User');
 		$info = $this->User->findById($user_id);
@@ -159,6 +160,7 @@ class TeachersController extends AppController{
 	}
 
 	public function register($role =null){
+		$this->set('menu_type','teacher_menu');
 
 		if($this->request->is('post')){
 			$this->request->data['User']['role']=$role;
@@ -175,6 +177,7 @@ class TeachersController extends AppController{
 	}
 
 	public function edit($id =null){
+		$this->set('menu_type','teacher_menu');
 
 		$user_id = $this->Auth->user('id');
 		$this->loadModel('User');
@@ -206,6 +209,7 @@ class TeachersController extends AppController{
 	* @author lucnd
 	*/
 	public function viewResult(){
+		$this->set('menu_type','teacher_menu');
 		$this->pageTitle = "View test result";
 
 		$userId = $this->Auth->user('id');
@@ -246,6 +250,7 @@ class TeachersController extends AppController{
 
 
 	public function statistic(){
+		$this->set('menu_type','teacher_menu');
 		$this->pageTitle = "Statistic";
 
 		$userId = $this->Auth->user('id');

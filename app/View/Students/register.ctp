@@ -29,7 +29,7 @@
 				</div>
 				
 				<?php
-			}
+			
 		echo "</fieldset>";
 		echo $this->Form->end(array('label'=>'Register'));
 	?>

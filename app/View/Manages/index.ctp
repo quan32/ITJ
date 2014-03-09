@@ -1,3 +1,7 @@
+<?php
+	echo $this->element('search');
+?>
+
 <h1>Quan ly User</h1>
 
 <table>

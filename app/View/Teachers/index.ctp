@@ -1,8 +1,6 @@
 
 <?php
-echo $this->element('teacher_menu');
-// debug($)
-
+echo $this->element('search');
 // 5 bai giang moi tao nhat
 if($lectures==NULL){
     echo "<h2>Dada Empty</h2>";

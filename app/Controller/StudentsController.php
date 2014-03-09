@@ -15,6 +15,7 @@ class StudentsController extends AppController{
 
 
 	public function register($role =null){
+		$this->set('menu_type','menu');
 		 // var_dump($role);
 
 		if($this->request->is('post')){
@@ -32,6 +33,7 @@ class StudentsController extends AppController{
 	}
 
 	public function index(){
+		$this->set('menu_type','student_menu');
 	//lay 5 bai giang moi nhat trong he thong ma user nay dang ki
 		$user_id = $this->Auth->user('id');
 		$this->loadModel('Register');
@@ -110,6 +112,7 @@ class StudentsController extends AppController{
 
 	public function top_lecture_hot()
 	{
+		$this->set('menu_type','student_menu');
 		$user_id = $this->Auth->user('id');
 		$options = 	array(
 					'joins' => array(
@@ -156,6 +159,7 @@ class StudentsController extends AppController{
 
 
 	public function view_info(){
+		$this->set('menu_type','student_menu');
 		$user_id = $this->Auth->user('id');
 		$this->loadModel('User');
 		$info = $this->User->findById($user_id);
@@ -166,6 +170,7 @@ class StudentsController extends AppController{
 	
 	public function registed_lecture()
 	{
+		$this->set('menu_type','student_menu');
 		$user_id = $this->Auth->User('id');
 		$this->loadModel('Register');
 	
@@ -195,6 +200,7 @@ class StudentsController extends AppController{
 
 	public function register_lecture($param1 = null, $param2 = null)
 	{
+		$this->set('menu_type','student_menu');
 		$user_id = $this->Auth->User('id');
 		if($param1 == NULL) $this->redirect(array("action" => 'index') );
 		if(!isset($param1)) $this->redirect(array("action" => 'index') );
@@ -225,6 +231,7 @@ class StudentsController extends AppController{
 
 	public function money_this_month()
 	{
+		$this->set('menu_type','student_menu');
 		$user_id = $this->Auth->user('id');
 		$this->loadModel('Register');
 
@@ -255,6 +262,7 @@ class StudentsController extends AppController{
 
 	public function result_statistics()
 		{
+			$this->set('menu_type','student_menu');
 			$user_id = $this->Auth->user('id');
 			$this->loadModel('Result');
 			$options['joins'] = array(
@@ -285,6 +293,7 @@ class StudentsController extends AppController{
 		}
 	public function lectures_statistics()
 	{
+		$this->set('menu_type','student_menu');
 		$user_id = $this->Auth->user('id');
 		$this->loadModel('Lecture');
 		$this->loadModel('Register');
@@ -325,6 +334,7 @@ class StudentsController extends AppController{
 	}
 		
 	public function edit_info($id = null){
+		$this->set('menu_type','student_menu');
 		$user_id = $this->Auth->user('id');
 		$this->loadModel('User');
 		$this->User->id =$user_id;
@@ -353,6 +363,7 @@ class StudentsController extends AppController{
 
 	public function calc_money()
 	{
+		$this->set('menu_type','student_menu');
 		//Tinh tien tu dau thang den ngay hien tai
 		$user_id = $this->Auth->user('id');
 		$this->loadModel('Register');
@@ -371,6 +382,7 @@ class StudentsController extends AppController{
 	
 	public function del_account()
 	{
+		$this->set('menu_type','student_menu');
 		if($this->request->is('post') || $this->request->is('put')){
 					$user_id = $this->Auth->user('id');
 					$this->loadModel('User');

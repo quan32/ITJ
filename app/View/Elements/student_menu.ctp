@@ -34,7 +34,11 @@
 		?></li>
 		<li><?php 
 		echo $this->Html->link('Thay doi mk', 
-			array('controller' => 'users', 'action' => 'index'));
+			array('controller' => 'users', 'action' => 'changePasword'));
+		?></li>
+		<li><?php 
+		echo $this->Html->link('Logout ', 
+			array('controller' => 'users', 'action' => 'logout'));
 		?></li>
 
 	</ul>

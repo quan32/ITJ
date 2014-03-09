@@ -30,5 +30,10 @@
 			array('controller' => 'teachers', 'action' => 'statistic'));
 		?></li>
 
+		<li><?php 
+		echo $this->Html->link('Logout ', 
+			array('controller' => 'users', 'action' => 'logout'));
+		?></li>
+
 	</ul>
 </div>

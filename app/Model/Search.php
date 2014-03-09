@@ -1,7 +1,8 @@
 <?php
-	class Search extends AppModel{
-		var $name = 'Search';
-		public $useTable = 'lectures'; 
+class Search extends AppModel{
+    var $name = "Search"; // Ten cua Model Search
+	//tao lien ket giua 3 bang User, lecture va register
+	public $useTable = 'lectures'; 
 		var $belongsTo = array(
 			'User' => array(
 				'className'     => 'User',
@@ -14,5 +15,4 @@
 				'foreignKey'    => 'lecture_id'
 			)
 		);
-	}
-?>
+}
