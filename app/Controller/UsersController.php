@@ -38,7 +38,7 @@ class UsersController extends AppController{
 		        $this->Session->setFlash(
 		            __('The user could not be saved. Please, try again.'));
 		} else {
-		$this->request->data = $this->User->read(null, $id);
+			$this->request->data = $this->User->read(null, $id);
 		        unset($this->request->data['User']['password']);
 		    }
 

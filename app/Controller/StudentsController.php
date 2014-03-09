@@ -19,16 +19,24 @@ class StudentsController extends AppController{
 		 // var_dump($role);
 
 		if($this->request->is('post')){
-			// var_dump($this->request->data);die;
-			$this->request->data['User']['role']=$role;
 			$this->loadModel('User');
-			$this->User->create();
-			if($this->User->save($this->request->data)){
-				$this->Session->setFlash(__('The user has been saved'));
-				return $this->redirect(array('controller'=>'users','action'=>'login'));
-			}
+			if($this->User->findByUsername($this->request->data['User']['username'])){
+				$this->Session->setFlash(__('Tai khoan da ton tai, hay chon ten dang nhap khac'));
+				unset($this->request->data['User']['password']);
+				// return $this->redirect(array('controller'=>'users','action'=>'login'));
+			}else{
+				$this->request->data['User']['role']=$role;
+				$this->request->data['User']['prevIP']=$this->request->clientIp();
+				$this->loadModel('User');
+				$this->User->create();
+				if($this->User->save($this->request->data)){
+					$this->Session->setFlash(__('The user has been saved'));
+					return $this->redirect(array('controller'=>'users','action'=>'login'));
+				}
 
-			$this->Session->setFlash(__('The user could no be saved. Please try again'));
+				$this->Session->setFlash(__('The user could no be saved. Please try again'));
+			}
+			
 		}
 	}
 
