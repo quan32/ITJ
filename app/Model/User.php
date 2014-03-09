@@ -9,62 +9,65 @@ class User extends AppModel{
             'alphaNumeric' => array(
                 'rule'     => 'alphaNumeric',
                 'required' => true,
-                'message'  => 'Alphabets and numbers only'
+                'message'  => '文字又は数字を入力してください'
             ),
             'between' => array(
                 'rule'    => array('between', 3, 30),
-                'message' => 'Between 3 to 30 characters'
+                'message' => '3～30桁のユーザ名を入力してください'
             )
         ),
 
 		'password'=> array(
 			'rule' => array('minLength', 8),
 			'required' => true,
-			'message' => 'Minimum 8 characters long'),
+			'message' => '最低の長さは8桁'),
 
 		'fullname' => array(
         	'rule' => 'notEmpty',
 			'required' => true,
-			'message' => 'Please enter fullname.'),	
+			'message' => '空きフィールドをしないでください'),	
 
 		'mobile_No' => array(
         	'rule' => 'numeric',
-        	'message' => 'Please enter the number of seconds.'),
+        	'message' => '数字を入力してください'),
 
-		'mail' => 'email',
+		'mail' => array(
+			'rule'=>'email',
+			'message'=>'メールフォーマットで入力してください'),
+
 		'currpassword' => array(
 			'rule' => array('minLength', 8),
 			// 'required' => true,
-			'message' => 'Please enter your current password'),
+			'message' => '現在パスワードを入力してください'),
 
 		'newpassword' => array(
 			'rule' => array('minLength', 8),
 			// 'required' => true,
-			'message' => 'Please enter new password from 8 character.'),
+			'message' => '８桁以上の新パスワードを入力してください'),
 
 		'confpassword' => array(
 			'rule' => array('minLength', 8),
 			// 'required' => true,
-			'message' => 'Please confirm new password.'),
+			'message' => '確認するパスワードを入力してください'),
 
 		'address' => array(
 			'rule' => 'notEmpty',
 			'require' => true,
-			'message' => 'Please enter your address.'),
+			'message' => '住所を入力してください'),
 
 		'bank_acc' => array(
 			'rule' => 'notEmpty',
 			'required' => true,
-			'message' => 'Please enter your back account number.'),
+			'message' => '銀行口座を入力してください'),
 
 		'credit_card_No' => array(
 			'rule' => 'notEmpty',
-			'message' => 'Please enter your credit card number.'),
+			'message' => 'クレジットカードを入力してください'),
 
 		'verify' => array(
 			'rule' => 'alphaNumeric',
 			'required' => true,
-			'message'  => 'Alphabets and numbers only')					
+			'message'  => '確認するコードを入力してください')					
 		);
 
 

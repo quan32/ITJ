@@ -8,7 +8,7 @@
 		</legend>
 		<?php echo $this->Form->input('username', array('label'=>'ユーザ名'));
 		echo $this->Form->input('password', array('label'=>'パスワード'));
-		echo $this->Html->link('Quen mat khau?', 
+		echo $this->Html->link('パスワードを忘れた方', 
 			array('controller' => 'manages', 'action' => 'info2'));
 		?>
 	</fieldset>
