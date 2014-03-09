@@ -18,6 +18,11 @@
 		?></li>
 
 		<li><?php 
+		echo $this->Html->link('Change master data', 
+			array('controller' => 'manages', 'action' => 'masterdata'));
+		?></li>
+
+		<li><?php 
 		echo $this->Html->link('Lecture manager ', 
 			array('controller' => 'manages', 'action' =>'lecture'));
 		?></li>

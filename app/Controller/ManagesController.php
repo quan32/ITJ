@@ -56,6 +56,13 @@ class ManagesController extends AppController{
 
     }
 
+    public function masterdata()
+    {
+      $this->set('menu_type','manager_menu');
+      // debug($this->constants);die;
+      $this->set("cons",$this->constants);
+    }
+
   public function register(){ //dang ki' admin mo'
   $this->set('menu_type','manager_menu');
      
