@@ -67,7 +67,7 @@ class DATABASE_CONFIG {
 		'host' => 'localhost',
 		'login' => 'root',
 		'password' => '',
-		'database' => 'cake83',
+		'database' => 'cake2',
 		'prefix' => '',
 		//'encoding' => 'utf8',
 	);

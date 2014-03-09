@@ -276,17 +276,23 @@ class UsersController extends AppController{
 							return $this->redirect(array('controller'=>'students','action'=>'view_info'));
 
 					}
-					$this->Session->setFlash(__('Change password fail'));
-					$log = '"FAIL", "'.(string)date('Y-m-d H:i:s').'", "'.(string)$userId.'", "Can not save"';
-					$this->Log->writeLog('change_password.txt',$log);
+					else{
+						$this->Session->setFlash(__('Change password fail'));
+						$log = '"FAIL", "'.(string)date('Y-m-d H:i:s').'", "'.(string)$userId.'", "Can not save"';
+						$this->Log->writeLog('change_password.txt',$log);
+					}					
 				}
-				$this->Session->setFlash(__('Confirm password fail'));
-				$log = '"FAIL", "'.(string)date('Y-m-d H:i:s').'", "'.(string)$userId.'", "Confirm password fail"';
-				$this->Log->writeLog('change_password.txt',$log);
+				else{
+					$this->Session->setFlash(__('Confirm password fail'));
+					$log = '"FAIL", "'.(string)date('Y-m-d H:i:s').'", "'.(string)$userId.'", "Confirm password fail"';
+					$this->Log->writeLog('change_password.txt',$log);	
+				}				
 			}
-			$this->Session->setFlash(__('Current password fail'));
-			$log = '"FAIL", "'.(string)date('Y-m-d H:i:s').'", "'.(string)$userId.'", "Current password fail"';
-			$this->Log->writeLog('change_password.txt',$log);
+			else{
+				$this->Session->setFlash(__('Current password fail'));
+				$log = '"FAIL", "'.(string)date('Y-m-d H:i:s').'", "'.(string)$userId.'", "Current password fail"';
+				$this->Log->writeLog('change_password.txt',$log);	
+			}			
 		}else{
 			$this->request->data = $this->User->read(null, $userId);
 		}
