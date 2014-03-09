@@ -26,7 +26,9 @@ class LogComponent extends Object{
 	function writeLog($fileLog,$log){
 		$dir = new Folder(LOGROOT_DIR);
 		$file = new File($dir->pwd() . DS . $fileLog);
-		$file->append($log . "\n");
+		$contents = $file->read();
+		$count = substr_count($contents, "\n")+1;
+		$file->append('#'.(string)$count.': '.$log . "\n");
 		$file->close();
 	}
 }
