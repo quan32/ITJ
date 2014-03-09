@@ -13,11 +13,11 @@ class ManagesController extends AppController{
 	}
 
 	public function info1(){
-    $this->set('menu_type','menu');
+    $this->set('menu_type','empty');
 		
 	}
 	public function info2(){
-    $this->set('menu_type','menu');
+    $this->set('menu_type','empty');
 		
 	}
 

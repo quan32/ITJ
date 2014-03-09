@@ -13,18 +13,15 @@ class LecturesController extends AppController{
 	}
 
 	public function index(){
+		$this->set('menu_type','teacher_menu');
+
 		$user_id = $this->Auth->user('id');
-		// $this->loadModel('User');
-		// $data = $this->User->read(null,$user_id, array('order'=>array('Source.id'=>'desc')));
 		$lectures = $this->Lecture->findAllByUserId($user_id);
-		// debug($data[0]);die;
-		// $lectures = $data['Lecture'];
-		// krsort($lectures);
-		// debug($lectures);die;
 		$this->set("lectures",$lectures);
 	}
 
 	public function add(){
+		$this->set('menu_type','teacher_menu');
 		if ($this->request->is('post')) {
 			$this->request->data['Lecture']['user_id']=$this->Auth->user('id');
 			$this->Lecture->create();
@@ -39,6 +36,7 @@ class LecturesController extends AppController{
 	}
 
 	public function edit($id){
+		$this->set('menu_type','teacher_menu');
 		$this->Lecture->id =$id;
 		if(!$this->Lecture->exists()){
 			throw new NotFoundException(__('Invalid Lecture'));
@@ -81,6 +79,7 @@ class LecturesController extends AppController{
 	}
 
 	public function preview($id =null){
+		$this->set('menu_type','teacher_menu');
 		$lecture = $this->Lecture->read(null, $id);
 		$sources = $lecture['Source'];
 		foreach ($sources as $source) {
@@ -96,6 +95,11 @@ class LecturesController extends AppController{
 	}
 
 	public function view($id = null){// TODO hien thi bai giang, file , 
+		if($this->Auth->user('role')=='student')
+			$this->set('menu_type','student_menu');
+		elseif($this->Auth->user('role')=='teacher')
+			$this->set('menu_type','teacher_menu');
+
 		$lecture = $this->Lecture->read(null, $id);
 		$sources = $lecture['Source'];
 		foreach ($sources as $source) {

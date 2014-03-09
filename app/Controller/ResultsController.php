@@ -8,6 +8,11 @@ class ResultsController extends AppController{
 	}
 
 	public function view($id = null){
+		if($this->Auth->user('role')=='student')
+			$this->set('menu_type','student_menu');
+		elseif($this->Auth->user('role')=='teacher')
+			$this->set('menu_type','teacher_menu');
+		
 		$this->Result->id = $id;
 		if(!$this->Result->exists())
 			throw new NotFoundException(__('Invalid result'));

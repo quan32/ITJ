@@ -1,7 +1,7 @@
 <div>
 	<?php echo $this->Form->create('Test', array('type' => 'file')); ?>
 	<fieldset>
-		<legend><?php echo __('Add New Test'); ?></legend>
+		<legend><?php echo __('Edit Test'); ?></legend>
 		<?php
 		echo $this->Form->input('name');
 		echo $this->Form->input('time');

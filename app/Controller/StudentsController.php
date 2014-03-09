@@ -15,7 +15,7 @@ class StudentsController extends AppController{
 
 
 	public function register($role =null){
-		$this->set('menu_type','menu');
+		$this->set('menu_type','empty');
 		 // var_dump($role);
 
 		if($this->request->is('post')){

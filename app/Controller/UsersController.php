@@ -198,7 +198,7 @@ class UsersController extends AppController{
 	}
 
 	public function verify1($id =null){
-		$this->set('menu_type','menu');
+		// $this->set('menu_type','menu');
 		if($this->request->is('post')){
 			$user= $this->User->findById($id);
 			if($user['User']['verify']==$this->request->data['User']['verify']){
@@ -214,7 +214,7 @@ class UsersController extends AppController{
 	}
 
 	public function verify2($id =null, $IP =null){
-		$this->set('menu_type','menu');
+		$this->set('menu_type','empty');
 		if($this->request->is('post')){
 			$user= $this->User->findById($id);
 			if($user['User']['verify']==$this->request->data['User']['verify']){
@@ -236,7 +236,11 @@ class UsersController extends AppController{
 	* @author lucnd
 	*/
 	public function changePassword(){
-		$this->set('menu_type','menu');
+		if($this->Auth->user('role')=='student')
+			$this->set('menu_type','student_menu');
+		elseif($this->Auth->user('role')=='teacher')
+			$this->set('menu_type','teacher_menu');
+		
 		$this->pageTitle = "Change password";
 
 		$userId = $this->Auth->user('id');
@@ -280,7 +284,7 @@ class UsersController extends AppController{
 	}
 
 	public function role(){
-		$this->set('menu_type','menu');
+		$this->set('menu_type','empty');
 		// $this->layout='ajax';
 		if($this->request->is('post')){
 			if($this->request->data['User']['role']=="student")

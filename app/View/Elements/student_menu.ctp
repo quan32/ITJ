@@ -32,10 +32,12 @@
 		echo $this->Html->link('Top cac bai hot trong he thong', 
 			array('controller' => 'students', 'action' => 'top_lecture_hot'));
 		?></li>
+
 		<li><?php 
-		echo $this->Html->link('Thay doi mk', 
-			array('controller' => 'users', 'action' => 'changePasword'));
+		echo $this->Html->link('Change Password', 
+			array('controller' => 'users', 'action' => 'changePassword'));
 		?></li>
+		
 		<li><?php 
 		echo $this->Html->link('Logout ', 
 			array('controller' => 'users', 'action' => 'logout'));
