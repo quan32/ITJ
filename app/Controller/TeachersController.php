@@ -204,7 +204,6 @@ class TeachersController extends AppController{
 	* @author lucnd
 	*/
 	public function changePassword($id =null){
-		$this->pageTitle = "Change password";
 
 		$userId = $this->Auth->user('id');
 		$this->loadModel('User');
@@ -248,28 +247,29 @@ class TeachersController extends AppController{
 	* @author lucnd
 	*/
 	public function viewResult($id = null){
-		$this->pageTitle = "View test result";
-
 		$userId = $this->Auth->user('id');
 		$this->loadModel('User');
 		$this->User->id = $userId;
 
-		$this->loadModel('Test');
 		$this->loadModel('Result');
+		$this->loadModel('Lecture');
 
-		
-		$tests = $this->Test->find('all',array('conditions'=>array('Test.user_id'=>$userId)));
-		$studs = $this->User->find('all',array('conditions'=>array('User.role'=>'student')));
+		$lectures = $this->Lecture->find('all', array('conditions' => array('Lecture.user_id' => $userId)));
 		$testId = array();
-		if(!empty($tests)){
-			foreach ($tests as $test) {
-				array_push($testId, $test['Test']['id']);
+		//pr($lectures);
+		if(!empty($lectures)){
+			foreach ($lectures as $lecture) {
+				if(!empty($lecture['Test'])){
+					foreach ($lecture['Test'] as $test) {
+						array_push($testId, $test['id']);
+					}
+				}
 			}
 
 		    $this->paginate = array(
 		        'conditions' => array('Result.test_id' => $testId),
 		        'limit' => 5,
-		        'order' => array('id' => 'desc')
+		        'order' => array('created' => 'desc')
 		    );
 		    
 		    $results = $this->paginate('Result');  
@@ -277,33 +277,37 @@ class TeachersController extends AppController{
 			$this->set('results',$results);
 			//pr($results);
 		}
-		
-		
-
+		else{
+			$this->set('results',null);
+		}
 	}
 
-
+	/**
+	* function view statistic of current teacher
+	* 
+	* @author lucnd
+	*/
 	public function statistic(){
-		$this->pageTitle = "Statistic";
 
 		$userId = $this->Auth->user('id');
 		$this->loadModel('User');
 		$this->User->id = $userId;
-		$this->loadModel('Test');
+		
 		$this->loadModel('Lecture');
 
-		$tests = $this->Test->find('all',array('conditions'=>array('Test.user_id'=>$userId)));
 		$lectures = $this->Lecture->find('all',array('conditions'=>array('Lecture.user_id'=>$userId)));
 		$countRegister = 0;
-		pr($lectures);
-		// pr($tests);
+		$countTest = 0;
+
 		foreach ($lectures as $lecture) {
-			$countRegister += count($lecture['Register']);
+			if($lecture['User']['state'] == 'normal'){
+				$countRegister += count($lecture['Register']);
+				$countTest += count($lecture['Test']);
+			}
 		}
-		$this->set('tests',$tests);
+		$this->set('countTest',$countTest);
 		$this->set('lectures',$lectures);
 		$this->set('countRegister',$countRegister);
 	}
-
 }
 ?>
