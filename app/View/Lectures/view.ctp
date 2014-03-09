@@ -1,3 +1,9 @@
+<?php
+	App::import("Model", "Block");
+	App::import("Model", "User");
+	$BlockModel = new Block();
+	$UserModel = new User();
+?>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <style type="text/css">
 	a {
@@ -50,12 +56,16 @@
 	ul.nested-comments-complex p{
 		margin: 0 0 0.5em;
 	}
-	em.reply-link{
+	a.action{
 		text-decoration: none;
 		font-size: 0.8em;
 		color: #777;
 		font-style: normal;
 		font-weight: bold;
+	}
+	a.action:hover{
+		text-decoration:underline;
+		cursor:pointer;
 	}
 </style>
 <div id="container">
@@ -104,17 +114,46 @@
 		<?php foreach ($comments as $value): ?>
 			<li>
 				<div class="comment">
-					<p><a href="" class="author"><?= $value['Comment']['user_id']; ?></a></p>
+					<p><a href="" class="author"><?= $UserModel->username($value['Comment']['user_id']); ?></a></p>
 					<p><?= $value['Comment']['content']; ?></p>
-					<em><?= $value['Comment']['created']; ?></em> <em class="reply-link" id="reply<?= $value['Comment']['id']; ?>">Reply</em>
+					<em><?= $value['Comment']['created']; ?></em>
+					<a class="reply-link action" id="reply<?= $value['Comment']['id']; ?>">Reply</a>
+					<?php if($current_user_id==$lecture['Lecture']['user_id'] &&  $current_user_id!= $value['Comment']['user_id']){
+						if($BlockModel->isBlocked($current_user_id,$value['Comment']['user_id'])){
+							//da block
+							echo "<a class='unblock-link action' id='".$value['Comment']['user_id']."'>Unblock</a>";
+							echo "<a class='block-link action' id='".$value['Comment']['user_id']."' style='display:none;'>Block</a>";
+						}
+						else{
+							echo "<a class='block-link action' id='".$value['Comment']['user_id']."'>Block</a>";
+							echo "<a class='unblock-link action' id='".$value['Comment']['user_id']."' style='display:none;'>Unblock</a>";
+						}
+					}
+
+						
+					?>
+
 				</div>
 				<ul>
 					<?php foreach ($value['Reply'] as $reply): ?>
 						<li>
 							<div class="comment">
-								<p><a href="" class="author"><?= $reply['user_id']; ?></a></p>
+								<p><a href="" class="author"><?= $UserModel->username($reply['user_id']); ?></a></p>
 								<p><?= $reply['content']; ?></p>
 								<em><?= $reply['created']; ?></em>
+								<?php 
+									if($current_user_id==$lecture['Lecture']['user_id'] &&  $current_user_id!= $reply['user_id']){
+										if($BlockModel->isBlocked($current_user_id,$reply['user_id'])){
+											//da block
+											echo "<a class='unblock-link action' id='".$reply['user_id']."'>Unblock</a>";
+											echo "<a class='block-link action' id='".$reply['user_id']."' style='display:none;'>Block</a>";
+										}
+										else{
+											echo "<a class='block-link action' id='".$reply['user_id']."'>Block</a>";
+											echo "<a class='unblock-link action' id='".$reply['user_id']."' style='display:none;'>Unblock</a>";
+										}
+									}
+								?>
 							</div>
 						</li>
 					<?php endforeach; ?>
@@ -179,6 +218,7 @@ $(document).ready(function(){
 	         this.value = "Write your comment here...";
 	    }
 	});
+	//like
 	$('#like_button').click(function(){
         $.ajax({
 	        url: base_url+"/favorites/add",
@@ -194,6 +234,7 @@ $(document).ready(function(){
 	    });
 
   	});
+  	//dislike
   	$('#dislike_button').click(function(){
         $.ajax({
 	        url: base_url+"/favorites/delete",
@@ -209,6 +250,41 @@ $(document).ready(function(){
 	        }
 	    });
 
+  	});
+  	//block
+  	$(".block-link").click(function(){
+  		var tmp = $(this);
+    	var student_id = $(this).attr('id');
+    	if (confirm("Do you want to block this student?")) {
+    		$.ajax({
+		        url: base_url+"/blocks/add",
+		        type: "POST",
+		        data: {'student_id': student_id},
+		        success: function(data) {
+		            console.log(data);
+		            console.log($(this));
+		            tmp.hide();
+		            tmp.parent().find(".unblock-link").show();
+		        }
+	    	});
+    	}
+  	});
+  	//unblock
+  	$(".unblock-link").click(function(){
+  		var tmp = $(this);
+    	var student_id = $(this).attr('id');
+    	if (confirm("Do you want to unblock this student?")) {
+    		$.ajax({
+		        url: base_url+"/blocks/delete",
+		        type: "POST",
+		        data: {'student_id': student_id},
+		        success: function(data) {
+		            console.log(data);
+		            tmp.hide();
+		            tmp.parent().find(".block-link").show();
+		        }
+	    	});
+    	}
   	});
 });
 </script>

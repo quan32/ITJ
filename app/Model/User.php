@@ -47,6 +47,12 @@ class User extends AppModel{
 		}
 		return true;
 	}
+	public function username($id){
+		$tmp = $this->read(null, $id);
+		if(empty($tmp)) return "匿名";
+		$user = $tmp['User'];
+		return $user['fullname']!='' ? $user['fullname'] : $user['username'];
+	}
 }
 
 ?>

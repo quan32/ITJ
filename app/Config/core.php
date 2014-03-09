@@ -83,7 +83,7 @@
 /**
  * Application wide charset encoding
  */
-	Configure::write('App.encoding', 'SJIS');
+	//Configure::write('App.encoding', 'SJIS');
 
 /**
  * To configure CakePHP *not* to use mod_rewrite and to
