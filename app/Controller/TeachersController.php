@@ -254,12 +254,6 @@ class TeachersController extends AppController{
 		        'limit' => 5,
 		        'order' => array('created' => 'desc')
 		    );
-		    
-		//     $results = $this->paginate('Result');  
-		    
-		// 	$this->set('results',$results);
-			//pr($results);
-
 		}
 		else{
 			$this->set('results',null);
@@ -275,10 +269,6 @@ class TeachersController extends AppController{
 
 		$this->set('menu_type','teacher_menu');
 		$this->pageTitle = "Statistic";
-
-		//test write log
-		$log = 'This is log test';
-		$this->Log->writeLog('log_example.ctp',$log);
 
 		$userId = $this->Auth->user('id');
 		$this->loadModel('User');

@@ -290,6 +290,9 @@ class UsersController extends AppController{
 					$currUser['User']['password'] = $arrPass['User']['newPassword'];
 					// save user, run function beforeSave() to hash new password
 					if($this->User->save($currUser)){
+						// write success log to log file 7: change_password.txt
+						$log = '"SUCCESS", "'.(string)date('Y-m-d H:i:s').'", "'.(string)$userId.'"';
+						$this->Log->writeLog('change_password.txt',$log);
 						$this->Session->setFlash(__('Password has been updated'));
 						if($this->Auth->user('role')=='manager')
 							return $this->redirect(array('controller'=>'manages','action'=>'info'));
@@ -299,11 +302,23 @@ class UsersController extends AppController{
 							return $this->redirect(array('controller'=>'students','action'=>'view_info'));
 
 					}
-					$this->Session->setFlash(__('Change password fail'));
+					else{
+						$this->Session->setFlash(__('Change password fail'));
+						$log = '"FAIL", "'.(string)date('Y-m-d H:i:s').'", "'.(string)$userId.'", "Can not save"';
+						$this->Log->writeLog('change_password.txt',$log);
+					}					
 				}
-				$this->Session->setFlash(__('Confirm password fail'));
+				else{
+					$this->Session->setFlash(__('Confirm password fail'));
+					$log = '"FAIL", "'.(string)date('Y-m-d H:i:s').'", "'.(string)$userId.'", "Confirm password fail"';
+					$this->Log->writeLog('change_password.txt',$log);	
+				}				
 			}
-			$this->Session->setFlash(__('Current password fail'));
+			else{
+				$this->Session->setFlash(__('Current password fail'));
+				$log = '"FAIL", "'.(string)date('Y-m-d H:i:s').'", "'.(string)$userId.'", "Current password fail"';
+				$this->Log->writeLog('change_password.txt',$log);	
+			}			
 		}else{
 			$this->request->data = $this->User->read(null, $userId);
 		}
