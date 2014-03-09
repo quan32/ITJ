@@ -9,8 +9,8 @@ class Test extends AppModel{
 	public function read_file($file){		
 		$f = fopen($file, "r");
 		$tests=array();
-		$test_title = substr(fgets($f, 1000),10);
-		$test_sub_title = substr(fgets($f, 1000),13);
+		$test_title = mb_convert_encoding(substr(fgets($f, 1000),10),"UTF-8", "Shift-JIS");
+		$test_sub_title = mb_convert_encoding(substr(fgets($f, 1000),13),"UTF-8", "Shift-JIS");
 		
 		while ( $line = fgets($f, 1000) ) {
 			$line_first_char = substr($line, 0, 1);
@@ -19,10 +19,10 @@ class Test extends AppModel{
 				$i = substr($line,2,1);
 				$type_first_char = substr($line,5,1);
 				if($type_first_char == 'Q'){
-					$tests[$i]['qs'] = substr($line,8);
+					$tests[$i]['qs'] = mb_convert_encoding(substr($line,8), "UTF-8", "Shift-JIS");
 				}
 				if($type_first_char == 'S'){
-					$tests[$i]['s'][] = substr($line,10);
+					$tests[$i]['s'][] = mb_convert_encoding(substr($line,10), "UTF-8", "Shift-JIS");
 				}
 				if($type_first_char == 'K'){
 					$tests[$i]['ks'] = substr($line,10,1) -1;
