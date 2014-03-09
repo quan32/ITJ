@@ -38,7 +38,8 @@ class AppController extends Controller {
 				'action' => 'login'
 				),
 			'authorize' => array('Controller')
-			)
+			),
+		'Log'
 		);
 
 	public function beforeFilter(){
