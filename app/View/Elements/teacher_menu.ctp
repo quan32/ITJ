@@ -11,6 +11,11 @@
 		?></li>
 
 		<li><?php 
+		echo $this->Html->link('Add new lecture ', 
+			array('controller' => 'lectures', 'action' =>'add'));
+		?></li>
+
+		<li><?php 
 		echo $this->Html->link('Lecture manager ', 
 			array('controller' => 'lectures', 'action' =>'index'));
 		?></li>

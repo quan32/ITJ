@@ -4,40 +4,69 @@ class User extends AppModel{
 	public $hasMany = array('Lecture','Ip','Result','Register');
 
 	public $validate = array(
+
 		'username' => array(
-			'required' => array(
-				'rule' => 'notEmpty',
-				'message' => 'A username is required'
-				)
-			),
+            'alphaNumeric' => array(
+                'rule'     => 'alphaNumeric',
+                'required' => true,
+                'message'  => 'Alphabets and numbers only'
+            ),
+            'between' => array(
+                'rule'    => array('between', 3, 30),
+                'message' => 'Between 3 to 30 characters'
+            )
+        ),
 
-		'password' => array(
-			'required' => array(
-				'rule' => 'notEmpty',
-				'message' => 'A password is required'
-				)
-			),
-		'currPassword' => array(
-			'rule1' => array(
-				'rule' => 'notEmpty',
-				'message' => 'Current password is not empty'
-				),
-			),
-		'newPassword' => array(
-			'rule1' => array(
-				'rule' => 'notEmpty',
-				'message' => 'New password must not empty'
-				),
-			),
-		'confPassword' => array(
-			'rule1' => array(
-				'rule' => 'notEmpty',
-				'message' => 'Confirm password must not empty'
-				),
-			)
+		'password'=> array(
+			'rule' => array('minLength', 8),
+			'required' => true,
+			'message' => 'Minimum 8 characters long'),
 
+		'fullname' => array(
+        	'rule' => 'notEmpty',
+			'required' => true,
+			'message' => 'Please enter fullname.'),	
 
+		'mobile_No' => array(
+        	'rule' => 'numeric',
+        	'message' => 'Please enter the number of seconds.'),
+
+		'mail' => 'email',
+		'currpassword' => array(
+			'rule' => array('minLength', 8),
+			// 'required' => true,
+			'message' => 'Please enter your current password'),
+
+		'newpassword' => array(
+			'rule' => array('minLength', 8),
+			// 'required' => true,
+			'message' => 'Please enter new password from 8 character.'),
+
+		'confpassword' => array(
+			'rule' => array('minLength', 8),
+			// 'required' => true,
+			'message' => 'Please confirm new password.'),
+
+		'address' => array(
+			'rule' => 'notEmpty',
+			'require' => true,
+			'message' => 'Please enter your address.'),
+
+		'bank_acc' => array(
+			'rule' => 'notEmpty',
+			'required' => true,
+			'message' => 'Please enter your back account number.'),
+
+		'credit_card_No' => array(
+			'rule' => 'notEmpty',
+			'message' => 'Please enter your credit card number.'),
+
+		'verify' => array(
+			'rule' => 'alphaNumeric',
+			'required' => true,
+			'message'  => 'Alphabets and numbers only')					
 		);
+
 
 	public function beforeSave($options = array()){
 		if(isset($this->data[$this->alias]['password'])){

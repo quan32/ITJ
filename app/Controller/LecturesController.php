@@ -23,15 +23,20 @@ class LecturesController extends AppController{
 	public function add(){
 		$this->set('menu_type','teacher_menu');
 		if ($this->request->is('post')) {
-			$this->request->data['Lecture']['user_id']=$this->Auth->user('id');
-			$this->Lecture->create();
+			if($this->request->data['Lecture']['NQ']==1){
+				$this->request->data['Lecture']['user_id']=$this->Auth->user('id');
+				$this->Lecture->create();
 
-			// attempt to save
-			if ($this->Lecture->save($this->request->data)) {
-				$lecture = $this->Lecture->find('first', array('order'=>array('Lecture.id'=>'desc')));
-				$id=$lecture['Lecture']['id'];
-				$this->redirect(array('controller'=>'sources','action' => 'add1',$id));
-			} 
+				// attempt to save
+				if ($this->Lecture->save($this->request->data)) {
+					$lecture = $this->Lecture->find('first', array('order'=>array('Lecture.id'=>'desc')));
+					$id=$lecture['Lecture']['id'];
+					$this->redirect(array('controller'=>'sources','action' => 'add1',$id));
+				} 
+			}else{
+				$this->Session->setFlash(__('Ban chua dam bao ve tinh hop phap cua tai lieu nay'));
+			}
+			
 		}
 	}
 

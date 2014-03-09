@@ -163,23 +163,32 @@ class TeachersController extends AppController{
 		$this->set('menu_type','empty');
 
 		if($this->request->is('post')){
-			$this->loadModel('User');
-			if($this->User->findByUsername($this->request->data['User']['username'])){
-				$this->Session->setFlash(__('Tai khoan da ton tai, hay chon ten dang nhap khac'));
-				unset($this->request->data['User']['password']);
-				// return $this->redirect(array('controller'=>'users','action'=>'login'));
-			}else{
-				$this->request->data['User']['role']=$role;
-				$this->request->data['User']['prevIP']=$this->request->clientIp();
+			if($this->request->data['User']['NQ']==1){
 				$this->loadModel('User');
-				$this->User->create();
-				if($this->User->save($this->request->data)){
-					$this->Session->setFlash(__('The user has been saved'));
-					return $this->redirect(array('controller'=>'users','action'=>'login'));
+				if($this->User->findByUsername($this->request->data['User']['username'])){
+					$this->Session->setFlash(__('Tai khoan da ton tai, hay chon ten dang nhap khac'));
+					unset($this->request->data['User']['password']);
+					// return $this->redirect(array('controller'=>'users','action'=>'login'));
+				}else{
+					$this->request->data['User']['role']=$role;
+					$this->request->data['User']['prevIP']=$this->request->clientIp();
+					$this->loadModel('User');
+					$this->User->create();
+					if($this->User->save($this->request->data)){
+						$this->Session->setFlash(__('The user has been saved'));
+						$log="INFO, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 先生として成功して登録した';
+						$this->Log->writeLog('new_user.txt',$log);
+						return $this->redirect(array('controller'=>'users','action'=>'login'));
+					}
+					$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 先生として失敗して登録した';
+					$this->Log->writeLog('new_user.txt',$log);
+					$this->Session->setFlash(__('The user could no be saved. Please try again'));
 				}
-
-				$this->Session->setFlash(__('The user could no be saved. Please try again'));
+			}else{
+				$this->Session->setFlash(__('Ban chua dong y voi dieu khoan su dung website'));
+				unset($this->request->data['User']['password']);
 			}
+			
 			
 		}
 	}

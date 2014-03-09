@@ -30,11 +30,15 @@ class StudentsController extends AppController{
 				$this->loadModel('User');
 				$this->User->create();
 				if($this->User->save($this->request->data)){
+					$log="INFO, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 学生として成功して登録した';
+					$this->Log->writeLog('new_user.txt',$log);
 					$this->Session->setFlash(__('The user has been saved'));
 					return $this->redirect(array('controller'=>'users','action'=>'login'));
 				}
 
 				$this->Session->setFlash(__('The user could no be saved. Please try again'));
+				$log="INFO, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 学生として成功して登録した';
+				$this->Log->writeLog('new_user.txt',$log);
 			}
 			
 		}

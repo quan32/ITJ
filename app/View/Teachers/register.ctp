@@ -30,6 +30,8 @@
 
 			<?php
 		echo "</fieldset>";
+		echo $this->Form->checkbox('NQ', array('checked' => false));
+		echo $this->Form->label('Toi da doc va dong y voi quy dinh cua trang web');
 		echo $this->Form->end(array('label'=>'Register'));
 	?>
 </div>
