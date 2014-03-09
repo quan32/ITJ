@@ -104,12 +104,15 @@ class LecturesController extends AppController{
 				$this->set('src',$src);
 			}
 		}
-
 		$this->set('sources', $sources);
 
 		//Hien thi comment
-		$this->set('lecture_id', $id);
+		$this->set('lecture', $lecture);
 		$this->set('comments', $this->Lecture->Comment->findAllByLectureId($id));
+		$this->set('num_liked',count($lecture['Favorite']));
+		$isLiked = count($this->Lecture->Favorite->findAllByLectureIdAndUserId($id,$this->Auth->user('id')))!=0 ? 1: 0;
+		$this->set('isLiked', $isLiked);
+		$this->set('current_user_id', $this->Auth->user('id'));
 	}
 
 }

@@ -1,3 +1,9 @@
+<?php
+	App::import("Model", "Block");
+	App::import("Model", "User");
+	$BlockModel = new Block();
+	$UserModel = new User();
+?>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <style type="text/css">
 	a {
@@ -50,29 +56,27 @@
 	ul.nested-comments-complex p{
 		margin: 0 0 0.5em;
 	}
-	em.reply-link{
+	a.action{
 		text-decoration: none;
 		font-size: 0.8em;
 		color: #777;
 		font-style: normal;
 		font-weight: bold;
 	}
+	a.action:hover{
+		text-decoration:underline;
+		cursor:pointer;
+	}
 </style>
-noi dung bai giang o day
-	
-	
-
-
-
-<hr>
 <div id="container">
 	<div id="lecture_content">
-		<h1>Preview</h1>
-		<?
+		<h1 id="lecture-title"><?=$lecture['Lecture']['name']?></h1>
+		<div id="description"><?=$lecture['Lecture']['description']?></div>
+		<?php
 		if(isset($src)){
 		?>
 			<iframe width="723" height="756" src="<?php echo $src;?>"></iframe>
-		<?}?>
+		<?php }?>
 
 		<h1>Media file</h1>
 		<?php
@@ -93,27 +97,63 @@ noi dung bai giang o day
 						?>
 							<h2>Image <? echo $source['id'];?></h2>
 							<img src="http://localhost/ITJ/app/webroot/uploads/<?echo $source['filename'];?>">
-						<?
+						<?php
 					}
 				}
 		?>
 	</div>
+	<?php if($isLiked==0): ?>
+		<button id="like_button">Like</button>
+		<button id="dislike_button" style="display:none">Dislike</button>
+	<?php else: ?>
+		<button id="like_button" style="display:none">Like</button>
+		<button id="dislike_button">Dislike</button>
+	<?php endif ?>
+<em id="num_liked"><?=$num_liked?></em> nguoi da thich bai nay
 	<ul class="nested-comments-complex">
-
 		<?php foreach ($comments as $value): ?>
 			<li>
 				<div class="comment">
-					<p><a href="" class="author"><?= $value['Comment']['user_id']; ?></a></p>
+					<p><a href="" class="author"><?= $UserModel->username($value['Comment']['user_id']); ?></a></p>
 					<p><?= $value['Comment']['content']; ?></p>
-					<em><?= $value['Comment']['created']; ?></em> <em class="reply-link" id="reply<?= $value['Comment']['id']; ?>">Reply</em>
+					<em><?= $value['Comment']['created']; ?></em>
+					<a class="reply-link action" id="reply<?= $value['Comment']['id']; ?>">Reply</a>
+					<?php if($current_user_id==$lecture['Lecture']['user_id'] &&  $current_user_id!= $value['Comment']['user_id']){
+						if($BlockModel->isBlocked($current_user_id,$value['Comment']['user_id'])){
+							//da block
+							echo "<a class='unblock-link action' id='".$value['Comment']['user_id']."'>Unblock</a>";
+							echo "<a class='block-link action' id='".$value['Comment']['user_id']."' style='display:none;'>Block</a>";
+						}
+						else{
+							echo "<a class='block-link action' id='".$value['Comment']['user_id']."'>Block</a>";
+							echo "<a class='unblock-link action' id='".$value['Comment']['user_id']."' style='display:none;'>Unblock</a>";
+						}
+					}
+
+						
+					?>
+
 				</div>
 				<ul>
 					<?php foreach ($value['Reply'] as $reply): ?>
 						<li>
 							<div class="comment">
-								<p><a href="" class="author"><?= $reply['user_id']; ?></a></p>
+								<p><a href="" class="author"><?= $UserModel->username($reply['user_id']); ?></a></p>
 								<p><?= $reply['content']; ?></p>
 								<em><?= $reply['created']; ?></em>
+								<?php 
+									if($current_user_id==$lecture['Lecture']['user_id'] &&  $current_user_id!= $reply['user_id']){
+										if($BlockModel->isBlocked($current_user_id,$reply['user_id'])){
+											//da block
+											echo "<a class='unblock-link action' id='".$reply['user_id']."'>Unblock</a>";
+											echo "<a class='block-link action' id='".$reply['user_id']."' style='display:none;'>Block</a>";
+										}
+										else{
+											echo "<a class='block-link action' id='".$reply['user_id']."'>Block</a>";
+											echo "<a class='unblock-link action' id='".$reply['user_id']."' style='display:none;'>Unblock</a>";
+										}
+									}
+								?>
 							</div>
 						</li>
 					<?php endforeach; ?>
@@ -127,16 +167,19 @@ noi dung bai giang o day
 			</li>
 		<?php endforeach; ?>
 
-		<li class="comment<?= $lecture_id; ?>">					
+		<li class="comment<?= $lecture['Lecture']['id']; ?>">					
 			<div class="comment_text">
 				<p><a href="" class="author">Current User</a></p>
-				<textarea class="comment_text" id="<?= $lecture_id; ?>">Write your comment here...</textarea>
+				<textarea class="comment_text" id="<?= $lecture['Lecture']['id']; ?>">Write your comment here...</textarea>
 			</div>
 		</li>
 	</ul>
 </div>
 <script type="text/javascript">
 $(document).ready(function(){
+	var lecture_id = <?=$lecture['Lecture']['id']?>;
+    var l = window.location;
+	var base_url = l.protocol + "//" + l.host + "/" + l.pathname.split('/')[1];
   	$(".reply-link").click(function(){
     	var id = $(this).attr('id');
     	$("li#"+id).toggle();
@@ -145,7 +188,6 @@ $(document).ready(function(){
   	//textarea event
   	$('textarea').keydown(function(event) {
 	    if (event.keyCode == 13 && ! event.shiftKey) {
-	        //$(this.form).submit()
 	        var data = {};
 	        data['Comment'] ={};
 	        data['Comment']['content'] = $(this).val();
@@ -156,8 +198,6 @@ $(document).ready(function(){
 	        }
 	        var send_data = {};
 	        send_data['data'] = data;
-	        var l = window.location;
-			var base_url = l.protocol + "//" + l.host + "/" + l.pathname.split('/')[1];
 	        $.ajax({
 		        url: base_url+"/comments/add",//TODO thay bang duong dan khac
 		        type: "POST",
@@ -178,5 +218,73 @@ $(document).ready(function(){
 	         this.value = "Write your comment here...";
 	    }
 	});
+	//like
+	$('#like_button').click(function(){
+        $.ajax({
+	        url: base_url+"/favorites/add",
+	        type: "POST",
+	        data: {'lecture_id': lecture_id},
+	        success: function(data) {
+	            console.log(data);
+	            num_liked = parseInt($('#num_liked').html());
+	            $('#num_liked').html(num_liked+1);
+	            $('#like_button').hide();
+	            $('#dislike_button').show();
+	        }
+	    });
+
+  	});
+  	//dislike
+  	$('#dislike_button').click(function(){
+        $.ajax({
+	        url: base_url+"/favorites/delete",
+	        type: "POST",
+	        data: {'lecture_id': lecture_id},
+	        success: function(data) {
+	            console.log(data);
+	            num_liked = parseInt($('#num_liked').html());
+	            $('#num_liked').html(num_liked-1);
+	            $('#dislike_button').hide();
+	            $('#like_button').show();
+
+	        }
+	    });
+
+  	});
+  	//block
+  	$(".block-link").click(function(){
+  		var tmp = $(this);
+    	var student_id = $(this).attr('id');
+    	if (confirm("Do you want to block this student?")) {
+    		$.ajax({
+		        url: base_url+"/blocks/add",
+		        type: "POST",
+		        data: {'student_id': student_id},
+		        success: function(data) {
+		            console.log(data);
+		            console.log($(this));
+		            tmp.hide();
+		            tmp.parent().find(".unblock-link").show();
+		        }
+	    	});
+    	}
+  	});
+  	//unblock
+  	$(".unblock-link").click(function(){
+  		var tmp = $(this);
+    	var student_id = $(this).attr('id');
+    	if (confirm("Do you want to unblock this student?")) {
+    		$.ajax({
+		        url: base_url+"/blocks/delete",
+		        type: "POST",
+		        data: {'student_id': student_id},
+		        success: function(data) {
+		            console.log(data);
+		            tmp.hide();
+		            tmp.parent().find(".block-link").show();
+		        }
+	    	});
+    	}
+  	});
 });
 </script>

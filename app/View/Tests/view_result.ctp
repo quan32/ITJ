@@ -1,4 +1,4 @@
-<meta http-equiv="Content-Type" content="text/html; charset=SJIS">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <style type="text/css">
 	.correct{
