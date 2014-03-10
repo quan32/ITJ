@@ -8,7 +8,7 @@ class User extends AppModel{
 		'username' => array(
             'alphaNumeric' => array(
                 'rule'     => 'alphaNumeric',
-                'required' => true,
+                // 'required' => true,
                 'message'  => '文字又は数字を入力してください'
             ),
             'between' => array(
@@ -19,12 +19,12 @@ class User extends AppModel{
 
 		'password'=> array(
 			'rule' => array('minLength', 8),
-			'required' => true,
+			// 'required' => true,
 			'message' => '最低の長さは8桁'),
 
 		'fullname' => array(
         	'rule' => 'notEmpty',
-			'required' => true,
+			// 'required' => true,
 			'message' => '空きフィールドをしないでください'),	
 
 		'mobile_No' => array(
@@ -52,12 +52,12 @@ class User extends AppModel{
 
 		'address' => array(
 			'rule' => 'notEmpty',
-			'require' => true,
+			// 'require' => true,
 			'message' => '住所を入力してください'),
 
 		'bank_acc' => array(
 			'rule' => 'notEmpty',
-			'required' => true,
+			// 'required' => true,
 			'message' => '銀行口座を入力してください'),
 
 		'credit_card_No' => array(
@@ -66,7 +66,7 @@ class User extends AppModel{
 
 		'verify' => array(
 			'rule' => 'alphaNumeric',
-			'required' => true,
+			// 'required' => true,
 			'message'  => '確認するコードを入力してください')					
 		);
 

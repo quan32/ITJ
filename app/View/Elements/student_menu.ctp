@@ -21,16 +21,16 @@
 
 		<li><?php 
 		echo $this->Html->link('thong ke cac bai test', 
-			array('controller' => 'students', 'action' => 'result_statistics'));
+			array('controller' => 'students', 'action' => 'results_statistics'));
 		?></li>
 
 		<li><?php 
 		echo $this->Html->link('Nhung bai giang dang ky', 
-			array('controller' => 'students', 'action' => 'registed_lecture'));
+			array('controller' => 'students', 'action' => 'registed_lectures'));
 		?></li>
 		<li><?php 
 		echo $this->Html->link('Top cac bai hot trong he thong', 
-			array('controller' => 'students', 'action' => 'top_lecture_hot'));
+			array('controller' => 'students', 'action' => 'top_lectures_hot'));
 		?></li>
 
 		<li><?php 

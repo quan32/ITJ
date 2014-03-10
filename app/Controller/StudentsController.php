@@ -45,6 +45,7 @@ class StudentsController extends AppController{
 	}
 
 	public function index(){
+		$date = date('Y-m-d H:i:s');
 		$this->set('menu_type','student_menu');
 	//lay 5 bai giang moi nhat trong he thong ma user nay dang ki
 		$user_id = $this->Auth->user('id');
@@ -52,16 +53,51 @@ class StudentsController extends AppController{
 		$this->loadModel('User');
 		$this->loadModel('Lecture');
 
-		$sql = "SELECT * 
-					FROM  `registers` ,  `lectures` ,`users`
-					WHERE registers.user_id =".$user_id."
-					AND registers.lecture_id = lectures.id
-					AND lectures.user_id = users.id
-					ORDER BY registers.created DESC
-					LIMIT  0 , 5" ;
+		$options = 	array(
+					'joins' => array(
+								    array('table' => 'registers',
+								        'alias' => 'Register',
+								        'type' => 'inner',
+								        'conditions' => array('Lecture.id = Register.lecture_id')
+								    ),
+								    array(
+								    	'table' => 'users',
+								    	'alias' => 'User',
+								    	'type'  => 'inner',
+								    	'conditions' => array('Lecture.user_id = User.id')
+								    	)
+			            
+									),
+					'conditions' => array('Register.user_id' => $user_id,
+							'Register.status <>' => 3),
+					
+					
+			 		'fields' => array('Lecture.id', 'Lecture.name','Lecture.cost','User.fullname','Register.created','Register.created','User.id'),
+			 		'order' => 'Register.created DESC',
+			 		'limit' => 5
+			 		
 
-		$fiveNewestLecture = $this->Lecture->query($sql);
-		$this->set('fiveNewestLecture', $fiveNewestLecture);
+				);
+
+			$this->Lecture->recursive = -1;
+			$data =  $this->Lecture->find('all',$options);
+
+		//// lay danh sach cac giao vien da block em:
+			$listBlock = $this->getListBlock();
+			// ghi vao $data bien isBlock
+			
+			if($data != null)
+				{
+					$i = 0;
+					foreach ($data as $item) {
+					$isBlock = $this->checkBlock($item['User']['id'],$listBlock);
+					$data[$i]['Block'] = $isBlock;
+					$i++;
+
+					}
+				}
+				
+			$this->set('fiveNewestLecture', $data);
 		
 	//lay 5 bai ma hot nhat trong he thong
 	//Cac bai co so like nhieu nhat trong vong mot thang ,den thoi diem hien tai
@@ -83,21 +119,40 @@ class StudentsController extends AppController{
 									),
 					'group'  => 'Lecture.id',
 					
-			 		'fields' => array('Lecture.id', 'Lecture.name','Lecture.cost','User.fullname','count(Favorite.lecture_id)'),
+			 		'fields' => array('Lecture.id','User.id', 'Lecture.name','Lecture.cost','User.fullname','count(Favorite.lecture_id)'),
 			 		'order' => 'count(Favorite.lecture_id) DESC',
-			 		'conditions' => array('Favorite.created >' => date('Y-m-d H:i:s',strtotime("-1 month")))
+			 		'conditions' => array('Favorite.created >' => date('Y-m-d H:i:s',strtotime("-1 month"))),
+			 		'limti' => 5
 
 				);
 
 			$this->loadModel('Favorite');
 			$this->Favorite->recursive = -1;
 			$data =  $this->Favorite->find('all',$options);
+//Check list block
+		
+			// ghi vao $data bien isBlock
+			if($data != null)
+				{
+					$i = 0;
+					foreach ($data as $item) {
+					$isBlock = $this->checkBlock($item['User']['id'],$listBlock);
+					$data[$i]['Block'] = $isBlock;
+					$i++;
+
+					}
+				}
+
 			$this->set('fiveHotLectures' , $data);
+
+
 // lay danh sach cac bai ma user nay da dang ki
 			$this->loadModel('Register');
 			$data_register = $this->Register->find('all',
 				array(
-					'conditions' => array('Register.user_id' => $user_id),
+					'conditions' => array('Register.user_id' => $user_id,
+											'Register.status <>' => 3,
+					"Register.created >=" => date('Y-m-d H:i:s', strtotime("-1 weeks"))),
 					'limit' => 100000000000,
 					'fields' => array( 'lecture_id','status','user_id')
 					)
@@ -110,19 +165,58 @@ class StudentsController extends AppController{
 
 	//	Hien thi thong tin 5 bai test gan nhat
 		$this->loadModel('Result');
-		$sql = "SELECT * 
-					FROM  `results` ,  `lectures` ,`tests`
-					WHERE results.user_id =".$user_id."
-					AND results.test_id = tests.id
-					AND lectures.id = tests.lecture_id
-					ORDER BY results.created DESC
-					LIMIT  0 , 5" ;
-		$fiveNewestTest = $this->Result->query($sql);
-		$this->set('fiveNewestTest',$fiveNewestTest);
+		$options = 	array(
+					'joins' => array(
+								    array(
+								    	'table' => 'tests',
+								    	'alias' => 'Test',
+								    	'type'  => 'inner',
+								    	'conditions' => array('Test.id = Result.test_id')
+								    	),
+								    array('table' => 'lectures',
+								        'alias' => 'Lecture',
+								        'type' => 'inner',
+								        'conditions' => array('Lecture.id = Test.lecture_id')
+								    ),
+								    array('table' => 'users',
+								    	'alias' => 'User',
+								    	'type' => 'inner',
+								    	'conditions' => array('Lecture.user_id = User.id')
+								    	)
+								    
+			            
+									),
+					'limit' => 5,
+					'conditions' => array('Result.user_id' => $user_id),
+					
+					
+			 		'fields' => array('Test.id', 'Test.name','Lecture.name','Result.score','Result.created','Lecture.id','Result.id','User.id'),
+			 		'order' => 'Result.created DESC',
+			 		
+			 		
+
+				);
+
+			$this->Result->recursive = -1;
+			$data =  $this->Result->find('all',$options);
+		//Check list block
+		
+			// ghi vao $data bien isBlock
+			if($data != null)
+				{
+					$i = 0;
+					foreach ($data as $item) {
+					$isBlock = $this->checkBlock($item['User']['id'],$listBlock);
+					$data[$i]['Block'] = $isBlock;
+					$i++;
+
+					}
+				}
+		$this->set('fiveNewestTest',$data);
 
 	}
 
-	public function top_lecture_hot()
+	public function top_lectures_hot()
 	{
 		$this->set('menu_type','student_menu');
 		$user_id = $this->Auth->user('id');
@@ -143,7 +237,7 @@ class StudentsController extends AppController{
 									),
 					'group'  => 'Lecture.id',
 					
-			 		'fields' => array('Lecture.id', 'Lecture.name','Lecture.cost','User.fullname','count(Favorite.lecture_id)'),
+			 		'fields' => array('Lecture.id', 'Lecture.name','Lecture.cost','User.id','User.fullname','count(Favorite.lecture_id)'),
 			 		'order' => 'count(Favorite.lecture_id) DESC',
 			 		'conditions' => array('Favorite.created >' => date('Y-m-d H:i:s',strtotime("-1 month"))),
 			 		'limit' => 10
@@ -154,12 +248,31 @@ class StudentsController extends AppController{
 			$this->Favorite->recursive = -1;
 			$this->paginate = $options;
 			$data = $this->paginate('Favorite');
+
+
+			$listBlock = $this->getListBlock();
+				// ghi vao $data bien isBlock
+				
+				if($data != null)
+					{
+						$i = 0;
+						foreach ($data as $item) {
+						$isBlock = $this->checkBlock($item['User']['id'],$listBlock);
+						$data[$i]['Block'] = $isBlock;
+						$i++;
+
+						}
+					}
+
 			$this->set('hotLectures' , $data);
 			// lay danh sach cac bai ma user nay da dang ki
 			$this->loadModel('Register');
 			$data_register = $this->Register->find('all',
 				array(
-					'conditions' => array('Register.user_id' => $user_id),
+					'conditions' => array('Register.user_id' => $user_id,
+					'Register.status <>' => 3,
+					"Register.created >=" => date('Y-m-d H:i:s', strtotime("-1 weeks"))
+						),
 					'limit' => 100000000000,
 					'fields' => array( 'lecture_id','status','user_id')
 					)
@@ -169,6 +282,18 @@ class StudentsController extends AppController{
 		
 	}
 
+	public function getListBlock()
+	{
+	
+		$user_id = $this->Auth->user('id');
+		$this->loadModel('Block');
+		$listBlock = $this->Block->find('all',
+				array(
+					'conditions' => array('Block.student_id' => $user_id)
+					)
+			);
+		return $listBlock;
+	}
 
 	public function view_info(){
 		$this->set('menu_type','student_menu');
@@ -180,7 +305,7 @@ class StudentsController extends AppController{
 	}
 
 	
-	public function registed_lecture()
+	public function registed_lectures()
 	{
 		$this->set('menu_type','student_menu');
 		$user_id = $this->Auth->User('id');
@@ -191,45 +316,138 @@ class StudentsController extends AppController{
 					    array('table' => 'lectures',
 					        'alias' => 'Lecture',
 					        'type' => 'inner',
-					        'conditions' => array('Lecture.id = Register.lecture_id' )));
+					        'conditions' => array('Lecture.id = Register.lecture_id' )),
+
+					    array('table' => 'users',
+					    	'alias' => 'User',
+					    	'type' => 'inner',
+					    	'conditions' => array('User.id = Lecture.user_id')
+					    	),
+					    array(
+					    	'table' => 'tests',
+					    	'alias' => 'Test',
+					    	'type' => 'inner',
+					    	'conditions' => array('Test.lecture_id = Lecture.id' )
+					    	)
+					    );
 			
 
-		$options['conditions'] = array('Register.user_id' => $user_id);
+		$options['conditions'] = array('Register.user_id' => $user_id,
+			'Register.status <>' => 3
+			);
 		$options['order'] = array(
-					'Register.status ' => 'ASC' 
+					'Register.created ' => 'DESC' 
 					);
-		$options['fields'] =array('Lecture.id','Lecture.name','Register.created','Lecture.cost','Register.status');
+		$options['fields'] =array('Lecture.id','Lecture.name','Test.id','Register.created','Lecture.cost','Register.status','User.id');
 		$options['limit'] = 10;
 		$this->Register->recursive = -1;
 
 		$this->paginate = $options;
+
 		$data = $this->paginate('Register');
+		
+
+		//// lay danh sach cac giao vien da block em:
+			$listBlock = $this->getListBlock();
+			// ghi vao $data bien isBlock
+			
+			if($data != null)
+				{
+					$i = 0;
+					foreach ($data as $item) {
+					$isBlock = $this->checkBlock($item['User']['id'],$listBlock);
+					$data[$i]['Block'] = $isBlock;
+					$i++;
+
+					}
+				}
+				
+			//Check xem da test chua :
+				$this->loadModel('Result');
+			if($data != null)
+				{
+					$i = 0;
+					foreach ($data as $item) {
+					$test_id = $item['Test']['id'];
+
+					$temp = $this->Result->find('all',
+						array(
+
+							'conditions' => array('test_id' => $test_id,
+										'user_id' => $user_id
+								),
+							'order' => 'Result.created DESC'
+
+							)
+						);
+					if($temp == null)
+						$data[$i]['isTest'] = 0;
+					else 
+					{
+						$data[$i]['isTest'] = 1;
+						$data[$i]['result_id'] = $temp[0]['Result']['id'];
+					}
+					
+					$i++;
+
+					}
+				}
+				
+
 
 		$this->set('registedLectures',$data);
 
 
 	}
 
-	public function register_lecture($param1 = null, $param2 = null)
+	public function register_lecture($lecture_id = null, $backLink = null)
 	{
 		$this->set('menu_type','student_menu');
-		$user_id = $this->Auth->User('id');
-		if($param1 == NULL) $this->redirect(array("action" => 'index') );
-		if(!isset($param1)) $this->redirect(array("action" => 'index') );
-		if(!isset($param2)) $this->redirect(array("action" => 'index'));
+		$user_id = $this->Auth->user('id');
+		if($lecture_id == NULL) $this->redirect(array("action" => 'index') );
+		if(!isset($lecture_id)) $this->redirect(array("action" => 'index') );
+		if(!isset($backLink)) $this->redirect(array("action" => 'index'));
 
 		$data = array(
-			'Register' =>array(
+			'Register' =>array(	
 					'user_id' => $user_id,
-					'lecture_id' => $param1,
+					'lecture_id' => $lecture_id,
 					'status'  => 0
 				)
 			);
 		$this->loadModel('Register');
+	
+		if (!($this->Register->updateAll(
+
+		    array('Register.status' => 3),
+		    array('Register.lecture_id' => $lecture_id)
+		    
+				)))
+			{
+				$this->Session->setFlash(_('システムエラー'));
+				$this->redirect(array('action' => 'index'));
+				return 0;
+
+			}
+
 		$this->Register->create();
 		if($this->Register->save($data))
 		{
-			$this->redirect(array("action" => $param2));
+
+			//log
+					$this->loadModel('User');
+					$data = $this->User->find('all',array(
+		           	'conditions' => array('id' => $user_id),
+		           'recursive' => -1)
+		           	);
+		           	
+		           	$date = date('Y-m-d H:i:s');
+		            $file = "register_lecture.txt";
+		          //"順番", “SUCCESS”, "時間", "ユーザーID", "ユーザー名", "tuoi", “sdt”, “email”, “dia chi”
+		            $content =  "\"SUCCESS\","."\"".$date."\","."\"".$data[0]['User']['id']."\","."\"".$data[0]['User']['username']."\",\"学生は講義に受ける\",\"".$lecture_id."\"";
+		            
+		            $this->Log->writeLog($file,$content);
+			$this->redirect(array("action" => $backLink));
 		}
 		else 
 			{
@@ -239,6 +457,7 @@ class StudentsController extends AppController{
 		
 
 	}
+
 
 
 	public function money_this_month()
@@ -272,7 +491,7 @@ class StudentsController extends AppController{
 
 	}
 
-	public function result_statistics()
+	public function results_statistics()
 		{
 			$this->set('menu_type','student_menu');
 			$user_id = $this->Auth->user('id');
@@ -290,16 +509,45 @@ class StudentsController extends AppController{
 					'alias' => 'Lecture',
 					'type' => 'inner',
 					'conditions' => array('Lecture.id = Test.lecture_id')
+					),
+				array(
+					'table' => 'users',
+					'alias' => 'User',
+					'type' => 'inner',
+					'conditions' => array('User.id = Lecture.user_id')
+					),
+				array(
+					'table' => 'registers',
+					'alias' => 'Register',
+					'type' => 'inner',
+					'conditions' => array('Register.lecture_id = Lecture.id')
 					)
 				);
 			$options['limit'] = 10;
 			$options['conditions'] = array('Result.user_id' => $user_id);
-			$options['order'] = array('Result.created' => 'ASC');
-			$options['fields'] =array('Result.id','Lecture.name','Result.created','Result.score');
+			$options['order'] = array('Result.created' => 'DESC');
+			$options['fields'] =array('Result.id','Lecture.name','Register.created','User.id','Test.id','Lecture.id','Result.created','Result.score');
 			$this->Result->recursive = -1;
 
 			$this->paginate = $options;
 			$data = $this->paginate('Result');
+			
+			//// lay danh sach cac giao vien da block em:
+			$listBlock = $this->getListBlock();
+			// ghi vao $data bien isBlock
+			
+			if($data != null)
+				{
+					$i = 0;
+					foreach ($data as $item) {
+					$isBlock = $this->checkBlock($item['User']['id'],$listBlock);
+					$data[$i]['Block'] = $isBlock;
+					$i++;
+
+					}
+				}
+		
+
 		    $this->set('results',$data);
 			
 		}
@@ -324,23 +572,46 @@ class StudentsController extends AppController{
 						),
 			'order' => array('Lecture.created' => 'ASC'),
 			'limit' => 10,
-			'fields' => array('Lecture.id','Lecture.cost','User.fullname','Lecture.name')
+			'fields' => array('Lecture.id','Lecture.cost','User.fullname','Lecture.name','User.id')
 		);
 
 		$this->Lecture->recursive = -1;
 		$this->paginate = $options;
 		$data = $this->paginate('Lecture');
+
+//Check Block
+//// lay danh sach cac giao vien da block em:
+			$listBlock = $this->getListBlock();
+			// ghi vao $data bien isBlock
+			
+			if($data != null)
+				{
+					$i = 0;
+					foreach ($data as $item) {
+					$isBlock = $this->checkBlock($item['User']['id'],$listBlock);
+					$data[$i]['Block'] = $isBlock;
+					$i++;
+
+					}
+				}
+
 	    $this->set('lectures',$data);
 
-
+// Lay bai da dang ki de so sanh : loai nhung bai status = 3 (het han), loai cac bai qua mot tuan
 			$data_register = $this->Register->find('all',
 				array(
-					'conditions' => array('Register.user_id' => $user_id),
+					'conditions' => array('Register.user_id' => $user_id,
+						'Register.status <>' => 3,
+						"Register.created >=" => date('Y-m-d H:i:s', strtotime("-1 weeks"))
+					),
 					'limit' => 100000000000,
 					'fields' => array( 'lecture_id','status','user_id')
 					)
 
 				);
+
+			
+		
 			$this->set('list_lectures', $data_register);
 	    
 	}
@@ -359,12 +630,39 @@ class StudentsController extends AppController{
 			$data = $this->request->data['User'] ;
 		$data['date_of_birth'] = $data['date_of_birth']['month'].'-'.$data['date_of_birth']['day'].'-'.$data['date_of_birth']['year'];
 
-		//	debug($data); die;
+		
 			if ($this->User->save($this->request->data)) {
 		            $this->Session->setFlash(__('The info has been updated'));
+
+		           // ghi log
+		           $data = $this->User->find('all',array(
+		           	'conditions' => array('id' => $user_id),
+		           'recursive' => -1)
+		           	);
+		           	
+		           	$date = date('Y-m-d H:i:s');
+		            $file = "user_change_info.txt";
+		          //"順番", “SUCCESS”, "時間", "ユーザーID", "ユーザー名", "tuoi", “sdt”, “email”, “dia chi”
+		            $content =  "\"SUCCESS\","."\"".$date."\","."\"".$data[0]['User']['id']."\","."\"".$data[0]['User']['username']."\",\"基本情報変更\"";
+		            
+		            $this->Log->writeLog($file,$content);
+
 				//	return $this->redirect(array('action' => 'index')); 
 		            return $this->redirect(array('action' => 'view_info'));
 				}
+				//log loi 
+				// ghi log
+		           $data = $this->User->find('all',array(
+		           	'conditions' => array('id' => $user_id),
+		           'recursive' => -1)
+		           	);
+		           	
+		           	$date = date('Y-m-d H:i:s');
+		            $file = "user_change_info.txt";
+		          //"順番", “SUCCESS”, "時間", "ユーザーID", "ユーザー名", "tuoi", “sdt”, “email”, “dia chi”
+		            $content =  "\"FAIL\","."\"".$date."\","."\"".$data[0]['User']['id']."\","."\"".$data[0]['User']['username']."\",\"基本情報変更\"";
+		            
+		            $this->Log->writeLog($file,$content);
 		        $this->Session->setFlash(
 		            __('Sorry, occur an error. Please, try again.'));
 		} else {
@@ -375,7 +673,6 @@ class StudentsController extends AppController{
 
 	public function calc_money()
 	{
-		$this->set('menu_type','student_menu');
 		//Tinh tien tu dau thang den ngay hien tai
 		$user_id = $this->Auth->user('id');
 		$this->loadModel('Register');
@@ -391,6 +688,28 @@ class StudentsController extends AppController{
 
 
 	}
+
+	function checkBlock($teacher_id = null, $listBlock = null)
+		{
+		    // isBlock = 0 : ko bi block , if = 1 blocked.
+
+		if($listBlock == null)
+		    return 0;
+		else
+		{
+			foreach ($listBlock as $item) {
+				if($item['Block']['teacher_id'] == $teacher_id)
+					{
+						return 1;
+
+					}
+			    
+			}
+
+		}
+		return 0;
+
+		}
 	
 	public function del_account()
 	{
@@ -406,6 +725,18 @@ class StudentsController extends AppController{
 						// This will update Recipe with id 10
 						if($this->User->save($data))
 						{
+								//log
+					$data = $this->User->find('all',array(
+		           	'conditions' => array('id' => $user_id),
+		           'recursive' => -1)
+		           	);
+		           	
+		           	$date = date('Y-m-d H:i:s');
+		            $file = "delete_account.txt";
+		          //"順番", “SUCCESS”, "時間", "ユーザーID", "ユーザー名", "tuoi", “sdt”, “email”, “dia chi”
+		            $content =  "\"SUCCESS\","."\"".$date."\","."\"".$data[0]['User']['id']."\","."\"".$data[0]['User']['username']."\",\"アカウントを削除\"";
+		            
+		            $this->Log->writeLog($file,$content);
 							$this->Session->setFlash(_('アカウントは削除した'));
 							$this->redirect($this->Auth->logout());
 						}
@@ -425,5 +756,6 @@ class StudentsController extends AppController{
 
 		
 	}
+
 }
 ?>
