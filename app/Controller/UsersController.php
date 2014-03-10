@@ -91,6 +91,7 @@ class UsersController extends AppController{
 		if($this->request->is('post')){
 
 			$IP = $this->request->clientIp();
+			//var_dump($IP);die;
 
 			if($user=$this->User->findByUsername($this->request->data['User']['username'])){
 				$passwordHasher = new SimplePasswordHasher();

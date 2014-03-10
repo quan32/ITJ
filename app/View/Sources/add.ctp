@@ -1,6 +1,4 @@
-<?
-if(count($sources)>0){
-	?>
+<?php if(count($sources)>0): ?>
 		<table>
 		<tr>
 			<th>ID</th>
@@ -21,9 +19,7 @@ if(count($sources)>0){
 			}
 		?>
 		</table> 
-	<?
-}
-?>
+	<?php endif ?>
 
 
 <fieldset>

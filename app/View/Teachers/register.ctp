@@ -32,15 +32,15 @@
 				</fieldset>
 			</div>
 
-			<?php
-		echo "</fieldset>";
-		echo $this->Form->checkbox('NQ', array('checked' => false));
-		echo $this->Form->label('以下の個人情報の取り扱いとウェブサイト規則に同意する');
+		<?php
+			echo "</fieldset>";
+			echo $this->Form->checkbox('NQ', array('checked' => false));
+			echo $this->Form->label('以下の個人情報の取り扱いとウェブサイト規則に同意する');
 		?>
 		<span id='website_rule'>
 			e-Learning Awardsフォーラムメンバーにご登録いただいた個人情報は、ご本人からのお問合せに対する回答や、電子メール、ダイレクトメールなどによるフォーラム関連情報やeラーニングに関する情報提供時に利用するほか、受講をご予約頂いた講演の演者及びスポンサーに提供されます。ご本人の承諾なしに上記内容の目的以外に利用することはありません。 また、当フォーラムの委託業者が、利用目的の範囲内で情報を使用することがございます。
 		</span>
-		<?
-		echo $this->Form->end(array('label'=>'新規登録'));
-	?>
+		<?php
+			echo $this->Form->end(array('label'=>'新規登録'));
+		?>
 </div>

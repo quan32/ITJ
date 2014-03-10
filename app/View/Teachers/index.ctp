@@ -1,4 +1,4 @@
-
+<h1><?php echo __('Teacher Homepage'); ?></h1>
 <?php
 echo $this->element('search');
 // 5 bai giang moi tao nhat

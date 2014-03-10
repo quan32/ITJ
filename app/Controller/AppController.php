@@ -46,7 +46,10 @@ class AppController extends Controller {
 	public function beforeFilter(){
 		$this->Auth->allow('display');
 		$this->loadModel("Constant");
+		$this->loadModel("User");
 		$this->constants=$this->Constant->find("all");
+		//TODO lay ten user hien tai
+		
 	}
 
 
