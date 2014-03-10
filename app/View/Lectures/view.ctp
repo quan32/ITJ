@@ -204,7 +204,7 @@ $(document).ready(function(){
 		        data: send_data,
 		        success: function(data) {
 		            console.log(data);
-		    		window.location.reload(true);
+		    		$(".nested-comments-complex").load(window.location.href);
 		        }
 		    });
 	     }
