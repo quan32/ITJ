@@ -36,14 +36,14 @@ if(!empty($results)){
     // pagination section
     
         echo $this->Paginator->counter(array(
-        'format' => __('Page {:page} of {:pages}, showing {:current} records out of {:count} total, starting on record {:start}, ending on {:end}')
+        'format' => __('{:pages}の{:page}ページ、{:count}の{:current}レーコドでレーコド{:start}からレーコド{:end}までを表示する')
         ));
         echo '</p>
         <div class="paging">';
        
-                echo $this->Paginator->prev('< ' . __('prev'), array(), null, array('class' => 'prev disabled'));
+                echo $this->Paginator->prev('< ' . __('前へ'), array(), null, array('class' => 'prev disabled'));
                 echo $this->Paginator->numbers(array('first'=>2, 'separator' => '','modulus'=>4, 'last'=>2));
-                echo $this->Paginator->next(__('next') . ' >', array(), null, array('class' => 'next disabled'));
+                echo $this->Paginator->next(__('次へ') . ' >', array(), null, array('class' => 'next disabled'));
         
         echo '</div>';
     
@@ -51,6 +51,6 @@ if(!empty($results)){
 
 // tell the user there's no records found
 else{
-    echo "No results found.";
+    echo "結果がない";
 }
 ?>

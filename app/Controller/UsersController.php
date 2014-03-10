@@ -276,7 +276,7 @@ class UsersController extends AppController{
 		$currUser = $this->User->findById($userId);
 
 		if(!$this->User->exists()){
-			throw new NotFoundException(__('Invalid user'));
+			throw new NotFoundException(__('ユーザが無効だ'));
 		}
 
 		if($this->request->is(array('post','put'))){
@@ -294,7 +294,7 @@ class UsersController extends AppController{
 						// write success log to log file 7: change_password.txt
 						$log = '"SUCCESS", "'.(string)date('Y-m-d H:i:s').'", "'.(string)$userId.'"';
 						$this->Log->writeLog('change_password.txt',$log);
-						$this->Session->setFlash(__('Password has been updated'));
+						$this->Session->setFlash(__('パスワードが更新された'));
 						if($this->Auth->user('role')=='manager')
 							return $this->redirect(array('controller'=>'manages','action'=>'info'));
 						elseif($this->Auth->user('role')=='teacher')
@@ -304,19 +304,19 @@ class UsersController extends AppController{
 
 					}
 					else{
-						$this->Session->setFlash(__('Change password fail'));
+						$this->Session->setFlash(__('パスワードが変更されるのが失敗だ'));
 						$log = '"FAIL", "'.(string)date('Y-m-d H:i:s').'", "'.(string)$userId.'", "Can not save"';
 						$this->Log->writeLog('change_password.txt',$log);
 					}					
 				}
 				else{
-					$this->Session->setFlash(__('Confirm password fail'));
+					$this->Session->setFlash(__('確認パスワードが間違い'));
 					$log = '"FAIL", "'.(string)date('Y-m-d H:i:s').'", "'.(string)$userId.'", "Confirm password fail"';
 					$this->Log->writeLog('change_password.txt',$log);	
 				}				
 			}
 			else{
-				$this->Session->setFlash(__('Current password fail'));
+				$this->Session->setFlash(__('現在パスワードが間違い'));
 				$log = '"FAIL", "'.(string)date('Y-m-d H:i:s').'", "'.(string)$userId.'", "Current password fail"';
 				$this->Log->writeLog('change_password.txt',$log);	
 			}			
