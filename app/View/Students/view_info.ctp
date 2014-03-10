@@ -1,14 +1,14 @@
 <?php
 if(!isset($info))
 {
-	echo "Empty data";
+    echo "Empty data";
 }
 else
 {
 
         echo "<table>";
 
-        	echo "<tr>";
+            echo "<tr>";
             echo "<th></th>";
             echo "<th></th>";
             echo "</tr>";

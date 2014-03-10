@@ -3,10 +3,10 @@ $paginator = $this->Paginator;
 if($sumMoney)
 {
 
-	echo "今月の学費の合計 : ".$sumMoney[0][0]['money']." VND";
+    echo "今月の学費の合計 : ".$sumMoney[0][0]['money']." VND";
 }
 else
-	echo "Empty data";
+    echo "Empty data";
 
 if($lecturesOnThisMonth){
 
@@ -15,9 +15,9 @@ if($lecturesOnThisMonth){
         echo "<tr>";
 
             echo "<th>" . $paginator->sort('id', 'ID') . "</th>";
-            echo "<th>" . $paginator->sort('name', 'Name') . "</th>";
-            echo "<th>" . $paginator->sort('created', 'Time') . "</th>";
-            echo "<th>" . $paginator->sort("cost", 'Cost') . "</th>";
+            echo "<th>" . $paginator->sort('name', 'タイトル') . "</th>";
+            echo "<th>" . $paginator->sort('created', '時間') . "</th>";
+            echo "<th>" . $paginator->sort("cost", 'コスト') . "</th>";
             echo "</tr>";
         
 

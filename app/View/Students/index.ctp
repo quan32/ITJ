@@ -1,30 +1,69 @@
 <?php
-echo $this->element('search');
+
 // Bang 1 : 5 bai hoc moi dang ki nhat
 if($fiveNewestLecture==NULL){
     echo "<h2>Data Empty</h2>";
 }
 else{
 
+
     echo "<table>
-    <caption> 5 Bai dang ki moi nhat : </caption>
+    <caption> 最新の登録した講義 : </caption>
 
           <tr>
             <th>Id</th>
             <th>タイトル</th>
             <th>時間</th>
             <th>先生の名前</th>
-            <th>Option1</th>
-            <th>Option2</th>
+            <th>情報</th>
+            <th>操作</th>
           </tr>";
         foreach($fiveNewestLecture as $item){
         echo "<tr>";
-        echo "<td>".$item['lectures']['id']."</td>";
-        echo "<td>".$item['lectures']['name']."</td>";
-        echo "<td>".$item['registers']['created']."</td>";
-        echo "<td>".$item['users']['fullname']."</td>";
-        echo "<td>".$this->Html->link('勉強',array('controller'=>'lectures','action'=>'view', $item['lectures']['id']))."</td>";
-        echo "<td>".$this->Html->link('テスト',array('controller'=>'tests','action'=>'index', $item['lectures']['id']))."</td>";
+        echo "<td>".$item['Lecture']['id']."</td>";
+        echo "<td>".$item['Lecture']['name']."</td>";
+        echo "<td>".$item['Register']['created']."</td>";
+        echo "<td>".$item['User']['fullname']."</td>";
+        echo "<td>".$this->Html->link('詳しく',array('controller' => 'lectures','action' => 'detail',$item['Lecture']['id'], 'index'));
+          
+          echo "</td>";
+          echo "<td>";
+        //Check co bi chan ko: 
+            if($item['Block'] == 1){
+                 echo "ブロック";
+                    }
+
+            else {
+
+    // check user hien tai da dang ki bai nay chua de hien thi Option cho dung:
+
+                    $flag = 0;
+                    $status = 0; // Status de xem hoc hay chua?
+                    foreach ($list_lectures as $lecture) {
+                        if ($lecture['Register']['lecture_id'] == $item['Lecture']['id'])
+                        {
+                            $flag = 1;
+                            $status = $lecture['Register']['status'];
+                            break;
+                        }
+                    }
+                    if($flag == 0)
+
+                     {
+                        echo $this->html->link("登録",array 
+                        ("action"=>"/register_lecture",'full_base' => true ,$item['Lecture']['id'],"index"),array(),"値段は ".$item['Lecture']['cost'].". 登録しますか?",false); 
+                        }
+                    else
+                    {
+                        if($status == 0 )
+                            echo $this->Html->link('勉強',array('controller'=>'lectures','action'=>'view', $item['Lecture']['id']));
+                        else 
+                            echo $this->Html->link('見直す',array('controller'=>'lectures','action'=>'view', $item['Lecture']['id']));
+                    }
+
+                     
+                }
+         
         echo "</tr>";
     }
     echo "</table>";
@@ -37,14 +76,15 @@ else{
     else
            { 
             echo "<table>
-            <caption> 5 bai hot nhat he thong : </caption>
+            <caption> 最高の講義 : </caption>
 
                   <tr>
                     <th>Id</th>
                     <th>タイトル</th>
                     <th>先生の名前</th>
-                     <th>時間</th>
-                    <th>Option</th>
+                     <th>コスト</th>
+                     <th>情報</th>
+                    <th>操作</th>
                   </tr>";
             foreach($fiveHotLectures as $item){
                 echo "<tr>";
@@ -52,10 +92,17 @@ else{
                 echo "<td>".$item['Lecture']['name']."</td>";
                 echo "<td>".$item['User']['fullname']."</td>";
                 echo "<td>".$item['Lecture']['cost']."</td>";
+                echo "<td>".$this->Html->link('詳しく',array('controller' => 'lectures','action' => 'detail',$item['Lecture']['id'], 'index'));
+                echo "</td>";
                 echo "<td>";
+          if($item['Block'] == 1){
+             echo "ブロック";
+                }
 
+        else {
 
 // check user hien tai da dang ki bai nay chua de hien thi Option cho dung:
+
                 $flag = 0;
                 $status = 0; // Status de xem hoc hay chua?
                 foreach ($list_lectures as $lecture) {
@@ -70,19 +117,19 @@ else{
 
                  {
                     echo $this->html->link("登録",array 
-                    ("action"=>"/register_lecture",'full_base' => true ,$item['Lecture']['id'],"index"),array(),"Gia cua no la ".$item['Lecture']['cost'].". Are you sure?",false); 
+                    ("action"=>"/register_lecture",'full_base' => true ,$item['Lecture']['id'],"index"),array(),"値段は ".$item['Lecture']['cost'].". 登録しますか?",false); 
                     }
                 else
                 {
                     if($status == 0 )
-                        echo $this->Html->link("勉強", array("action" => "hoc" ));
+                        echo $this->Html->link('勉強',array('controller'=>'lectures','action'=>'view', $item['Lecture']['id']));
                     else 
-                        echo $this->Html->link("見直す", array("action" => "hoc" ));
+                        echo $this->Html->link('見直す',array('controller'=>'lectures','action'=>'view', $item['Lecture']['id']));
                 }
 
-
-
-  
+ 
+                
+            }
                 echo "</td>";
 
                 echo "</tr>";
@@ -91,7 +138,7 @@ else{
         }
         }
 
-echo $this->Html->link('All', array('controller'=>'Students', 'action'=>'top_lecture_hot'));
+echo $this->Html->link('All', array('controller'=>'Students', 'action'=>'top_lectures_hot'));
 
 
 
@@ -102,21 +149,34 @@ if($fiveNewestTest==NULL){
 else{
 
     echo "<table>
-    <caption> 5 Bai test moi nhat : </caption>
+    <caption> 最新の受けたテスト : </caption>
 
           <tr>
-            <th>Id</th>
+            <th>ID</th>
             <th>タイトル</th>
-            <th>Score</th>
-            <th>Option</th>
+            <th>点数</th>
+            <th>時間</th>
+            <th>講義の説明</th>
+            <th>操作1</th>
+            <th>操作2</th>
 
           </tr>";
         foreach($fiveNewestTest as $item){
         echo "<tr>";
-        echo "<td>".$item['tests']['id']."</td>";
-        echo "<td>".$item['tests']['name']."</td>";
-        echo "<td>".$item['results']['score']."</td>";
-        echo "<td>".$this->Html->link('もう一度テスト',array('Truyen link o day'))."</td>";
+        echo "<td>".$item['Test']['id']."</td>";
+        echo "<td>".$item['Test']['name']."</td>";
+        echo "<td>".$item['Result']['score']."</td>";
+        echo "<td>".$item['Result']['created']."</td>";
+        echo "<td>".$this->Html->link('詳しく',array('controller' => 'lectures','action' => 'detail',$item['Lecture']['id'], 'index'));
+        if($item['Block'] == 1){
+             echo "<td>ブロック</td>";
+             echo "<td>ブロック</td>";
+                }
+        else{        
+            echo "<td>".$this->Html->link('もう一度テスト',array('controller' => 'tests','action' => 'view',$item['Test']['id'], ))."</td>";
+            echo "<td>".$this->Html->link('結果をレビュー',array('controller' => 'results','action' => 'view',$item['Result']['id']))."</td>";
+        }
+        
         echo "</tr>";
     }
     echo "</table>";

@@ -195,7 +195,6 @@ class TeachersController extends AppController{
 
 	public function edit($id =null){
 		$this->set('menu_type','teacher_menu');
-
 		$user_id = $this->Auth->user('id');
 		$this->loadModel('User');
 		$this->User->id =$user_id;
@@ -207,9 +206,36 @@ class TeachersController extends AppController{
 		if ($this->request->is('post') || $this->request->is('put')) { 
 			if ($this->User->save($this->request->data)) {
 		            $this->Session->setFlash(__('The info has been updated'));
+
+		          //ghi log :
+		          
+		           // ghi log
+		           $data = $this->User->find('all',array(
+		           	'conditions' => array('id' => $user_id),
+		           'recursive' => -1)
+		           	);
+		           	
+		           	$date = date('Y-m-d H:i:s');
+		            $file = "user_change_info.txt";
+		          //"順番", “SUCCESS”, "時間", "ユーザーID", "ユーザー名", "tuoi", “sdt”, “email”, “dia chi”
+		            $content =  "\"SUCCESS\","."\"".$date."\","."\"".$data[0]['User']['id']."\","."\"".$data[0]['User']['username']."\",\"基本情報変更\"";
+		            
+		            $this->Log->writeLog($file,$content);
 				//	return $this->redirect(array('action' => 'index')); 
 		            return $this->redirect(array('action' => 'info'));
 				}
+				// ghi log
+		           $data = $this->User->find('all',array(
+		           	'conditions' => array('id' => $user_id),
+		           'recursive' => -1)
+		           	);
+		           	
+		           	$date = date('Y-m-d H:i:s');
+		            $file = "user_change_info.txt";
+		          //"順番", “SUCCESS”, "時間", "ユーザーID", "ユーザー名", "tuoi", “sdt”, “email”, “dia chi”
+		            $content =  "\"SUCCESS\","."\"".$date."\","."\"".$data[0]['User']['id']."\","."\"".$data[0]['User']['username']."\",\"基本情報変更\"";
+		            
+		            $this->Log->writeLog($file,$content);
 		        $this->Session->setFlash(
 		            __('Sorry, occur an error. Please, try again.'));
 		} else {
@@ -217,6 +243,7 @@ class TeachersController extends AppController{
 		      //  unset($this->request->data['User']['password']);
 		    }
 	}
+
 
 	/**
 	* function view result of student who do current teacher's test
