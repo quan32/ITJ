@@ -204,7 +204,8 @@ $(document).ready(function(){
 		        data: send_data,
 		        success: function(data) {
 		            console.log(data);
-		    		$(".nested-comments-complex").load(window.location.href);
+		    		//$(".nested-comments-complex").load(window.location.href);
+		    		window.location.reload(true);
 		        }
 		    });
 	     }
