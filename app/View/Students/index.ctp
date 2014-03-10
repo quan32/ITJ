@@ -1,5 +1,5 @@
 <?php
-
+echo $this->element('search');
 // Bang 1 : 5 bai hoc moi dang ki nhat
 if($fiveNewestLecture==NULL){
     echo "<h2>Data Empty</h2>";
