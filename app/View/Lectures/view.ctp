@@ -75,7 +75,7 @@
 		<?php
 		if(isset($src)){
 		?>
-			<iframe width="723" height="756" src="<?php echo $src;?>"></iframe>
+			<iframe width="100%" height="600" src="<?php echo $src;?>"></iframe>
 		<?php }?>
 
 		<h1>Media file</h1>
@@ -288,4 +288,18 @@ $(document).ready(function(){
     	}
   	});
 });
+</script>
+<!-- Disable Copy and Paste-->
+<script language='JavaScript1.2'>
+	function disableselect(e){
+	return false
+}
+function reEnable(){
+	return true
+}
+document.onselectstart=new Function (&quot;return false&quot;)
+if (window.sidebar){
+document.onmousedown=disableselect
+document.onclick=reEnable
+}
 </script>

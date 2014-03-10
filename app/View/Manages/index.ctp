@@ -1,8 +1,7 @@
 <?php
 	echo $this->element('search');
 ?>
-
-<h1>Quan ly User</h1>
+<h1>Quản lý người dùng hiện tại</h1>
 
 <table>
 <tr>

@@ -2,19 +2,19 @@
 <?php
 	echo '<table>
 		<tr>
-			<td>テスト数</td>
+			<th>テスト数</th>
 			<td>'.$countTest.'</td>
 		</tr>
 		<tr>
-			<td>講義数名</td>
+			<th>講義数名</th>
 			<td>'.count($lectures).'</td>
 		</tr>
 		<tr>
-			<td>勉強回数</td>
+			<th>勉強回数</th>
 			<td>'.$countRegister.'</td>
-		</tr>'
-		;
+		</tr>
+		</table>';
 
-echo $this->Html->link('戻る', array('controller'=>'teachers','action'=>'info'));
+echo "<button>".$this->Html->link('戻る', array('controller'=>'teachers','action'=>'info'))."</button>";
 
 ?>

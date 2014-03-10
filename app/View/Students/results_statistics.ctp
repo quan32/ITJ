@@ -1,3 +1,4 @@
+<h1>Kết quả test</h1>
 <?php
 $paginator = $this->Paginator;
 if($results)
