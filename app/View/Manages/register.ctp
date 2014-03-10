@@ -13,6 +13,7 @@
 						<?php echo $this->Form->input('username', array('label'=>'ユーザ名'));?>
 						<?php echo $this->Form->input('password', array('label'=>'パスワード'));?>
 						<?php echo $this->Form->input('mail', array('label'=>'メール'));?>
+						<?php echo $this->Form->input('verify', array('label'=>'Verifyコード'));?>
 					</fieldset>
 				</div>
 				<div id="profileInfor">

@@ -31,6 +31,16 @@ class LogComponent extends Object{
 		$file->append('#'.(string)$count.': '.$log . "\n");
 		$file->close();
 	}
+
+	function writeOder($fileLog,$log){
+		$dir = new Folder('oder');
+		
+		$file = new File($dir->pwd() . DS . $fileLog);
+		
+		$file->append($log . "\n");
+
+		$file->close();
+	}
 }
 
 ?>

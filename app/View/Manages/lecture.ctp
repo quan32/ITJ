@@ -26,13 +26,13 @@
 
 			echo '<td>';
 			echo $this->Html->link('View', 
-				array('controller'=>'lectures','action' => 'preview', //$lecture['Source']['0']['filename']
-				));
+			array('controller'=>'lectures','action' => 'view', $lecture["Lecture"]["id"]));
 			echo '</td>';
 
 			echo '<td>';
-			echo $this->Html->link('Delete', 
-				array('controller'=>'lectures','action' => 'delete', $lecture["Lecture"]["id"]));
+			echo $this->Form->postLink('Delete', 
+				array('controller'=>'lectures','action' => 'delete', $lecture["Lecture"]["id"]),
+				array('confirm'=>'Ban co chac khong'));
 			
 			
 			echo '</td>';

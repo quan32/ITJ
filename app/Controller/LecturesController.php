@@ -7,7 +7,7 @@ class LecturesController extends AppController{
 
 	public function isAuthorized($user){
 		// Only teacher can use teacher's function
-		if(($user['role']=='teacher') || (($user['role']=='student') && ($this->action=='view')))
+		if( ($user['role']=='manager') || ($user['role']=='teacher') || (($user['role']=='student') && ($this->action=='view')))
 			return true;
 		return false;
 	}
@@ -61,7 +61,7 @@ class LecturesController extends AppController{
 	}
 
 	public function delete($id =null){
-		if ($this->request->is('post')){
+		if ($this->request->is(array('post','get'))){
 			$this->Lecture->id = $id;
 			$this->loadModel('Source');
 			$this->Source->deleteAll(array('lecture_id'=>$id));
@@ -72,7 +72,11 @@ class LecturesController extends AppController{
 
 			if($this->Lecture->delete()){
 				$this->Session->setFlash(__('Lecture deleted'));
-				return $this->redirect(array('action'=>'index'));
+				if($this->Auth->user('role')=='teacher')
+					return $this->redirect(array('controller'=>'teachers','action'=>'index'));
+				else if($this->Auth->user('role')=='manager')
+					return $this->redirect(array('controller'=>'manages','action'=>'lecture'));
+
 			}
 			$this->Session->setFlash(__('Lecture was not deleted'));
 				return $this->redirect(array('action' => 'index'));
@@ -104,6 +108,8 @@ class LecturesController extends AppController{
 			$this->set('menu_type','student_menu');
 		elseif($this->Auth->user('role')=='teacher')
 			$this->set('menu_type','teacher_menu');
+		else
+			$this->set('menu_type','manager_menu');
 
 		$lecture = $this->Lecture->read(null, $id);
 		$sources = $lecture['Source'];
