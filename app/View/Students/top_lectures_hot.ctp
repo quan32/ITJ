@@ -1,3 +1,4 @@
+<h1>Top bài giảng đang hot</h1>
 <?php
 $paginator = $this->Paginator;
 if($hotLectures==NULL){

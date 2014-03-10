@@ -11,6 +11,7 @@
 		//answer choice
 		$attributes = array(
 		    'legend' => false,
+		    'separator' => '<br>',
 		    //'checked'=> ($foo == "pro") ? FALSE : TRUE,
 		);
 		echo $this->Form->radio($count.'.answer', $question['s'], $attributes);

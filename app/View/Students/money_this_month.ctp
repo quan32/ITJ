@@ -1,9 +1,10 @@
+<h1>Thông tin thanh toán</h1>
 <?php
 $paginator = $this->Paginator;
 if($sumMoney)
 {
 
-    echo "今月の学費の合計 : ".$sumMoney[0][0]['money']." VND";
+    echo "<h2>今月の学費の合計 : ".$sumMoney[0][0]['money']." VND</h2>";
 }
 else
     echo "Empty data";

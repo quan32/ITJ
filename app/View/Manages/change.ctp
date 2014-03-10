@@ -1,25 +1,12 @@
-
-
-
+<h2>Add New IP</h2>
 <div>
-	<?php
-		echo $this->Form->create('Ip');
-		
-			echo "<legend>";
-			echo __('Them Ip moi');
-			echo "</legend>";
-			?>
+		<?php echo $this->Form->create('Ip');?>
+		<?php echo $this->Form->input('ip');?>		
 
-				<?php echo $this->Form->input('ip', array('label'=>'Ip'));?>				
-
-				<?php
-			
-		
-		echo $this->Form->end(array('label'=>'Add'));
-	?>
+		<?php echo $this->Form->end(array('label'=>'Add'));	?>
 </div>
-
-
+<hr>
+<h2><?php echo __('Acceptable IP List'); ?></h2>
 <table>
 <tr>
 	<th>ID</th>

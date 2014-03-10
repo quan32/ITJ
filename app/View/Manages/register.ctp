@@ -1,10 +1,8 @@
+<h1>Thêm admin mới</h1>
 <div>
 	<?php
 		echo $this->Form->create('User');
 		echo "<fieldset>";
-			echo "<legend>";
-			echo __('Register new admin');
-			echo "</legend>";
 			?>
 
 				<div id="loginInfor">

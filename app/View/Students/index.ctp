@@ -8,7 +8,7 @@ else{
 
 
     echo "<table>
-    <caption> 最新の登録した講義 : </caption>
+    <h2> 最新の登録した講義 : </h2>
 
           <tr>
             <th>Id</th>
@@ -76,7 +76,7 @@ else{
     else
            { 
             echo "<table>
-            <caption> 最高の講義 : </caption>
+            <h2> 最高の講義 : </h2>
 
                   <tr>
                     <th>Id</th>
@@ -149,7 +149,7 @@ if($fiveNewestTest==NULL){
 else{
 
     echo "<table>
-    <caption> 最新の受けたテスト : </caption>
+    <h2> 最新の受けたテスト : </h2>
 
           <tr>
             <th>ID</th>

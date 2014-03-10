@@ -26,6 +26,7 @@
 		$attributes = array(
 		    'legend' => false,
 		    'value' => $result[$count]['answer'],
+		    'separator' => '<br>',
 		    'disabled' => true
 		);
 		echo $this->Form->radio($count.'.answer', $question['s'], $attributes);

@@ -1,3 +1,4 @@
+<h1>Những bài giảng đã đăng ký</h1>
 <?php
 $paginator = $this->Paginator;
 

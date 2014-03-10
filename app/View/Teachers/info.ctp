@@ -32,12 +32,12 @@ else{
             echo "<tr>";
             echo "<th>アドレス</th>";
             echo "<td>".$info['User']['address']."</td>";
-            echo "</tr>";
+            echo "</tr></table>";
 
-    echo $this->Html->link('Edit', array('controller'=>'teachers','action'=>'edit',$user_id));
-    echo $this->Html->link('Change password', array('controller'=>'users','action'=>'changePassword'));
-    echo $this->Form->postLink('Delete', array('controller'=>'users','action'=>'delete',$user_id),
-        array('confirm'=>'Ban co chac khong?'));
+    echo "<button>".$this->Html->link('Edit', array('controller'=>'teachers','action'=>'edit',$user_id))."</button>";
+    echo "<button>".$this->Html->link('Change password', array('controller'=>'users','action'=>'changePassword'))."</button>";
+    echo "<button>".$this->Form->postLink('Delete', array('controller'=>'users','action'=>'delete',$user_id),
+        array('confirm'=>'Ban co chac khong?'))."</button>";
     echo "</div>";
 
 
