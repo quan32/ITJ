@@ -11,6 +11,7 @@ class SourcesController extends AppController{
 	}
 
 	public function add1($id =null) {
+		$this->set('menu_type','teacher_menu');
 
 		if ($this->request->is('post')) {
 			// debug($this->request->data);die;
@@ -36,6 +37,7 @@ class SourcesController extends AppController{
 
 
 	public function add($id =null) {
+		$this->set('menu_type','teacher_menu');
 
 		$sources = $this->Source->find('all', array('conditions'=>array('lecture_id'=>$id)));
 		$this->set('sources', $sources);
@@ -64,6 +66,7 @@ class SourcesController extends AppController{
 	}
 
 	public function edit($id){
+		$this->set('menu_type','teacher_menu');
 		$sources = $this->Source->find('all', array('conditions'=>array('lecture_id'=>$id)));
 		$this->set('sources', $sources);
 

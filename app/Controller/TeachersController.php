@@ -17,7 +17,7 @@ class TeachersController extends AppController{
 	
 	public function index (){
 	
-
+		$this->set('menu_type','teacher_menu');
 		$user_id = $this->Auth->user('id');
 		// var_dump($user_id);
 		$this->loadModel('User');
@@ -151,6 +151,7 @@ class TeachersController extends AppController{
 	}
 
 	public function info(){
+		$this->set('menu_type','teacher_menu');
 		$user_id = $this->Auth->user('id');
 		$this->loadModel('User');
 		$info = $this->User->findById($user_id);
@@ -159,22 +160,41 @@ class TeachersController extends AppController{
 	}
 
 	public function register($role =null){
+		$this->set('menu_type','empty');
 
 		if($this->request->is('post')){
-			$this->request->data['User']['role']=$role;
-			$this->request->data['User']['prevIP']=$this->request->clientIp();
-			$this->loadModel('User');
-			$this->User->create();
-			if($this->User->save($this->request->data)){
-				$this->Session->setFlash(__('The user has been saved'));
-				return $this->redirect(array('controller'=>'users','action'=>'login'));
+			if($this->request->data['User']['NQ']==1){
+				$this->loadModel('User');
+				if($this->User->findByUsername($this->request->data['User']['username'])){
+					$this->Session->setFlash(__('Tai khoan da ton tai, hay chon ten dang nhap khac'));
+					unset($this->request->data['User']['password']);
+					// return $this->redirect(array('controller'=>'users','action'=>'login'));
+				}else{
+					$this->request->data['User']['role']=$role;
+					$this->request->data['User']['prevIP']=$this->request->clientIp();
+					$this->loadModel('User');
+					$this->User->create();
+					if($this->User->save($this->request->data)){
+						$this->Session->setFlash(__('The user has been saved'));
+						$log="INFO, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 先生として成功して登録した';
+						$this->Log->writeLog('new_user.txt',$log);
+						return $this->redirect(array('controller'=>'users','action'=>'login'));
+					}
+					$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 先生として失敗して登録した';
+					$this->Log->writeLog('new_user.txt',$log);
+					$this->Session->setFlash(__('The user could no be saved. Please try again'));
+				}
+			}else{
+				$this->Session->setFlash(__('Ban chua dong y voi dieu khoan su dung website'));
+				unset($this->request->data['User']['password']);
 			}
-
-			$this->Session->setFlash(__('The user could no be saved. Please try again'));
+			
+			
 		}
 	}
 
 	public function edit($id =null){
+		$this->set('menu_type','teacher_menu');
 
 		$user_id = $this->Auth->user('id');
 		$this->loadModel('User');
@@ -199,57 +219,20 @@ class TeachersController extends AppController{
 	}
 
 	/**
-	* function change teacher's password
-	*
-	* @author lucnd
-	*/
-	public function changePassword($id =null){
-
-		$userId = $this->Auth->user('id');
-		$this->loadModel('User');
-		$this->User->id = $userId;
-		// current user
-		$currUser = $this->User->findById($userId);
-
-		if(!$this->User->exists()){
-			throw new NotFoundException(__('Invalid user'));
-		}
-
-		if($this->request->is(array('post','put'))){
-			// hash default sha1
-			$passwordHasher = new SimplePasswordHasher();
-			$arrPass = $this->request->data;
-			// check current password
-			if($passwordHasher->check($arrPass['User']['currPassword'],$currUser['User']['password'])){
-				// check new password and confirm password
-				if($arrPass['User']['newPassword'] == $arrPass['User']['confPassword']){
-					// assign new password to password
-					$currUser['User']['password'] = $arrPass['User']['newPassword'];
-					// save user, run function beforeSave() to hash new password
-					if($this->User->save($currUser)){
-						$this->Session->setFlash(__('Password has been updated'));
-						return $this->redirect(array('action' => 'info'));
-					}
-					$this->Session->setFlash(__('Change password fail'));
-				}
-				$this->Session->setFlash(__('Confirm password fail'));
-			}
-			$this->Session->setFlash(__('Current password fail'));
-		}else{
-			$this->request->data = $this->User->read(null, $id);
-		}
-	}
-
-	/**
 	* function view result of student who do current teacher's test
 	* 
 	*
 	* @author lucnd
 	*/
-	public function viewResult($id = null){
+
+	public function viewResult(){
+		$this->set('menu_type','teacher_menu');
+		$this->pageTitle = "View test result";
+
 		$userId = $this->Auth->user('id');
 		$this->loadModel('User');
 		$this->User->id = $userId;
+
 
 		$this->loadModel('Result');
 		$this->loadModel('Lecture');
@@ -271,11 +254,6 @@ class TeachersController extends AppController{
 		        'limit' => 5,
 		        'order' => array('created' => 'desc')
 		    );
-		    
-		    $results = $this->paginate('Result');  
-		    
-			$this->set('results',$results);
-			//pr($results);
 		}
 		else{
 			$this->set('results',null);
@@ -288,6 +266,9 @@ class TeachersController extends AppController{
 	* @author lucnd
 	*/
 	public function statistic(){
+
+		$this->set('menu_type','teacher_menu');
+		$this->pageTitle = "Statistic";
 
 		$userId = $this->Auth->user('id');
 		$this->loadModel('User');

@@ -8,6 +8,8 @@
 		echo $this->Form->input('name');
 		echo $this->Form->input('cost');
 		echo $this->Form->input('description');	
+		echo $this->Form->checkbox('NQ', array('checked' => false));
+		echo $this->Form->label('Toi dam bao rang bai giang cung nhung tai lieu lien quan la co ban quyen');
 		echo $this->Form->end('Tiep');
 	?>
 </fieldset>

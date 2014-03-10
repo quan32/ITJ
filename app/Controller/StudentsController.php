@@ -15,23 +15,37 @@ class StudentsController extends AppController{
 
 
 	public function register($role =null){
+		$this->set('menu_type','empty');
 		 // var_dump($role);
 
 		if($this->request->is('post')){
-			// var_dump($this->request->data);die;
-			$this->request->data['User']['role']=$role;
 			$this->loadModel('User');
-			$this->User->create();
-			if($this->User->save($this->request->data)){
-				$this->Session->setFlash(__('The user has been saved'));
-				return $this->redirect(array('controller'=>'users','action'=>'login'));
-			}
+			if($this->User->findByUsername($this->request->data['User']['username'])){
+				$this->Session->setFlash(__('Tai khoan da ton tai, hay chon ten dang nhap khac'));
+				unset($this->request->data['User']['password']);
+				// return $this->redirect(array('controller'=>'users','action'=>'login'));
+			}else{
+				$this->request->data['User']['role']=$role;
+				$this->request->data['User']['prevIP']=$this->request->clientIp();
+				$this->loadModel('User');
+				$this->User->create();
+				if($this->User->save($this->request->data)){
+					$log="INFO, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 学生として成功して登録した';
+					$this->Log->writeLog('new_user.txt',$log);
+					$this->Session->setFlash(__('The user has been saved'));
+					return $this->redirect(array('controller'=>'users','action'=>'login'));
+				}
 
-			$this->Session->setFlash(__('The user could no be saved. Please try again'));
+				$this->Session->setFlash(__('The user could no be saved. Please try again'));
+				$log="INFO, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 学生として成功して登録した';
+				$this->Log->writeLog('new_user.txt',$log);
+			}
+			
 		}
 	}
 
 	public function index(){
+		$this->set('menu_type','student_menu');
 	//lay 5 bai giang moi nhat trong he thong ma user nay dang ki
 		$user_id = $this->Auth->user('id');
 		$this->loadModel('Register');
@@ -110,6 +124,7 @@ class StudentsController extends AppController{
 
 	public function top_lecture_hot()
 	{
+		$this->set('menu_type','student_menu');
 		$user_id = $this->Auth->user('id');
 		$options = 	array(
 					'joins' => array(
@@ -156,6 +171,7 @@ class StudentsController extends AppController{
 
 
 	public function view_info(){
+		$this->set('menu_type','student_menu');
 		$user_id = $this->Auth->user('id');
 		$this->loadModel('User');
 		$info = $this->User->findById($user_id);
@@ -166,6 +182,7 @@ class StudentsController extends AppController{
 	
 	public function registed_lecture()
 	{
+		$this->set('menu_type','student_menu');
 		$user_id = $this->Auth->User('id');
 		$this->loadModel('Register');
 	
@@ -195,6 +212,7 @@ class StudentsController extends AppController{
 
 	public function register_lecture($param1 = null, $param2 = null)
 	{
+		$this->set('menu_type','student_menu');
 		$user_id = $this->Auth->User('id');
 		if($param1 == NULL) $this->redirect(array("action" => 'index') );
 		if(!isset($param1)) $this->redirect(array("action" => 'index') );
@@ -225,6 +243,7 @@ class StudentsController extends AppController{
 
 	public function money_this_month()
 	{
+		$this->set('menu_type','student_menu');
 		$user_id = $this->Auth->user('id');
 		$this->loadModel('Register');
 
@@ -255,6 +274,7 @@ class StudentsController extends AppController{
 
 	public function result_statistics()
 		{
+			$this->set('menu_type','student_menu');
 			$user_id = $this->Auth->user('id');
 			$this->loadModel('Result');
 			$options['joins'] = array(
@@ -285,6 +305,7 @@ class StudentsController extends AppController{
 		}
 	public function lectures_statistics()
 	{
+		$this->set('menu_type','student_menu');
 		$user_id = $this->Auth->user('id');
 		$this->loadModel('Lecture');
 		$this->loadModel('Register');
@@ -325,6 +346,7 @@ class StudentsController extends AppController{
 	}
 		
 	public function edit_info($id = null){
+		$this->set('menu_type','student_menu');
 		$user_id = $this->Auth->user('id');
 		$this->loadModel('User');
 		$this->User->id =$user_id;
@@ -353,6 +375,7 @@ class StudentsController extends AppController{
 
 	public function calc_money()
 	{
+		$this->set('menu_type','student_menu');
 		//Tinh tien tu dau thang den ngay hien tai
 		$user_id = $this->Auth->user('id');
 		$this->loadModel('Register');
@@ -371,6 +394,7 @@ class StudentsController extends AppController{
 	
 	public function del_account()
 	{
+		$this->set('menu_type','student_menu');
 		if($this->request->is('post') || $this->request->is('put')){
 					$user_id = $this->Auth->user('id');
 					$this->loadModel('User');
@@ -400,43 +424,6 @@ class StudentsController extends AppController{
 			}
 
 		
-	}
-
-	/**
-	* function change student's password
-	*
-	* @author lucnd
-	*/
-	public function changePassword($id =null){
-		$userId = $this->Auth->user('id');
-		$this->loadModel('User');
-		$this->User->id = $userId;
-		// current user
-		$currUser = $this->User->findById($userId);
-
-		if($this->request->is(array('post','put'))){
-			// hash default sha1
-			$passwordHasher = new SimplePasswordHasher();
-			$arrPass = $this->request->data;
-			// check current password
-			if($passwordHasher->check($arrPass['User']['currPassword'],$currUser['User']['password'])){
-				// check new password and confirm password
-				if($arrPass['User']['newPassword'] == $arrPass['User']['confPassword']){
-					// assign new password to password
-					$currUser['User']['password'] = $arrPass['User']['newPassword'];
-					// save user, run function beforeSave() to hash new password
-					if($this->User->save($currUser)){
-						$this->Session->setFlash(__('Password has been updated'));
-						return $this->redirect(array('action' => 'info'));
-					}
-					$this->Session->setFlash(__('Change password fail'));
-				}
-				$this->Session->setFlash(__('Confirm password fail'));
-			}
-			$this->Session->setFlash(__('Current password fail'));
-		}else{
-			$this->request->data = $this->User->read(null, $id);
-		}
 	}
 }
 ?>

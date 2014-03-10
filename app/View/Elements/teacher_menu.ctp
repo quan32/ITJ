@@ -11,13 +11,18 @@
 		?></li>
 
 		<li><?php 
+		echo $this->Html->link('Add new lecture ', 
+			array('controller' => 'lectures', 'action' =>'add'));
+		?></li>
+
+		<li><?php 
 		echo $this->Html->link('Lecture manager ', 
 			array('controller' => 'lectures', 'action' =>'index'));
 		?></li>
 
 		<li><?php 
 		echo $this->Html->link('Change Password', 
-			array('controller' => 'teachers', 'action' => 'changePassword'));
+			array('controller' => 'users', 'action' => 'changePassword'));
 		?></li>
 
 		<li><?php 
@@ -28,6 +33,11 @@
 		<li><?php 
 		echo $this->Html->link('Statistic', 
 			array('controller' => 'teachers', 'action' => 'statistic'));
+		?></li>
+
+		<li><?php 
+		echo $this->Html->link('Logout ', 
+			array('controller' => 'users', 'action' => 'logout'));
 		?></li>
 
 	</ul>

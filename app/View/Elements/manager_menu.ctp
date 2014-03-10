@@ -18,6 +18,11 @@
 		?></li>
 
 		<li><?php 
+		echo $this->Html->link('Change master data', 
+			array('controller' => 'manages', 'action' => 'masterdata'));
+		?></li>
+
+		<li><?php 
 		echo $this->Html->link('Lecture manager ', 
 			array('controller' => 'manages', 'action' =>'lecture'));
 		?></li>
@@ -25,6 +30,11 @@
 		<li><?php 
 		echo $this->Html->link('Add admin', 
 			array('controller' => 'manages', 'action' => 'register'));
+		?></li>
+
+		<li><?php 
+		echo $this->Html->link('Logout', 
+			array('controller' => 'users', 'action' => 'logout'));
 		?></li>
 
 	</ul>

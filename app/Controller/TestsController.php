@@ -15,12 +15,18 @@ class TestsController extends AppController {
 	}
 
 	public function index($lecture_id = null){
+		$this->set('menu_type','teacher_menu');
 		$tests = $this->Test->findAllByLectureId($lecture_id);
 		$this->set('tests', $tests);
 		$this->set('lecture_id', $lecture_id);
 	}
 
 	public function view($id = null){
+		if($this->Auth->user('role')=='student')
+			$this->set('menu_type','student_menu');
+		elseif($this->Auth->user('role')=='teacher')
+			$this->set('menu_type','teacher_menu');
+
 		$this->Test->id = $id;
 		if(!$this->Test->exists())
 			throw new NotFoundException(__('Invalid test'));
@@ -36,6 +42,11 @@ class TestsController extends AppController {
 	}
 
 	public function view_result(){
+		if($this->Auth->user('role')=='student')
+			$this->set('menu_type','student_menu');
+		elseif($this->Auth->user('role')=='teacher')
+			$this->set('menu_type','teacher_menu');
+		
 		//don't use layout
 		$this->layout = false;
 		$test_id = $this->data['Questions']['test_id'];
@@ -62,6 +73,7 @@ class TestsController extends AppController {
 	}
 
 	public function add($lecture_id = null){
+		$this->set('menu_type','teacher_menu');
 		if($this->request->is('post')){
 			$this->request->data['Test']['lecture_id']=$lecture_id;
 			//TODO check if not select file
@@ -92,6 +104,7 @@ class TestsController extends AppController {
 	}
 
 	public function edit($id = null){
+		$this->set('menu_type','teacher_menu');
 		$this->Test->id =$id;
 		if(!$this->Test->exists()){
 			throw new NotFoundException(__('Invalid test'));

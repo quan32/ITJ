@@ -14,21 +14,8 @@ class UsersController extends AppController{
 		return false;
 	}
 
-
-	public function vidu(){
-		if($this->request->is('post')){
-			debug($this->request->data);
-		}
-		
-	}
-	public function index(){
-		// $this->User->recursive = 0;
-		// $this->set('users', $this->paginate());
-	}
-	
-
-
 	public function view($id = null){
+		$this->set('menu_type','menu');
 		$this->User->id = $id;
 		if(!$this->User->exists())
 			throw new NotFoundException(__('Invalid user'));
@@ -37,6 +24,7 @@ class UsersController extends AppController{
 	}
 
 	public function edit($id = null){
+		$this->set('menu_type','menu');
 		$this->User->id =$id;
 		if(!$this->User->exists()){
 			throw new NotFoundException(__('Invalid user'));
@@ -50,7 +38,7 @@ class UsersController extends AppController{
 		        $this->Session->setFlash(
 		            __('The user could not be saved. Please, try again.'));
 		} else {
-		$this->request->data = $this->User->read(null, $id);
+			$this->request->data = $this->User->read(null, $id);
 		        unset($this->request->data['User']['password']);
 		    }
 
@@ -82,9 +70,11 @@ class UsersController extends AppController{
 	}
 
 	public function login(){
+		// var_dump($this->request->data);die;
 		// $this->layout='ajax';
 		$max=3;//so lan dang nhap that bai thi bi khoa tai khoan tam thoi
 		$time=7200;//7200(s)=2(h)
+		$this->set('menu_type','empty');
 
 		// Check session
 		if($this->Auth->loggedIN() && $this->Auth->user('state')=="normal"){
@@ -111,6 +101,8 @@ class UsersController extends AppController{
 					if($user['User']['role']=='teacher'){
 						if($user['User']['state']=='new'){//Trang thai moi dang nhap dang cho xac nhan
 							$this->Session->setFlash(__('Tai khoan chua duoc quan tri chap nhan, hay quay lai sau'));
+							$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 管理者の同意を取ってないアカウントでログインした';
+							$this->Log->writeLog('login.txt',$log);
 							return $this->redirect(array('action'=>'login'));
 						}elseif ($user['User']['state']=='blocked') {//Trang thai bi khoa tam thoi do qua 3 lan dang nhap that bai
 							$time_now = intval(strtotime(date('H:i:s d-m-Y')));
@@ -121,22 +113,32 @@ class UsersController extends AppController{
 								$this->User->id=$user['User']['id'];
 								$this->User->saveField('failedNo',0);
 								$this->Session->setFlash(__('Tai khoan cua ban vua qua khoi thoi gian khoa tam thoi, hay nhap verify code'));
+								$log="INFO, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', アカウントはアンブロックしたばかりだ';
+								$this->Log->writeLog('login.txt',$log);
 								return $this->redirect(array('controller'=>'users','action'=>'verify1',$user['User']['id']));
 							}else{
 								$this->Session->setFlash(__('Tai khoan dang tam thoi bi khoa hay tro lai sau'));
+								$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', ブロックしたアカウントでログインした';
+								$this->Log->writeLog('login.txt',$log);
 							return $this->redirect(array('action'=>'login'));
 							}			
 						}elseif($user['User']['state']=='deleted'){//Tai khoan da bi khoa
 							$this->Session->setFlash(__('Tai khoan da bi xoa, hay tao tai khoan moi'));
+							$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 削除したアカウントでログインした';
+							$this->Log->writeLog('login.txt',$log);
 							return $this->redirect(array('action'=>'login'));
 						}elseif($user['User']['prevIP']!=$IP && $user['User']['prevIP']!=null){//Dia chi Ip su dung khac voi lan su dung truoc
 							$this->Session->setFlash(__('Dia chi IP ban dang su dung khac dia chi IP su dung lan truoc, hay nhap ma xac thuc'));
+							$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 前回使用したIPアドレスに違うIPアドレスでログインした';
+							$this->Log->writeLog('login.txt',$log);
 							return $this->redirect(array('controller'=>'users','action'=>'verify2',$user['User']['id'], $IP));
 							}
 						
 					}elseif ($user['User']['role']=='student') {
 						if($user['User']['state']=='new'){//Trang thai moi dang nhap dang cho xac nhan
 							$this->Session->setFlash(__('Tai khoan chua duoc quan tri chap nhan, hay quay lai sau'));
+							$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 管理者の同意を取ってないアカウントでログインした';
+							$this->Log->writeLog('login.txt',$log);
 							return $this->redirect(array('action'=>'login'));
 						}elseif ($user['User']['state']=='blocked') {//Trang thai bi khoa tam thoi do qua 3 lan dang nhap that bai
 							$time_now = intval(strtotime(date('H:i:s d-m-Y')));
@@ -147,13 +149,19 @@ class UsersController extends AppController{
 								$this->User->id=$user['User']['id'];
 								$this->User->saveField('failedNo',0);
 								$this->Session->setFlash(__('Tai khoan cua ban vua qua khoi thoi gian khoa tam thoi, hay nhap dang nhap lai'));
+								$log="INFO, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', アカウントはアンブロックしたばかりだ';
+								$this->Log->writeLog('login.txt',$log);
 								return $this->redirect(array('action'=>'login'));
 							}else{
+								$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', ブロックしたアカウントでログインした';
+								$this->Log->writeLog('login.txt',$log);
 								$this->Session->setFlash(__('Tai khoan dang tam thoi bi khoa hay tro lai sau'));
 								return $this->redirect(array('action'=>'login'));
 							}			
 						}elseif($user['User']['state']=='deleted'){//Tai khoan da bi khoa
 							$this->Session->setFlash(__('Tai khoan da bi xoa, hay tao tai khoan moi'));
+							$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 削除したアカウントでログインした';
+							$this->Log->writeLog('login.txt',$log);
 							return $this->redirect(array('action'=>'login'));
 						}
 					}else{//Xu ly dang nhap cho manager
@@ -166,6 +174,8 @@ class UsersController extends AppController{
 						}
 						if($count==0){
 							$this->Session->setFlash(__('Dia chi IP khong dung'));
+							$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', このIPアドレスはIPアドレスリストにない';
+							$this->Log->writeLog('login.txt',$log);
 							return $this->redirect(array('action'=>'login'));
 						}
 					}
@@ -173,6 +183,8 @@ class UsersController extends AppController{
 				}
 
 				if($this->Auth->login()){
+					$log="INFO, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', ログインした成功して登録した';
+					$this->Log->writeLog('login.txt',$log);
 					$this->Session->setFlash('Your are logged in');
 					
 					if($this->Auth->user('role')=='manager')
@@ -184,6 +196,8 @@ class UsersController extends AppController{
 					}
 				else{
 					$this->Session->setFlash(__('Invalid username or password, try again'));
+					$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 第'.($user['User']['failedNo']+1).'回：ユーザ名又はパスワードが間違ってしまった';
+					$this->Log->writeLog('login.txt',$log);
 
 					if($user['User']['failedNo'] == $max){
 						$this->Session->setFlash(__('Ban da dang nhap that bai qua 3 lan.
@@ -202,13 +216,15 @@ class UsersController extends AppController{
 
 					
 				}else{
+					$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', アカウントが存在していない';
+					$this->Log->writeLog('login.txt',$log);
 					$this->Session->setFlash(__('Your account is not exist! Register new account, please'));
 					}	
 		}
 	}
 
 	public function verify1($id =null){
-		// $this->layout='ajax';
+		// $this->set('menu_type','menu');
 		if($this->request->is('post')){
 			$user= $this->User->findById($id);
 			if($user['User']['verify']==$this->request->data['User']['verify']){
@@ -224,7 +240,7 @@ class UsersController extends AppController{
 	}
 
 	public function verify2($id =null, $IP =null){
-		// $this->layout='ajax';
+		$this->set('menu_type','empty');
 		if($this->request->is('post')){
 			$user= $this->User->findById($id);
 			if($user['User']['verify']==$this->request->data['User']['verify']){
@@ -240,31 +256,20 @@ class UsersController extends AppController{
 		}
 	}
 
-	public function role(){
-		// $this->layout='ajax';
-		if($this->request->is('post')){
-			if($this->request->data['User']['role']=="student")
-				return $this->redirect(array('controller'=>'students','action'=>'register','student'));
-			else
-				return $this->redirect(array('controller'=>'teachers','action'=>'register','teacher'));	
-		}
-	}
-	
-	public function logout(){	
-		$this->Session->setFlash('Good-Bye');
-		return $this->redirect($this->Auth->logout());
-	}
-
 	/**
 	* function change teacher's password
 	*
 	* @author lucnd
 	*/
-	public function changePassword($id =null){
+	public function changePassword(){
+		if($this->Auth->user('role')=='student')
+			$this->set('menu_type','student_menu');
+		elseif($this->Auth->user('role')=='teacher')
+			$this->set('menu_type','teacher_menu');
+		
 		$this->pageTitle = "Change password";
 
 		$userId = $this->Auth->user('id');
-		$this->loadModel('User');
 		$this->User->id = $userId;
 		// current user
 		$currUser = $this->User->findById($userId);
@@ -285,81 +290,54 @@ class UsersController extends AppController{
 					$currUser['User']['password'] = $arrPass['User']['newPassword'];
 					// save user, run function beforeSave() to hash new password
 					if($this->User->save($currUser)){
+						// write success log to log file 7: change_password.txt
+						$log = '"SUCCESS", "'.(string)date('Y-m-d H:i:s').'", "'.(string)$userId.'"';
+						$this->Log->writeLog('change_password.txt',$log);
 						$this->Session->setFlash(__('Password has been updated'));
-						return $this->redirect(array('action' => 'info'));
+						if($this->Auth->user('role')=='manager')
+							return $this->redirect(array('controller'=>'manages','action'=>'info'));
+						elseif($this->Auth->user('role')=='teacher')
+							return $this->redirect(array('controller'=>'teachers','action'=>'info'));
+						else
+							return $this->redirect(array('controller'=>'students','action'=>'view_info'));
+
 					}
-					$this->Session->setFlash(__('Change password fail'));
+					else{
+						$this->Session->setFlash(__('Change password fail'));
+						$log = '"FAIL", "'.(string)date('Y-m-d H:i:s').'", "'.(string)$userId.'", "Can not save"';
+						$this->Log->writeLog('change_password.txt',$log);
+					}					
 				}
-				$this->Session->setFlash(__('Confirm password fail'));
+				else{
+					$this->Session->setFlash(__('Confirm password fail'));
+					$log = '"FAIL", "'.(string)date('Y-m-d H:i:s').'", "'.(string)$userId.'", "Confirm password fail"';
+					$this->Log->writeLog('change_password.txt',$log);	
+				}				
 			}
-			$this->Session->setFlash(__('Current password fail'));
+			else{
+				$this->Session->setFlash(__('Current password fail'));
+				$log = '"FAIL", "'.(string)date('Y-m-d H:i:s').'", "'.(string)$userId.'", "Current password fail"';
+				$this->Log->writeLog('change_password.txt',$log);	
+			}			
 		}else{
-			$this->request->data = $this->User->read(null, $id);
+			$this->request->data = $this->User->read(null, $userId);
 		}
 	}
 
-	/**
-	* function view result of student who do current teacher's test
-	* 
-	*
-	* @author lucnd
-	*/
-	public function viewResult($id = null){
-		$this->pageTitle = "View test result";
-
-		$userId = $this->Auth->user('id');
-		$this->loadModel('User');
-		$this->User->id = $userId;
-
-		$this->loadModel('Test');
-		$this->loadModel('Result');
-
-		
-		$tests = $this->Test->find('all',array('conditions'=>array('Test.user_id'=>$userId)));
-		$studs = $this->User->find('all',array('conditions'=>array('User.role'=>'student')));
-		$testId = array();
-		if(!empty($tests)){
-			foreach ($tests as $test) {
-				array_push($testId, $test['Test']['id']);
-			}
-
-		    $this->paginate = array(
-		        'conditions' => array('Result.test_id' => $testId),
-		        'limit' => 5,
-		        'order' => array('id' => 'desc')
-		    );
-		    
-		    $results = $this->paginate('Result');  
-		    
-			$this->set('results',$results);
-			//pr($results);
+	public function role(){
+		$this->set('menu_type','empty');
+		// $this->layout='ajax';
+		if($this->request->is('post')){
+			if($this->request->data['User']['role']=="student")
+				return $this->redirect(array('controller'=>'students','action'=>'register','student'));
+			else
+				return $this->redirect(array('controller'=>'teachers','action'=>'register','teacher'));	
 		}
-		
-		
-
 	}
-
-
-	public function statistic(){
-		$this->pageTitle = "Statistic";
-
-		$userId = $this->Auth->user('id');
-		$this->loadModel('User');
-		$this->User->id = $userId;
-		$this->loadModel('Test');
-		$this->loadModel('Lecture');
-
-		$tests = $this->Test->find('all',array('conditions'=>array('Test.user_id'=>$userId)));
-		$lectures = $this->Lecture->find('all',array('conditions'=>array('Lecture.user_id'=>$userId)));
-		$countRegister = 0;
-		pr($lectures);
-		// pr($tests);
-		foreach ($lectures as $lecture) {
-			$countRegister += count($lecture['Register']);
-		}
-		$this->set('tests',$tests);
-		$this->set('lectures',$lectures);
-		$this->set('countRegister',$countRegister);
+	
+	public function logout(){	
+		$this->Session->setFlash('Good-Bye');
+		return $this->redirect($this->Auth->logout());
 	}
 
 }
