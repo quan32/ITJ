@@ -7,7 +7,7 @@
 </tr>
 <?php
 	//
-	foreach($cons as $con) {
+	foreach ($cons as $con) {
 
         echo '<tr>';
 			echo '<td>'.$con["Constant"]["id"].'</td>';
@@ -18,7 +18,7 @@
 			
 			echo '<td>';
 			echo $this->Html->link('Edit', 
-			array('controller'=>'manages','action' => 'masterdata',$con["Constant"]["id"]));
+			array('controller'=>'manages','action' => 'editdata',$con["Constant"]["id"]));
 			echo '</td>';
 
 		echo '</tr>';
