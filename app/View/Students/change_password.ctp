@@ -6,5 +6,5 @@
 	echo $this->Form->input('confPassword',array('label' => '確認する 
 パスワード','type' => 'password'));
 	echo $this->Html->link('Cancel', array('action'=>'info'));
-	echo $this->Form->end('変更する');
+	echo $this->Form->end('変更');
 ?>

@@ -89,7 +89,7 @@ if($lectures){
 }
 
 else{
-    echo " Data empty";
+    echo " 空きデータ";
 }
 
 
