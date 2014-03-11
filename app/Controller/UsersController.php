@@ -5,7 +5,7 @@ class UsersController extends AppController{
 
 	public function beforeFilter(){
 		parent::beforeFilter();
-		$this->Auth->allow('login', 'role', 'verify1','verify2');
+		$this->Auth->allow('login', 'role', 'verify1','verify2', 'logincu');
 	}
 	public function isAuthorized($user){
 		// Only teacher can use teacher's function
@@ -70,6 +70,7 @@ class UsersController extends AppController{
 	}
 
 	public function login(){
+		$this->layout = false;
 		// var_dump($this->request->data);die;
 		// $this->layout='ajax';
 		$max=3;//so lan dang nhap that bai thi bi khoa tai khoan tam thoi
