@@ -14,7 +14,7 @@
 		text-align: right;
 	}
 </style>
-<h1>Your choice</h1>
+<h1>あなたの選択</h1>
 <?php
 	//Hien thi form with answered choice
 	$count = 1;
@@ -26,7 +26,6 @@
 		$attributes = array(
 		    'legend' => false,
 		    'value' => $result[$count]['answer'],
-		    'separator' => '<br>',
 		    'disabled' => true
 		);
 		echo $this->Form->radio($count.'.answer', $question['s'], $attributes);
@@ -35,7 +34,7 @@
 	echo $this->Form->input('num_row', array('value'=>$count ,'type'=>'hidden') );
 ?>
 <hr>
-<h1>Test Result</h1>
+<h1>テストの結果</h1>
 <?php
 	//Tinh diem
 	$count = 1;
@@ -50,15 +49,15 @@
 		$count++;
 		$tongdiem+=$question['point'];
 	}
-echo "So cau dung: ".$caudung."/".($count-1)."<br>";
-echo "Diem dat duoc: ".$diem."/".$tongdiem." ~ ".round($diem/$tongdiem*100,0)."<br>";
+echo "正しい答え: ".$caudung."/".($count-1)."<br>";
+echo "点数: ".$diem."/".$tongdiem." ~ ".round($diem/$tongdiem*100,0)."<br>";
 ?>
 <table>
 <tr>
-	<th>STT</th>
-	<th>So diem</th>
-	<th>Dung=1/Sai=0</th>
-	<th>Thanh Diem</th>
+	<th>順番</th>
+	<th>点数</th>
+	<th>正しい１/違い０</th>
+	<th>最後の点数</th>
 </tr>
 <?php
 	$count = 1;
@@ -74,7 +73,7 @@ echo "Diem dat duoc: ".$diem."/".$tongdiem." ~ ".round($diem/$tongdiem*100,0)."<
 	}	
 ?>
 <tr>
-	<td>Tong cong</td>
+	<td>全部の点数</td>
 	<td><?=$tongdiem;?></td>
 	<td><?=$caudung;?>/<?=$count-1;?></td>
 	<td><?=$diem;?></td>

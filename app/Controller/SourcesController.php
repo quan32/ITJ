@@ -21,7 +21,7 @@ class SourcesController extends AppController{
 			// attempt to save
 			if ($this->Source->save($this->request->data)) {
 
-				$this->Session->setFlash('Your source has been submitted');
+				$this->Session->setFlash('講義の資料は保存されていた');
 				$this->redirect(array('action' => 'add', $id));
 
 			// form validation failed
@@ -51,7 +51,7 @@ class SourcesController extends AppController{
 			// attempt to save
 			if ($this->Source->save($this->request->data)) {
 
-				$this->Session->setFlash('Your source has been submitted');
+				$this->Session->setFlash('講義の資料は保存されていた');
 				$this->redirect(array('action' => 'add', $id));
 
 			// form validation failed
@@ -79,7 +79,7 @@ class SourcesController extends AppController{
 
 			// attempt to save
 			if ($this->Source->save($this->request->data)) {
-				$this->Session->setFlash('Your source has been upload');
+				$this->Session->setFlash('講義の資料はアップロードされていた');
 				$this->redirect(array('action' => 'edit', $id));
 
 			// form validation failed
@@ -100,17 +100,17 @@ class SourcesController extends AppController{
 			$lecture_id = $source['Source']['lecture_id'];
 
 			$this->Source->id = $id;
-			if(!$this->Source->exists())
-				throw new NotFoundException(__('Invalid Source'));
+			if(!$this->Source->exists())削除した
+				throw new NotFoundException(__('不当な資料'));
 
 			if($this->Source->delete()){
-				$this->Session->setFlash(__('Source deleted'));
+				$this->Session->setFlash(__('削除した'));
 				return $this->redirect(array('action'=>'edit', $lecture_id));
 			}
-			$this->Session->setFlash(__('Source was not deleted'));
+			$this->Session->setFlash(__('まだ削除するのが失敗している'));
 				return $this->redirect(array('action' => 'edit', $lecture_id));
 		}else{
-			$this->Session->setFlash(__('Thao tac loi'));
+			$this->Session->setFlash(__('エラー操作'));
 			return $this->redirect(array('controller'=>'teachers','action' => 'index'));
 		}
 		

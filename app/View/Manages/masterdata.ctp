@@ -1,10 +1,9 @@
-<h1>Thay đổi master data</h1>
 <table>
 <tr>
 	<th>ID</th>
-	<th>Name</th>
-	<th>Value</th>
-	<th>Edit</th>
+	<th>タイトル</th>
+	<th>価値</th>
+	<th>編集</th>
 </tr>
 <?php
 	//
@@ -18,7 +17,7 @@
 			echo '<td>'.$con["Constant"]['value'].'</td>';
 			
 			echo '<td>';
-			echo $this->Html->link('Edit', 
+			echo $this->Html->link('編集', 
 			array('controller'=>'manages','action' => 'editdata',$con["Constant"]["id"]));
 			echo '</td>';
 

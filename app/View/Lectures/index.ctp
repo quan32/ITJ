@@ -1,14 +1,14 @@
-<h1>Quan ly bai giang</h1>
+<h1>講義をマネジメント</h1>
 
 <table>
 <tr>
 	<th>ID</th>
-	<th>Title</th>
-	<th>Cost</th>
-	<th>Created Time</th>
-	<th>Test</th>
-	<th>View</th>
-	<th>Action</th>
+	<th>タイトル</th>
+	<th>値段(コスト)</th>
+	<th>作成した時間</th>
+	<th>テスト</th>
+	<th>表現</th>
+	<th>管理</th>
 </tr>
 <?php
 	// debug($lectures);die;
@@ -20,23 +20,23 @@
 			echo '<td>'.$lecture['Lecture']['created'].'</td>';
 			
 			echo '<td>';
-			echo $this->Html->link('List', 
+			echo $this->Html->link('リスト', 
 				array('controller'=>'tests','action' => 'index',$lecture['Lecture']["id"]));
 			echo '</td>';
 
 			
 			echo '<td>';
-			echo $this->Html->link('View', 
+			echo $this->Html->link('表現', 
 				array('controller'=>'lectures','action' => 'view',$lecture['Lecture']["id"]));
 			echo '</td>';
 
 			echo '<td>';
-			echo $this->Html->link('Edit', 
+			echo $this->Html->link('編集　｜', 
 				array('action' => 'edit', $lecture['Lecture']["id"]));
 			echo " ";
-			echo $this->Form->postLink('Delete', 
+			echo $this->Form->postLink('　削除', 
 				array('controller'=>'lectures','action' => 'delete',$lecture['Lecture']["id"]),
-				array('confirm' => 'Are you sure?'));
+				array('confirm' => '本気？'));
 			echo '</td>';
 		echo '</tr>';
 	}

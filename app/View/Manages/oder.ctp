@@ -1,12 +1,12 @@
-<h1>In hoa don </h1>
+<h1>請求書 </h1>
 
 <?php 
 
 echo $this->Form->create('Manage', array('url' => array('controller' => 'manages', 'action' => 'oder'))); 
-echo $this->Form->input('year', array('label'=>'Year', 'options'=>array('2014'=>'2014','2013'=>'2013')));
-echo $this->Form->input('month', array('label'=>'Month', 'options'=>array('1'=>'01','2'=>'02','3'=>'03','4'=>'04','5'=>'05','6'=>'06','7'=>'07','8'=>'08','9'=>'09','10'=>'10','11'=>'11','12'=>'12')));
+echo $this->Form->input('year', array('label'=>'年', 'options'=>array('2014'=>'2014','2013'=>'2013')));
+echo $this->Form->input('month', array('label'=>'月', 'options'=>array('1'=>'01','2'=>'02','3'=>'03','4'=>'04','5'=>'05','6'=>'06','7'=>'07','8'=>'08','9'=>'09','10'=>'10','11'=>'11','12'=>'12')));
 echo $this->Form->hidden('print', array('value' => false));
-echo $this->Form->end(array('label'=>'View'));
+echo $this->Form->end(array('label'=>'表現'));
 
 
 ?>
@@ -14,12 +14,12 @@ echo $this->Form->end(array('label'=>'View'));
 <table>
 <tr>
 	<th>ID</th>
-	<th>name</th>
-	<th>So tien</th>
-	<th>address</th>
-	<th>Phone number</th>
-	<th>credit</th>
-	<th>bank account</th>
+	<th>タイトル</th>
+	<th>お金</th>
+	<th>アドレス</th>
+	<th>携帯電話</th>
+	<th>クレジットカード</th>
+	<th>銀行預金口座</th>
 </tr>
 
 <?php
@@ -45,7 +45,7 @@ echo $this->Form->create('Manage', array('url' => array('controller' => 'manages
 echo $this->Form->hidden('month', array('value' => $month));
 echo $this->Form->hidden('year', array('value' => $year));
 echo $this->Form->hidden('print', array('value' => true));           
-echo $this->Form->end('Create');
+echo $this->Form->end('作成');
 
 }
 

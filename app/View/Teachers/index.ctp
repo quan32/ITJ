@@ -1,9 +1,9 @@
-<h1><?php echo __('Teacher Homepage'); ?></h1>
+<h1><?php echo __('先生のホームページ'); ?></h1>
 <?php
 echo $this->element('search');
 // 5 bai giang moi tao nhat
 if($lectures==NULL){
-    echo "<h2>Dada Empty</h2>";
+    echo "<h2>空きデータ</h2>";
 }
 else{
 
@@ -15,7 +15,7 @@ else{
             <th>タイトル</th>
             <th>価格</th>
             <th>作成日</th>
-            <th>so hoc sinh dang ki</th>
+            <th>登録した学生の数</th>
           </tr>";
         foreach($lectures as $lecture){
         echo "<tr>";
@@ -44,8 +44,8 @@ if(!isset($moneySum)) $moneySum = 0;
     echo "<table>
         <caption>報酬情報 : </caption>
           <tr>
-            <th>Time</th>
-            <th>Money</th>
+            <th>時間</th>
+            <th>お金</th>
           </tr>";
    
         echo "<tr>";
@@ -76,8 +76,8 @@ if($numberOfAllLearnedStudent == Null) $numberOfAllLearnedStudent = 0;
     echo "<table>
         <caption>登録した学生の人数 : </caption> 
         <tr>
-            <th>Time</th>
-            <th>Value</th>
+            <th>時間</th>
+            <th>価値</th>
         </tr>";
         
    

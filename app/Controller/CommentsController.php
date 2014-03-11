@@ -2,7 +2,14 @@
 class CommentsController extends AppController{
 	public function beforeFilter(){
 		parent::beforeFilter();
-		$this->Auth->allow('add');
+		// $this->Auth->allow('add');
+	}
+
+	public function isAuthorized($user){
+		// Only teacher can use teacher's function
+		if($user['role']=='teacher' || $user['role']=='student')
+			return true;
+		return false;
 	}
 
 	public function add(){

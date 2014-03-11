@@ -1,4 +1,4 @@
-<h1>Media file</h1>
+<h1>メディアファイル</h1>
 <object classid="" codebase=" " width="352" height=" 308" align="middle">
     <param name="FlashVars" value="">
     <param name="movie" value="">

@@ -1,5 +1,5 @@
 <fieldset>
-	<legend>Them file vao bai giang</legend>
+	<legend>講義の添付ファイルを選択してください</legend>
 
 	<?php 
 		echo $this->Form->create('Source', array('type'=>'file','enctype'=>'multipart/form-data'));
@@ -7,7 +7,7 @@
 
 		 <?php if (!empty($this->data['Source']['filepath'])): ?>
 			<div class="input">
-			<label>Uploaded File</label>
+			<label>添削したファイル</label>
 			<?php
 			echo $this->Form->input('filepath', array('type'=>'hidden'));
 			echo $this->Html->link(basename($this->data['Source']['filepath']), $this->data['Source']['filepath']);
@@ -21,7 +21,7 @@
 
 	<?php
 		echo $this->Form->end('Upload');
-		echo "<button onclick='window.history.back();'>Back</button>";
-		echo $this->Html->link('Finish', array('controller'=>'lectures', 'action'=>'index'));
+		echo "<button onclick='window.history.back();'>戻る</button>";
+		echo $this->Html->link('｜　完成', array('controller'=>'lectures', 'action'=>'index'));
 	?>
 </fieldset>

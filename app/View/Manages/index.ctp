@@ -1,20 +1,17 @@
-<?php
-	echo $this->element('search');
-?>
-<h1>Quản lý người dùng hiện tại</h1>
+<h1>ユーザー管理</h1>
 
 <table>
 <tr>
 	<th>ユーザ名</th>
 	<th>氏名</th>
-    <th>Role</th>	
+    <th>新しい登録</th>	
 	<th>生年月日</th>
 	<th>住所</th>
 	<th>電話番号</th>
     <th>クレジットカード情報(学生)</th>
     <th>銀行口座情報(先生)</th>
-    <th>Lock</th>
-    <th>pass</th>
+    <th>ロック</th>
+    <th>パスワード変化</th>
 	</tr>
 <?php
 	
@@ -31,18 +28,18 @@
 			echo '<td>'.$user["User"]["id"].'</td>';
 			
 	    echo '<td>';
-       echo $this->Form->postLink('Delete', 
+       echo $this->Form->postLink('削除', 
 				array('controller'=>'users','action' => 'delete', $user["User"]["id"]),
-				array('confirm'=>'Are you sure?'));
+				array('confirm'=>'本気？'));
 
 		echo '</td>';
 		echo "<td>";
-		echo $this->Html->link('Lock', 
+		echo $this->Html->link('ロック', 
 				array('controller'=>'users','action' => 'lock', $user["User"]["id"]));
 			
 		echo "</td>";  
 		echo "<td>";
-		echo $this->Html->link('Reset', 
+		echo $this->Html->link('リセット', 
 				array('controller'=>'users','action' => 'reset', $user["User"]["id"]));
 			
 		echo "</td>";    

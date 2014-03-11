@@ -1,42 +1,42 @@
 <li><?php 
-echo $this->Html->link('Homepage', 
+echo $this->Html->link('ホームページ', 
 	array('controller' => 'students', 'action' => 'index'));
 	?></li>
 
 <li><?php 
-echo $this->Html->link('Information', 
+echo $this->Html->link('自身情報', 
 	array('controller' => 'students', 'action' => 'view_info'));
 ?></li>
 <li><?php 
-echo $this->Html->link('Hien cac bai giang trong he thong', 
+echo $this->Html->link('講義リスト', 
 	array('controller' => 'students', 'action' => 'lectures_statistics'));
 ?></li>
 
 <li><?php 
-echo $this->Html->link('Hoc phi', 
+echo $this->Html->link('学費', 
 	array('controller' => 'students', 'action' => 'money_this_month'));
 ?></li>
 
 <li><?php 
-echo $this->Html->link('thong ke cac bai test', 
+echo $this->Html->link('テストの結果統計', 
 	array('controller' => 'students', 'action' => 'results_statistics'));
 ?></li>
 
 <li><?php 
-echo $this->Html->link('Nhung bai giang dang ky', 
+echo $this->Html->link('受けた講義リスト', 
 	array('controller' => 'students', 'action' => 'registed_lectures'));
 ?></li>
 <li><?php 
-echo $this->Html->link('Top cac bai hot trong he thong', 
+echo $this->Html->link('気に入りの講義リスト', 
 	array('controller' => 'students', 'action' => 'top_lectures_hot'));
 ?></li>
 
 <li><?php 
-echo $this->Html->link('Change Password', 
+echo $this->Html->link('パスワード変化', 
 	array('controller' => 'users', 'action' => 'changePassword'));
 ?></li>
 
 <li><?php 
-echo $this->Html->link('Logout ', 
+echo $this->Html->link('ログアウト ', 
 	array('controller' => 'users', 'action' => 'logout'));
 ?></li>

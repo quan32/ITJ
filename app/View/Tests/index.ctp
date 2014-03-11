@@ -1,12 +1,12 @@
-<h1>Tests List</h1>
+<h1>各テスト</h1>
 <table>
 <tr>
 	<th>ID</th>
-	<th>Name</th>
-	<th>Time</th>
-	<th>Lecture ID</th>
-	<th>Created Time</th>
-	<th>Action</th>
+	<th>タイトル</th>
+	<th>テスト時間</th>
+	<th>講義の ID</th>
+	<th>作った時間</th>
+	<th>管理</th>
 </tr>
 <?php
 	foreach ($tests as $test) {
@@ -20,17 +20,17 @@
 			echo '<td>'.$value["time"].'</td>';
 			echo '<td>'.$value["lecture_id"].'</td>';			
 			echo '<td>'.$value["created"].'</td>';
-			echo '<td>'.$this->Html->link('Edit', 
+			echo '<td>'.$this->Html->link('編集　｜', 
 				array('action' => 'edit', $value["id"]));
 			echo " ";
-			echo $this->Form->postLink('Delete', 
+			echo $this->Form->postLink('　削除', 
 				array('action' => 'delete', $value["id"]),
-				array('confirm' => 'Are you sure?'));
+				array('confirm' => '本気？'));
 			echo '</td>';
 		//}
 		echo '</tr>';
 	}
 ?>
 </table>
-<?=	$this->Html->link('Add new test',
+<?=	$this->Html->link('新しいテストを作成',
 				array('controller' => 'tests','action' => 'add',$lecture_id)); ?>

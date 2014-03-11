@@ -4,12 +4,12 @@ define ('UPLOAD_FOLDER', realpath(dirname(__FILE__).DS.'..'.DS.'webroot'.DS.'fil
 class TestsController extends AppController {
 	public function beforeFilter(){
 		parent::beforeFilter();
-		$this->Auth->allow('index','add','edit','view','view_result', 'delete');
+		// $this->Auth->allow('index','add','edit','view','view_result', 'delete');
 	}
 
 	public function isAuthorized($user){
 		// Only teacher can use teacher's function
-		if($user['role']=='student')
+		if($user['role']=='student' || $user['role']=='teacher' || $user['role']=='manager')
 			return true;
 		return false;
 	}
@@ -29,7 +29,7 @@ class TestsController extends AppController {
 
 		$this->Test->id = $id;
 		if(!$this->Test->exists())
-			throw new NotFoundException(__('Invalid test'));
+			throw new NotFoundException(__('不当なテスト'));
 		
 		$this->set('test_id',$id);
 		$test = $this->Test->read(null, $id);
@@ -87,16 +87,16 @@ class TestsController extends AppController {
 					//create file
 					$this->Test->TsvFile->create();
 					if($this->Test->TsvFile->save(array('name' => $filename, 'type' => "TSV", 'test_id' => $this->Test->id))){					
-						$this->Session->setFlash(__('The test has been saved'));
+						$this->Session->setFlash(__('テストは保存されていた'));
 						return $this->redirect(array('action'=>'index',$lecture_id));
 					} else{
-						$this->Session->setFlash('There was a problem saving file. Please try again.');
+						$this->Session->setFlash('ファイルの保存するエラーが起きてしまった。してみてください。');
 					}
 				} else{
-					$this->Session->setFlash('There was a problem saving test. Please try again.');
+					$this->Session->setFlash('テストの保存するエラーが起きてしまった。してみてください。');
 				}
           	} else {
-	            $this->Session->setFlash('There was a problem uploading file. Please try again.');
+	            $this->Session->setFlash('アップロードするエラーが起きてしまった。してみてください。');
           	}
           	// $this->set('lecture_id',$lecture_id);
 			//$this->Session->setFlash(__('The test could no be saved. Please try again'));
@@ -107,7 +107,7 @@ class TestsController extends AppController {
 		$this->set('menu_type','teacher_menu');
 		$this->Test->id =$id;
 		if(!$this->Test->exists()){
-			throw new NotFoundException(__('Invalid test'));
+			throw new NotFoundException(__('不当なテスト'));
 		}
 
 		if ($this->request->is('post') || $this->request->is('put')) {
@@ -122,11 +122,11 @@ class TestsController extends AppController {
 			}
       		//update normal data
 			if ($this->Test->save($this->request->data)) {
-		            $this->Session->setFlash(__('The test has been saved'));
+		            $this->Session->setFlash(__('テストは保存されていた'));
 					return $this->redirect(array('action'=>'index',$test['Test']['lecture_id'])); 
 			}
 	        $this->Session->setFlash(
-	            __('The test could not be saved. Please, try again.'));
+	            __('テストは保存られなかった。してみてください。'));
 		} else {
 			$this->request->data = $this->Test->read(null, $id);
 	    }
@@ -139,7 +139,7 @@ class TestsController extends AppController {
 
 		$this->Test->id = $id;
 		if(!$this->Test->exists())
-			throw new NotFoundException(__('Invalid test'));
+			throw new NotFoundException(__('不当なテスト'));
 		$test = $this->Test->read(null, $id);
 		$filename = UPLOAD_FOLDER.DS.$test['TsvFile']['name'];
 		if($this->Test->delete()){
@@ -147,10 +147,10 @@ class TestsController extends AppController {
 			unlink($filename);
 			//delete link to file in db
 			$this->Test->TsvFile->deleteAll(array('TsvFile.test_id' => $id), false);
-			$this->Session->setFlash(__('Test deleted'));
+			$this->Session->setFlash(__('テストは削除した'));
 			return $this->redirect(array('action'=>'index',$test['Test']['lecture_id'])); 
 		}
-		$this->Session->setFlash(__('Test was not deleted'));
+		$this->Session->setFlash(__('テストはまだ削除していない'));
 		return $this->redirect(array('action' => 'index'));
 	}
 

@@ -8,14 +8,10 @@ class Lecture extends AppModel {
 		'name' => array(
 			'rule' => 'notEmpty',
 			'required' => true,
-			'message' => 'Please enter name for lecture.'),
-		'cost' => array(
-			'rule' => array('numeric'),
-			'required' => true,
-			'message' => 'Please enter cost for lecture.'),
+			'message' => '講義名を入力してください'),
 		'description' => array(
 			'rule' => array('maxLength', 255), 
-        	'message' => 'Description over max of length (255 character).'
+        	'message' => '入力したデータの長さは２５５桁以上だ'
 		)
 	);
 	

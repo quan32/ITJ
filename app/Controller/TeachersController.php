@@ -166,7 +166,7 @@ class TeachersController extends AppController{
 			if($this->request->data['User']['NQ']==1){
 				$this->loadModel('User');
 				if($this->User->findByUsername($this->request->data['User']['username'])){
-					$this->Session->setFlash(__('Tai khoan da ton tai, hay chon ten dang nhap khac'));
+					$this->Session->setFlash(__('このアカウントはシステムに存在している。他のアカウントを選んでください'));
 					unset($this->request->data['User']['password']);
 					// return $this->redirect(array('controller'=>'users','action'=>'login'));
 				}else{
@@ -175,17 +175,17 @@ class TeachersController extends AppController{
 					$this->loadModel('User');
 					$this->User->create();
 					if($this->User->save($this->request->data)){
-						$this->Session->setFlash(__('The user has been saved'));
+						$this->Session->setFlash(__('アカウントはデータベースに保存した'));
 						$log="INFO, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 先生として成功して登録した';
 						$this->Log->writeLog('new_user.txt',$log);
 						return $this->redirect(array('controller'=>'users','action'=>'login'));
 					}
 					$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 先生として失敗して登録した';
 					$this->Log->writeLog('new_user.txt',$log);
-					$this->Session->setFlash(__('The user could no be saved. Please try again'));
+					$this->Session->setFlash(__('アカウントはデータベースに保存できなかった。もう一度入力してみてください'));
 				}
 			}else{
-				$this->Session->setFlash(__('Ban chua dong y voi dieu khoan su dung website'));
+				$this->Session->setFlash(__('ウェブサイトの規則に同意していないから、登録できない'));
 				unset($this->request->data['User']['password']);
 			}
 			
@@ -200,12 +200,12 @@ class TeachersController extends AppController{
 		$this->User->id =$user_id;
 
 		if(!$this->User->exists()){
-			throw new NotFoundException(__('Invalid user'));
+			throw new NotFoundException(__('不当なユーザ'));
 		}
 
 		if ($this->request->is('post') || $this->request->is('put')) { 
 			if ($this->User->save($this->request->data)) {
-		            $this->Session->setFlash(__('The info has been updated'));
+		            $this->Session->setFlash(__('ユーザの情報が成功して更新された'));
 
 		          //ghi log :
 		          
@@ -237,7 +237,7 @@ class TeachersController extends AppController{
 		            
 		            $this->Log->writeLog($file,$content);
 		        $this->Session->setFlash(
-		            __('Sorry, occur an error. Please, try again.'));
+		            __('エラーが起きてしまった。もう一度してみてください'));
 		} else {
 		$this->request->data = $this->User->read(null, $id);
 		      //  unset($this->request->data['User']['password']);

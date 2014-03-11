@@ -27,7 +27,7 @@ class ManagesController extends AppController{
       if (!empty($this->request->data)) 
       {         
       if ($this->User->save($this->request->data)) {
-      $this->Session->setFlash(__('The user has been accepted'));
+      $this->Session->setFlash(__('アカウントは今から使用できる'));
       }
       } 
        
@@ -45,7 +45,7 @@ class ManagesController extends AppController{
       if (!empty($this->request->data)) 
       {         
       if ($this->User->save($this->request->data)) {
-      $this->Session->setFlash(__('The user has been accepted'));
+      $this->Session->setFlash(__('アカウントは今から使用できる'));
       }
       } 
        
@@ -70,17 +70,17 @@ class ManagesController extends AppController{
         $this->set("data",$this->Constant->findAllById($id));
         $this->Constant->id =$id;
         if(!$this->Constant->exists()){
-          throw new NotFoundException(__('Invalid constant'));
+          throw new NotFoundException(__('不当な定数'));
         }
 
         if ($this->request->is('post') || $this->request->is('put')) { 
           if ($this->Constant->save($this->request->data)) {
 
-              $this->Session->setFlash(__('The ip has been saved'));
+              $this->Session->setFlash(__('IPアドレスは保存されていた'));
               return $this->redirect(array('action' => 'masterdata')); 
             }
                 $this->Session->setFlash(
-                    __('The constant could not be saved. Please, try again.'));
+                    __('定数はまだ保存されていない。してみてください'));
         } else {
         //$this->request->data = $this->User->read(null, $id);
           //      unset($this->request->data['User']['password']);
@@ -143,7 +143,7 @@ class ManagesController extends AppController{
    }
 
    
-   $this->Session->setFlash(__('The oder has been printed'));
+   $this->Session->setFlash(__('データはファイルに書き込んだ'));
    return $this->redirect(array('action'=>'oder'));
    }
    
@@ -195,11 +195,11 @@ class ManagesController extends AppController{
       $this->request->data['User']['state']="normal";
       $this->User->create();
       if($this->User->save($this->request->data)){
-        $this->Session->setFlash(__('The user has been saved'));
+        $this->Session->setFlash(__('アカウントは保存されていた。'));
        return $this->redirect(array('action'=>'index'));
       }
 
-      $this->Session->setFlash(__('The user could no be saved. Please try again'));
+      $this->Session->setFlash(__('アカウントは保存されていない。もう一度してみてください'));
     }
   }
 
@@ -234,7 +234,7 @@ class ManagesController extends AppController{
       
       $this->Ip->create();
       if($this->Ip->save($this->request->data)){
-        $this->Session->setFlash(__('The Ip has been saved'));
+        $this->Session->setFlash(__('IPアドレスは保存されていた'));
        return $this->redirect(array('action'=>'change'));
       }
     }
@@ -266,13 +266,13 @@ class ManagesController extends AppController{
     
 
     if(!$this->Ip->exists())
-      throw new NotFoundException(__('Invalid Ip'));
+      throw new NotFoundException(__('不当なIPアドレス'));
 
     if($this->Ip->delete()){
-      $this->Session->setFlash(__('Ip deleted'));
+      $this->Session->setFlash(__('IPアドレスは削除された'));
       return $this->redirect(array('action'=>'change'));
     }
-    $this->Session->setFlash(__('Ip was not deleted'));
+    $this->Session->setFlash(__('IPアドレスは削除されていない'));
       return $this->redirect(array('action' => 'change'));
   }
   public function editip($id)
@@ -281,17 +281,17 @@ class ManagesController extends AppController{
     $this->loadModel('Ip'); 
     $this->Ip->id =$id;
     if(!$this->Ip->exists()){
-      throw new NotFoundException(__('Invalid ip'));
+      throw new NotFoundException(__('不当なIPアドレス'));
     }
 
     if ($this->request->is('post') || $this->request->is('put')) { 
       if ($this->Ip->save($this->request->data)) {
 
-          $this->Session->setFlash(__('The ip has been saved'));
+          $this->Session->setFlash(__('IPアドレスは保存されていた'));
           return $this->redirect(array('action' => 'change')); 
         }
             $this->Session->setFlash(
-                __('The ip could not be saved. Please, try again.'));
+                __('IPアドレスはまだ保存されていない。してみてください'));
     } else {
     //$this->request->data = $this->User->read(null, $id);
       //      unset($this->request->data['User']['password']);

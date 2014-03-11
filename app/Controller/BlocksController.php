@@ -2,7 +2,14 @@
 class BlocksController extends AppController{
 	public function beforeFilter(){
 		parent::beforeFilter();
-		$this->Auth->allow('add','delete');
+		// $this->Auth->allow('add','delete');
+	}
+
+	public function isAuthorized($user){
+		// Only teacher can use teacher's function
+		if($user['role']=='teacher')
+			return true;
+		return false;
 	}
 
 	public function add(){
@@ -14,9 +21,9 @@ class BlocksController extends AppController{
 			// attempt to save
 			if ($this->Block->save($this->request->data)) {
 				//success
-				echo "da block";die;
+				echo "ブロックした";die;
 			} else{
-				echo "block loi";die;
+				echo "だブロックしていない";die;
 			}
 
 		}

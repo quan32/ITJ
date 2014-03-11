@@ -1,4 +1,4 @@
-<h1>Thêm admin mới</h1>
+<h1>新管理者追加</h1>
 <div>
 	<?php
 		echo $this->Form->create('User');

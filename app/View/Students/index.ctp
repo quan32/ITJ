@@ -2,7 +2,7 @@
 echo $this->element('search');
 // Bang 1 : 5 bai hoc moi dang ki nhat
 if($fiveNewestLecture==NULL){
-    echo "<h2>Data Empty</h2>";
+    echo "<h2>空きデータ</h2>";
 }
 else{
 
@@ -67,11 +67,11 @@ else{
         echo "</tr>";
     }
     echo "</table>";
-    echo $this->Html->link('All', array('controller'=>'Students', 'action'=>'lectures_statistics'));
+    echo $this->Html->link('全て', array('controller'=>'Students', 'action'=>'lectures_statistics'));
 
 //bang 2 : 5 bai hot nhat he thong
     if($fiveHotLectures==NULL){
-    echo "<h2>Data Empty</h2>";
+    echo "<h2>空きデータ</h2>";
     }
     else
            { 
@@ -138,13 +138,13 @@ else{
         }
         }
 
-echo $this->Html->link('All', array('controller'=>'Students', 'action'=>'top_lectures_hot'));
+echo $this->Html->link('全て', array('controller'=>'Students', 'action'=>'top_lectures_hot'));
 
 
 
 // 5 bai test moi tham gia nhat
 if($fiveNewestTest==NULL){
-    echo "<h2>Data Empty</h2>";
+    echo "<h2>空きデータ</h2>";
 }
 else{
 
@@ -183,6 +183,6 @@ else{
 
 }
    
-echo $this->Html->link('All', array('controller'=>'Students', 'action'=>'result_statistics'));
+echo $this->Html->link('全て', array('controller'=>'Students', 'action'=>'result_statistics'));
 
 ?>

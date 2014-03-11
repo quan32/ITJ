@@ -1,11 +1,11 @@
-<h1>Preview</h1>
+<h1>表現</h1>
 <?
 if(isset($src)){
 ?>
 	<iframe width="723" height="756" src="<?php echo $src;?>"></iframe>
 <?}?>
 
-<h1>Media file</h1>
+<h1>メディアファイル</h1>
 <?php
 	foreach ($sources as $source) {
 			if($source['type']=='video/x-flv'){

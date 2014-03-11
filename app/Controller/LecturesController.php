@@ -34,7 +34,7 @@ class LecturesController extends AppController{
 					$this->redirect(array('controller'=>'sources','action' => 'add1',$id));
 				} 
 			}else{
-				$this->Session->setFlash(__('Ban chua dam bao ve tinh hop phap cua tai lieu nay'));
+				$this->Session->setFlash(__('この資料の著作権はまだ証明されていない'));
 			}
 			
 		}
@@ -49,11 +49,11 @@ class LecturesController extends AppController{
 
 		if ($this->request->is('post') || $this->request->is('put')) { 
 			if ($this->Lecture->save($this->request->data)) {
-		            $this->Session->setFlash(__('The Lecture has been saved'));
+		            $this->Session->setFlash(__('講義はシステムに保存していた'));
 					$this->redirect(array('controller'=>'sources','action' => 'edit',$id));
 				}
 		        $this->Session->setFlash(
-		            __('The Lecture could not be saved. Please, try again.'));
+		            __('講義はシステムに保存していない。もう一度してみてください'));
 		} else {
 			$this->request->data = $this->Lecture->read(null, $id);
 		    unset($this->request->data['Lecture']['password']);
@@ -71,17 +71,17 @@ class LecturesController extends AppController{
 				throw new NotFoundException(__('Invalid lecture'));
 
 			if($this->Lecture->delete()){
-				$this->Session->setFlash(__('Lecture deleted'));
+				$this->Session->setFlash(__('講義は削除した'));
 				if($this->Auth->user('role')=='teacher')
 					return $this->redirect(array('controller'=>'teachers','action'=>'index'));
 				else if($this->Auth->user('role')=='manager')
 					return $this->redirect(array('controller'=>'manages','action'=>'lecture'));
 
 			}
-			$this->Session->setFlash(__('Lecture was not deleted'));
+			$this->Session->setFlash(__('講義の削除するのは失敗した'));
 				return $this->redirect(array('action' => 'index'));
 		}else{
-			$this->Session->setFlash(__('Thao tac loi'));
+			$this->Session->setFlash(__('間違った操作'));
 				return $this->redirect(array('controller'=>'teachers','action' => 'index'));
 		}
 		

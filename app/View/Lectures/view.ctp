@@ -78,7 +78,7 @@
 			<iframe width="100%" height="600" src="<?php echo $src;?>"></iframe>
 		<?php }?>
 
-		<h1>Media file</h1>
+		<h1>メディアファイル</h1>
 		<?php
 			foreach ($sources as $source) {
 					if($source['type']=='video/x-flv'){
@@ -103,13 +103,13 @@
 		?>
 	</div>
 	<?php if($isLiked==0): ?>
-		<button id="like_button">Like</button>
-		<button id="dislike_button" style="display:none">Dislike</button>
+		<button id="like_button">いいね！</button>
+		<button id="dislike_button" style="display:none">取り消す</button>
 	<?php else: ?>
-		<button id="like_button" style="display:none">Like</button>
-		<button id="dislike_button">Dislike</button>
+		<button id="like_button" style="display:none">いいね！</button>
+		<button id="dislike_button">取り消す</button>
 	<?php endif ?>
-<em id="num_liked"><?=$num_liked?></em> nguoi da thich bai nay
+<em id="num_liked"><?=$num_liked?></em> 人はこの講義について「いいね！」
 	<ul class="nested-comments-complex">
 		<?php foreach ($comments as $value): ?>
 			<li>
@@ -169,8 +169,8 @@
 
 		<li class="comment<?= $lecture['Lecture']['id']; ?>">					
 			<div class="comment_text">
-				<p><a href="" class="author">Current User</a></p>
-				<textarea class="comment_text" id="<?= $lecture['Lecture']['id']; ?>">Write your comment here...</textarea>
+				<p><a href="" class="author">あなた</a></p>
+				<textarea class="comment_text" id="<?= $lecture['Lecture']['id']; ?>">あなたのコメントを入力...</textarea>
 			</div>
 		</li>
 	</ul>
@@ -210,13 +210,13 @@ $(document).ready(function(){
 		    });
 	     }
 	}).focus(function(){
-	    if(this.value == "Write your comment here..."){
+	    if(this.value == "あなたのコメントを入力..."){
 	         this.value = "";
 	    }
 
 	}).blur(function(){
 	    if(this.value==""){
-	         this.value = "Write your comment here...";
+	         this.value = "あなたのコメントを入力...";
 	    }
 	});
 	//like
@@ -256,7 +256,7 @@ $(document).ready(function(){
   	$(".block-link").click(function(){
   		var tmp = $(this);
     	var student_id = $(this).attr('id');
-    	if (confirm("Do you want to block this student?")) {
+    	if (confirm("Doこの学生をブロックは本気？")) {
     		$.ajax({
 		        url: base_url+"/blocks/add",
 		        type: "POST",
@@ -274,7 +274,7 @@ $(document).ready(function(){
   	$(".unblock-link").click(function(){
   		var tmp = $(this);
     	var student_id = $(this).attr('id');
-    	if (confirm("Do you want to unblock this student?")) {
+    	if (confirm("この学生をアンブロックは本気？")) {
     		$.ajax({
 		        url: base_url+"/blocks/delete",
 		        type: "POST",

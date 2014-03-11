@@ -1,4 +1,4 @@
-<h2>Add New IP</h2>
+<h2>新しいIPアドレス追加</h2>
 <div>
 		<?php echo $this->Form->create('Ip');?>
 		<?php echo $this->Form->input('ip');?>		
@@ -11,9 +11,9 @@
 <tr>
 	<th>ID</th>
 	<th>IP</th>
-	<th>User</th>
-	<th>Edit</th>
-	<th>Delete</th>
+	<th>ユーザー</th>
+	<th>編集</th>
+	<th>削除</th>
 	
 </tr>
 <?php

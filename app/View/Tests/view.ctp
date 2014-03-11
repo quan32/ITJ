@@ -11,14 +11,13 @@
 		//answer choice
 		$attributes = array(
 		    'legend' => false,
-		    'separator' => '<br>',
 		    //'checked'=> ($foo == "pro") ? FALSE : TRUE,
 		);
 		echo $this->Form->radio($count.'.answer', $question['s'], $attributes);
 
 		$count++;
 	}
-	echo $this->Form->end(array('label'=>'Submit'));
+	echo $this->Form->end(array('label'=>'送付'));
 ?>
 <script type="text/javascript">
 $(function() {

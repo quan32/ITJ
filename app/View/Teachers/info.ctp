@@ -1,7 +1,7 @@
 <?php
 
 if($info==NULL){
-    echo "<h2>Dada Empty</h2>";
+    echo "<h2>空きデータ</h2>";
 }
 else{
 
@@ -34,10 +34,10 @@ else{
             echo "<td>".$info['User']['address']."</td>";
             echo "</tr></table>";
 
-    echo "<button>".$this->Html->link('Edit', array('controller'=>'teachers','action'=>'edit',$user_id))."</button>";
-    echo "<button>".$this->Html->link('Change password', array('controller'=>'users','action'=>'changePassword'))."</button>";
-    echo "<button>".$this->Form->postLink('Delete', array('controller'=>'users','action'=>'delete',$user_id),
-        array('confirm'=>'Ban co chac khong?'))."</button>";
+    echo "<button>".$this->Html->link('編集　  ', array('controller'=>'teachers','action'=>'edit',$user_id))."</button>";
+    echo "<button>".$this->Html->link('パスワード変化　　', array('controller'=>'users','action'=>'changePassword'))."</button>";
+    echo "<button>".$this->Form->postLink('　削除   ', array('controller'=>'users','action'=>'delete',$user_id),
+        array('confirm'=>'本気？'))."</button>";
     echo "</div>";
 
 

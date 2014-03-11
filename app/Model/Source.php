@@ -12,7 +12,7 @@ class Source extends AppModel{
 			// http://book.cakephp.org/2.0/en/models/data-validation.html#Validation::uploadError
 			'uploadError' => array(
 				'rule' => 'uploadError',
-				'message' => 'Something went wrong with the file upload',
+				'message' => 'アップロードするとき、エラーが起きてしまった。',
 				'required' => FALSE,
 				'allowEmpty' => TRUE,
 			),
@@ -20,13 +20,13 @@ class Source extends AppModel{
 			'mimeType' => array(
 				'rule' => array('mimeType', array('application/msword','image/gif','image/png','image/jpg','image/jpeg',
 					'text/tab-separated-values','video/x-flv','audio/mp4', 'audio/mpeg')),
-				'message' => 'Invalid file',
+				'message' => '不当なファイル',
 				'required' => FALSE,
 				'allowEmpty' => TRUE,
 			),
 			// custom callback to deal with the file upload
 				'rule' => 'processUpload',
-				'message' => 'Something went wrong processing your file',
+				'message' => 'プロセスするとき、エラーが起きてしまった。',
 				'required' => FALSE,
 				'allowEmpty' => TRUE,
 				'last' => TRUE,

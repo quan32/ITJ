@@ -1,4 +1,4 @@
-<h1>Danh sách bài giảng</h1>
+<h1>講義リスト</h1>
 <?php
 $paginator = $this->Paginator;
 

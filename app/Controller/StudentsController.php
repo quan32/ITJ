@@ -21,7 +21,7 @@ class StudentsController extends AppController{
 		if($this->request->is('post')){
 			$this->loadModel('User');
 			if($this->User->findByUsername($this->request->data['User']['username'])){
-				$this->Session->setFlash(__('Tai khoan da ton tai, hay chon ten dang nhap khac'));
+				$this->Session->setFlash(__('このアカウントはシステムに存在している。他のアカウントを選んでください'));
 				unset($this->request->data['User']['password']);
 				// return $this->redirect(array('controller'=>'users','action'=>'login'));
 			}else{
@@ -32,11 +32,11 @@ class StudentsController extends AppController{
 				if($this->User->save($this->request->data)){
 					$log="INFO, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 学生として成功して登録した';
 					$this->Log->writeLog('new_user.txt',$log);
-					$this->Session->setFlash(__('The user has been saved'));
+					$this->Session->setFlash(__('アカウントはデータベースに保存した'));
 					return $this->redirect(array('controller'=>'users','action'=>'login'));
 				}
 
-				$this->Session->setFlash(__('The user could no be saved. Please try again'));
+				$this->Session->setFlash(__('アカウントはデータベースに保存できなかった。もう一度入力してみてください'));
 				$log="INFO, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 学生として成功して登録した';
 				$this->Log->writeLog('new_user.txt',$log);
 			}
@@ -623,7 +623,7 @@ class StudentsController extends AppController{
 		$this->User->id =$user_id;
 
 		if(!$this->User->exists()){
-			throw new NotFoundException(__('Invalid user'));
+			throw new NotFoundException(__('不当なユーザ'));
 		}
 
 		if ($this->request->is('post') || $this->request->is('put')) { 
@@ -632,7 +632,7 @@ class StudentsController extends AppController{
 
 		
 			if ($this->User->save($this->request->data)) {
-		            $this->Session->setFlash(__('The info has been updated'));
+		            $this->Session->setFlash(__('情報は更新されていた'));
 
 		           // ghi log
 		           $data = $this->User->find('all',array(
@@ -664,7 +664,7 @@ class StudentsController extends AppController{
 		            
 		            $this->Log->writeLog($file,$content);
 		        $this->Session->setFlash(
-		            __('Sorry, occur an error. Please, try again.'));
+		            __('エラーが起きてしまった。してみてください'));
 		} else {
 		$this->request->data = $this->User->read(null, $id);
 		      //  unset($this->request->data['User']['password']);

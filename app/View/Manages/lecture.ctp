@@ -1,14 +1,14 @@
-<h1>Quan ly bai giang</h1>
+<h1>講義の管理</h1>
 
 <table>
 <tr>
 	<th>ID</th>
-	<th>Title</th>
-	<th>User</th>
-	<th>Created Time</th>
-	<th>Modified Time</th>
-	<th>Detail</th>
-	<th>Action</h1>
+	<th>タイトル</th>
+	<th>ユーザー名</th>
+	<th>作成した日時</th>
+	<th>更新日時</th>
+	<th>詳細</th>
+	<th>管理</h1>
 </tr>
 <?php
 	
@@ -25,14 +25,14 @@
 			echo '<td>'.$lecture["Lecture"]['modified'].'</td>';
 
 			echo '<td>';
-			echo $this->Html->link('View', 
+			echo $this->Html->link('表現', 
 			array('controller'=>'lectures','action' => 'view', $lecture["Lecture"]["id"]));
 			echo '</td>';
 
 			echo '<td>';
-			echo $this->Form->postLink('Delete', 
+			echo $this->Form->postLink('削除', 
 				array('controller'=>'lectures','action' => 'delete', $lecture["Lecture"]["id"]),
-				array('confirm'=>'Ban co chac khong'));
+				array('confirm'=>'本気？'));
 			
 			
 			echo '</td>';
