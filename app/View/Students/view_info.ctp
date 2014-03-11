@@ -1,9 +1,9 @@
-<h1>Thong tin ca nhan</h1>
+<h1>自身情報</h1>
 <div class="col-lg-6">
 <?php
 if(!isset($info))
 {
-    echo "Empty data";
+    echo "空きデータ";
 }
 else
 {
@@ -52,7 +52,7 @@ else
 
 
     echo "<button>".$this->Html->link('変化', array('controller'=>'students','action'=>'/edit_info'))."</button>";
-    echo "<button>".$this->Html->link(' Xoa tai khoan - アカウントの利用解除', array('controller'=>'students','action'=>'del_account'))."</button>";
+    echo "<button>".$this->Html->link('アカウントの利用解除', array('controller'=>'students','action'=>'del_account'))."</button>";
 
 }
 ?>

@@ -336,6 +336,16 @@ class UsersController extends AppController{
 				return $this->redirect(array('controller'=>'teachers','action'=>'register','teacher'));	
 		}
 	}
+
+	public reset($id){
+		$user= $this->User->findById($id);
+		$this->User->id = $id;
+		$this->User->saveField('password',$user['User']['first_password']);
+			return $this->redirect(array('controller'=>'users','action'=>'login'));	
+		}else{
+			$this->Session->setFlash(__('The verify code is incorrect'));
+		}
+	}
 	
 	public function logout(){	
 		$this->Session->setFlash('Good-Bye');

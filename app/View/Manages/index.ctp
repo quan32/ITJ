@@ -4,14 +4,13 @@
 <tr>
 	<th>ユーザ名</th>
 	<th>氏名</th>
-    <th>新しい登録</th>	
+    <th>資格</th>	
 	<th>生年月日</th>
 	<th>住所</th>
 	<th>電話番号</th>
-    <th>クレジットカード情報(学生)</th>
-    <th>銀行口座情報(先生)</th>
-    <th>ロック</th>
-    <th>パスワード変化</th>
+    <th>クレジットカード</th>
+    <th>銀行口座</th>
+    <th>管理</th>
 	</tr>
 <?php
 	
@@ -20,25 +19,24 @@
 
 		echo '<tr>';
 			echo '<td>'.$user["User"]["username"].'</td>';
-			echo '<td>'.$user["User"]["mail"].'</td>';
+			echo '<td>'.$user["User"]["fullname"].'</td>';
 			echo '<td>'.$user["User"]["role"].'</td>';
+			echo '<td>'.$user["User"]["date_of_birth"].'</td>';
 			echo '<td>'.$user["User"]["address"].'</td>';
-			echo '<td>'.$user["User"]["id"].'</td>';
-			echo '<td>'.$user["User"]["id"].'</td>';
-			echo '<td>'.$user["User"]["id"].'</td>';
+			echo '<td>'.$user["User"]["mobile_No"].'</td>';
+			echo '<td>'.$user["User"]["credit_card_No"].'</td>';
+			echo '<td>'.$user["User"]["bank_acc"].'</td>';
 			
 	    echo '<td>';
-       echo $this->Form->postLink('削除', 
+       echo $this->Form->postLink('削除 | ', 
 				array('controller'=>'users','action' => 'delete', $user["User"]["id"]),
 				array('confirm'=>'本気？'));
 
-		echo '</td>';
-		echo "<td>";
-		echo $this->Html->link('ロック', 
+		
+		echo $this->Html->link('ロック | ', 
 				array('controller'=>'users','action' => 'lock', $user["User"]["id"]));
 			
-		echo "</td>";  
-		echo "<td>";
+		
 		echo $this->Html->link('リセット', 
 				array('controller'=>'users','action' => 'reset', $user["User"]["id"]));
 			

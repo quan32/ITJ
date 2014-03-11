@@ -1,4 +1,4 @@
-<h1>Kết quả test</h1>
+<h1>テスト結果</h1>
 <?php
 $paginator = $this->Paginator;
 if($results)
@@ -53,26 +53,26 @@ if($results)
 
     echo "<div class='paging'>";
 
-        echo $paginator->first("First");
+        echo $paginator->first("初");
 
         if($paginator->hasPrev()){
-            echo $paginator->prev("Prev");
+            echo $paginator->prev("前");
         }
 
         echo $paginator->numbers(array('modulus' => 2));
 
         if($paginator->hasNext()){
-            echo $paginator->next("Next");
+            echo $paginator->next("次");
         }
 
-        echo $paginator->last("Last");
+        echo $paginator->last("後");
     
     echo "</div>";
     
 }
 
 else{
-    echo " Data empty";
+    echo " 空きデータ";
 }
 
 

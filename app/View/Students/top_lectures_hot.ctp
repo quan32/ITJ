@@ -1,8 +1,8 @@
-<h1>Top bài giảng đang hot</h1>
+<h1>気に入りの講義リスト</h1>
 <?php
 $paginator = $this->Paginator;
 if($hotLectures==NULL){
-    echo "<h2>Data Empty</h2>";
+    echo "<h2>空きデータ</h2>";
     }
     else
 {
@@ -50,7 +50,7 @@ if($hotLectures==NULL){
 
                      {
                         echo $this->html->link("登録",array 
-                        ("action"=>"/register_lecture",'full_base' => true ,$item['Lecture']['id'],"top_lectures_hot"),array(),"Gia cua no la ".$item['Lecture']['cost'].". Are you sure?",false); 
+                        ("action"=>"/register_lecture",'full_base' => true ,$item['Lecture']['id'],"top_lectures_hot"),array(),"価格は ".$item['Lecture']['cost'].". 本気？",false); 
                         }
                     else
                     {
@@ -73,19 +73,19 @@ if($hotLectures==NULL){
 
     echo "<div class='paging'>";
 
-        echo $paginator->first("First");
+        echo $paginator->first("初");
 
         if($paginator->hasPrev()){
-            echo $paginator->prev("Prev");
+            echo $paginator->prev("前");
         }
 
         echo $paginator->numbers(array('modulus' => 2));
 
         if($paginator->hasNext()){
-            echo $paginator->next("Next");
+            echo $paginator->next("次");
         }
 
-        echo $paginator->last("Last");
+        echo $paginator->last("後");
     
     echo "</div>";
 

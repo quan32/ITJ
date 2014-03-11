@@ -7,7 +7,7 @@ if($sumMoney)
     echo "<h2>今月の学費の合計 : ".$sumMoney[0][0]['money']." VND</h2>";
 }
 else
-    echo "Empty data";
+    echo "空きデータ";
 
 if($lecturesOnThisMonth){
 

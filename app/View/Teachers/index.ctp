@@ -29,7 +29,7 @@ else{
     echo "</table>";
 }
 
-echo $this->Html->link('All', array('controller'=>'lectures', 'action'=>'index'));
+echo $this->Html->link('全て', array('controller'=>'lectures', 'action'=>'index'));
 //Bang thong tin ve thu nhap
 
 if($moneyThisMonth==NULL){
