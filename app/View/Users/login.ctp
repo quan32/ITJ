@@ -10,8 +10,14 @@
     text-align: left;
 }
 .other-functions{
-    margin-top: 10px;
+    margin-top: 15px;
 }
+a, a:visited
+{ 
+color:white;
+font-weight: bold;
+}
+
         </style>
         <!-- Javascript -->
         <?php echo $this->Html->script('jquery-1.8.2.min');?>
