@@ -344,6 +344,15 @@ class UsersController extends AppController{
 		//return $this->redirect($this->Auth->logout());
 	}
 
+	public function lock($id=null){
+		$this->User->id =$id;
+		$this->request->data['User']['state'] = 'locked';
+		if ($this->User->save($this->request->data)) {
+            $this->Session->setFlash(__('The user has been locked'));
+			return $this->redirect(array('controller'=>'manages','action' => 'index')); 
+		}
+	}	
+
 }
 
 ?>

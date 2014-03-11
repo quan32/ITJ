@@ -30,6 +30,7 @@
       echo $this->fetch('meta');
       echo $this->fetch('css');
       echo $this->fetch('script');
+      echo $this->Html->css('mystyle');
     ?>
   </head>
   <body ondragstart="return false;" onselectstart="return false;"  oncontextmenu="return false;" onload="clearData();" onblur="clearData();">
