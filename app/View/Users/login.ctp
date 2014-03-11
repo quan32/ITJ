@@ -6,10 +6,17 @@
         <?php echo $this->Html->css('supersized');?>
         <?php echo $this->Html->css('style');?>
         <style type="text/css">
-.othersd{
+.others{
     text-align: left;
 }
+.other-functions{
+    margin-top: 10px;
+}
         </style>
+        <!-- Javascript -->
+        <?php echo $this->Html->script('jquery-1.8.2.min');?>
+        <?php echo $this->Html->script('supersized.3.2.7.min');?>
+        <?php echo $this->Html->script('supersized-init');?>
 </head>
 <body>
         <div class="page-container">
@@ -25,19 +32,17 @@
             <div class="others">
             <?php echo $this->Form->end(array('label'=>'ログイン')); ?>
                 <div class="error"><span>+dsdsadsad</span></div>
+                <div class="other-functions">
             <?
                 echo $this->Html->link('パスワードを忘れた方', 
                     array('controller' => 'manages', 'action' => 'info2'))."<br><br>";
                 echo $this->Html->link('新規登録', 
                     array('controller' => 'users', 'action' => 'role'));
-            ?>
+            ?></div>
             </div>
         </div>
         <div>
 
-        <!-- Javascript -->
-        <?php echo $this->Html->script('jquery-1.8.2.min');?>
-        <?php echo $this->Html->script('supersized.3.2.7.min');?>
-        <?php echo $this->Html->script('supersized-init');?>
+       
 </body>
 </html>

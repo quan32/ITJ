@@ -73,4 +73,8 @@ class PagesController extends AppController {
 			throw new NotFoundException();
 		}
 	}
+
+	public function index(){
+		$this->redirect(array('controller'=>'users','action'=>'login'));	
+	}
 }
