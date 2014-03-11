@@ -18,7 +18,7 @@ class UsersController extends AppController{
 		$this->set('menu_type','menu');
 		$this->User->id = $id;
 		if(!$this->User->exists())
-			throw new NotFoundException(__('Invalid user'));
+			throw new NotFoundException(__('不当なユーザ'));
 
 		$this->set('user', $this->User->read(null, $id));
 	}
@@ -27,16 +27,16 @@ class UsersController extends AppController{
 		$this->set('menu_type','menu');
 		$this->User->id =$id;
 		if(!$this->User->exists()){
-			throw new NotFoundException(__('Invalid user'));
+			throw new NotFoundException(__('不当なユーザ'));
 		}
 
 		if ($this->request->is('post') || $this->request->is('put')) { 
 			if ($this->User->save($this->request->data)) {
-		            $this->Session->setFlash(__('The user has been saved'));
+		            $this->Session->setFlash(__('アカウントはデータベースに保存されていた'));
 					return $this->redirect(array('action' => 'index')); 
 				}
 		        $this->Session->setFlash(
-		            __('The user could not be saved. Please, try again.'));
+		            __('アカウントは保存できなかった。してみてください。'));
 		} else {
 			$this->request->data = $this->User->read(null, $id);
 		        unset($this->request->data['User']['password']);
@@ -50,15 +50,15 @@ class UsersController extends AppController{
 
 			$this->User->id = $id;
 			if(!$this->User->exists())
-				throw new NotFoundException(__('Nguoi dung nay chua ton tai'));
+				throw new NotFoundException(__('このアカウントは存在していない'));
 
 			if($this->User->saveField('state','deleted')){
-				$this->Session->setFlash(__('User deleted'));
+				$this->Session->setFlash(__('アカウントは削除した'));
 				if($this->Auth->user('role')!='manager')
 					return $this->redirect($this->Auth->logout());
 				return $this->redirect(array('controller'=>'manages','action'=>'index'));
 			}
-			$this->Session->setFlash(__('User was not deleted'));
+			$this->Session->setFlash(__('アカウントはまだ削除されていなかった'));
 				if($this->Auth->user('role')=='teacher')
 					return $this->redirect(array('controller'=>'teachers','action'=>'index'));
 				elseif($this->Auth->user('role')=='student')
@@ -102,7 +102,7 @@ class UsersController extends AppController{
 				if($password == $user['User']['password']){
 					if($user['User']['role']=='teacher'){
 						if($user['User']['state']=='new'){//Trang thai moi dang nhap dang cho xac nhan
-							$this->Session->setFlash(__('Tai khoan chua duoc quan tri chap nhan, hay quay lai sau'));
+							$this->Session->setFlash(__('管理者からの許可をもっていないアカウント。後で戻ってください'));
 							$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 管理者の同意を取ってないアカウントでログインした';
 							$this->Log->writeLog('login.txt',$log);
 							return $this->redirect(array('action'=>'login'));
@@ -114,23 +114,28 @@ class UsersController extends AppController{
 							if($distance_time > $time){
 								$this->User->id=$user['User']['id'];
 								$this->User->saveField('failedNo',0);
-								$this->Session->setFlash(__('Tai khoan cua ban vua qua khoi thoi gian khoa tam thoi, hay nhap verify code'));
+								$this->Session->setFlash(__('アカウントはブロックする時間を過ごした。ログインできるように、確認するコードを入力してください'));
 								$log="INFO, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', アカウントはアンブロックしたばかりだ';
 								$this->Log->writeLog('login.txt',$log);
 								return $this->redirect(array('controller'=>'users','action'=>'verify1',$user['User']['id']));
 							}else{
-								$this->Session->setFlash(__('Tai khoan dang tam thoi bi khoa hay tro lai sau'));
+								$this->Session->setFlash(__('アカウントは一時にブロックされている'));
 								$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', ブロックしたアカウントでログインした';
 								$this->Log->writeLog('login.txt',$log);
 							return $this->redirect(array('action'=>'login'));
 							}			
 						}elseif($user['User']['state']=='deleted'){//Tai khoan da bi khoa
-							$this->Session->setFlash(__('Tai khoan da bi xoa, hay tao tai khoan moi'));
+							$this->Session->setFlash(__('削除したアカウント。新規アカウントを作ってください'));
 							$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 削除したアカウントでログインした';
 							$this->Log->writeLog('login.txt',$log);
 							return $this->redirect(array('action'=>'login'));
+						}elseif($user['User']['state']=='locked'){//Tai khoan da bi khoa
+							$this->Session->setFlash(__('ロックされているアカウント。アンロックするように、管理者へ連絡してください'));
+							$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', ロックされているアカウント。アンロックするように、管理者へ連絡してください';
+							$this->Log->writeLog('login.txt',$log);
+							return $this->redirect(array('action'=>'login'));
 						}elseif($user['User']['prevIP']!=$IP && $user['User']['prevIP']!=null){//Dia chi Ip su dung khac voi lan su dung truoc
-							$this->Session->setFlash(__('Dia chi IP ban dang su dung khac dia chi IP su dung lan truoc, hay nhap ma xac thuc'));
+							$this->Session->setFlash(__('前回使用したIPアドレスに違ったから、確認するコードを入力してください'));
 							$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 前回使用したIPアドレスに違うIPアドレスでログインした';
 							$this->Log->writeLog('login.txt',$log);
 							return $this->redirect(array('controller'=>'users','action'=>'verify2',$user['User']['id'], $IP));
@@ -138,7 +143,7 @@ class UsersController extends AppController{
 						
 					}elseif ($user['User']['role']=='student') {
 						if($user['User']['state']=='new'){//Trang thai moi dang nhap dang cho xac nhan
-							$this->Session->setFlash(__('Tai khoan chua duoc quan tri chap nhan, hay quay lai sau'));
+							$this->Session->setFlash(__('管理者からの許可をもっていないアカウント。後で戻ってください'));
 							$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 管理者の同意を取ってないアカウントでログインした';
 							$this->Log->writeLog('login.txt',$log);
 							return $this->redirect(array('action'=>'login'));
@@ -150,18 +155,23 @@ class UsersController extends AppController{
 							if($distance_time > $time){
 								$this->User->id=$user['User']['id'];
 								$this->User->saveField('failedNo',0);
-								$this->Session->setFlash(__('Tai khoan cua ban vua qua khoi thoi gian khoa tam thoi, hay nhap dang nhap lai'));
+								$this->Session->setFlash(__('アカウントはブロックする時間を過ごした。ログインできるように、確認するコードを入力してください'));
 								$log="INFO, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', アカウントはアンブロックしたばかりだ';
 								$this->Log->writeLog('login.txt',$log);
 								return $this->redirect(array('action'=>'login'));
 							}else{
 								$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', ブロックしたアカウントでログインした';
 								$this->Log->writeLog('login.txt',$log);
-								$this->Session->setFlash(__('Tai khoan dang tam thoi bi khoa hay tro lai sau'));
+								$this->Session->setFlash(__('アカウントは一時にブロックされている'));
 								return $this->redirect(array('action'=>'login'));
 							}			
+						}elseif($user['User']['state']=='locked'){//Tai khoan da bi khoa
+							$this->Session->setFlash(__('ロックされているアカウント。アンロックするように、管理者へ連絡してください'));
+							$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', ロックされているアカウント。アンロックするように、管理者へ連絡してください';
+							$this->Log->writeLog('login.txt',$log);
+							return $this->redirect(array('action'=>'login'));
 						}elseif($user['User']['state']=='deleted'){//Tai khoan da bi khoa
-							$this->Session->setFlash(__('Tai khoan da bi xoa, hay tao tai khoan moi'));
+							$this->Session->setFlash(__('削除したアカウント。新規アカウントを作ってください'));
 							$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 削除したアカウントでログインした';
 							$this->Log->writeLog('login.txt',$log);
 							return $this->redirect(array('action'=>'login'));
@@ -175,7 +185,7 @@ class UsersController extends AppController{
 								$count++;
 						}
 						if($count==0){
-							$this->Session->setFlash(__('Dia chi IP khong dung'));
+							$this->Session->setFlash(__('間違ったIPアドレス'));
 							$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', このIPアドレスはIPアドレスリストにない';
 							$this->Log->writeLog('login.txt',$log);
 							return $this->redirect(array('action'=>'login'));
@@ -187,7 +197,7 @@ class UsersController extends AppController{
 				if($this->Auth->login()){
 					$log="INFO, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', ログインした成功して登録した';
 					$this->Log->writeLog('login.txt',$log);
-					$this->Session->setFlash('Your are logged in');
+					$this->Session->setFlash('ログインした');
 					
 					if($this->Auth->user('role')=='manager')
 						return $this->redirect(array('controller'=>'manages','action'=>'index'));
@@ -197,13 +207,13 @@ class UsersController extends AppController{
 						return $this->redirect(array('controller'=>'students','action'=>'index'));
 					}
 				else{
-					$this->Session->setFlash(__('Invalid username or password, try again'));
+					$this->Session->setFlash(__('ユーザ名又はパスワードが間違ってしまった'));
 					$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 第'.($user['User']['failedNo']+1).'回：ユーザ名又はパスワードが間違ってしまった';
 					$this->Log->writeLog('login.txt',$log);
 
 					if($user['User']['failedNo'] == $max){
-						$this->Session->setFlash(__('Ban da dang nhap that bai qua 3 lan.
-							Tai khoan cua ban se bi khoa tam thoi trong thoi gian 2(h)'));
+						$this->Session->setFlash(__('失敗したログインの回数は3回になってしまった。
+						アカウントは一時にブロックされることになっている。あとで戻ってください。'));
 
 						$this->User->id=$user['User']['id'];
 						$this->User->saveField('state','blocked');
@@ -220,7 +230,7 @@ class UsersController extends AppController{
 				}else{
 					$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', アカウントが存在していない';
 					$this->Log->writeLog('login.txt',$log);
-					$this->Session->setFlash(__('Your account is not exist! Register new account, please'));
+					$this->Session->setFlash(__('アカウントは存在していない。新規アカウントを登録してください。'));
 					}	
 		}
 	}
@@ -231,12 +241,12 @@ class UsersController extends AppController{
 			$user= $this->User->findById($id);
 			if($user['User']['verify']==$this->request->data['User']['verify']){
 
-				$this->Session->setFlash(__('The verify code is correct'));
+				$this->Session->setFlash(__('確認するコードは間違ってしまった。'));
 				$this->User->id=$id;
 				$this->User->saveField('state','normal');
 				return $this->redirect(array('controller'=>'users','action'=>'login'));	
 			}else{
-				$this->Session->setFlash(__('The verify code is incorrect'));
+				$this->Session->setFlash(__('確認するコードは正しい'));
 			}
 		}
 	}
@@ -247,13 +257,13 @@ class UsersController extends AppController{
 			$user= $this->User->findById($id);
 			if($user['User']['verify']==$this->request->data['User']['verify']){
 
-				$this->Session->setFlash(__('The verify code is correct'));
+				$this->Session->setFlash(__('確認するコードは間違ってしまった。'));
 				$this->User->id = $id;
 				$this->User->saveField('prevIP',$IP);
 				return $this->redirect(array('controller'=>'users','action'=>'login'));
 				
 			}else{
-				$this->Session->setFlash(__('The verify code is incorrect'));
+				$this->Session->setFlash(__('確認するコードは正しい'));
 			}
 		}
 	}
@@ -269,7 +279,7 @@ class UsersController extends AppController{
 		elseif($this->Auth->user('role')=='teacher')
 			$this->set('menu_type','teacher_menu');
 		
-		$this->pageTitle = "Change password";
+		$this->pageTitle = "パスワード変化";
 
 		$userId = $this->Auth->user('id');
 		$this->User->id = $userId;
@@ -337,18 +347,18 @@ class UsersController extends AppController{
 		}
 	}
 
-	public reset($id){
-		$user= $this->User->findById($id);
-		$this->User->id = $id;
-		$this->User->saveField('password',$user['User']['first_password']);
-			return $this->redirect(array('controller'=>'users','action'=>'login'));	
-		}else{
-			$this->Session->setFlash(__('The verify code is incorrect'));
-		}
-	}
+	// public reset($id){
+	// 	$user= $this->User->findById($id);
+	// 	$this->User->id = $id;
+	// 	$this->User->saveField('password',$user['User']['first_password']);
+	// 		return $this->redirect(array('controller'=>'users','action'=>'login'));	
+	// 	}else{
+	// 		$this->Session->setFlash(__('確認するコードは間違ってしまった'));
+	// 	}
+	// }
 	
 	public function logout(){	
-		$this->Session->setFlash('Good-Bye');
+		$this->Session->setFlash('またね！');
 		$this->Auth->logout();
 		$this->redirect(array('controller'=>'users','action'=>'login'));	
 		//return $this->redirect($this->Auth->logout());

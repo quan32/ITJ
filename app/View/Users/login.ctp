@@ -5,6 +5,7 @@
         <?php echo $this->Html->css('reset');?>
         <?php echo $this->Html->css('supersized');?>
         <?php echo $this->Html->css('style');?>
+        <title>E-learning system</title>
         <style type="text/css">
 .others{
     text-align: left;
@@ -26,7 +27,7 @@ font-weight: bold;
 </head>
 <body>
         <div class="page-container">
-			<h1>E-learning System</h1>
+			<h1><span style="font-size:200%;">e</span>ラーニングシステム</h1>
             <?php echo $this->Session->flash('auth'); ?>
             <?php echo $this->Form->create('User'); ?>
             <?php echo $this->Session->flash(); ?>

@@ -28,6 +28,11 @@ App::uses('AppController', 'Controller');
  * @link http://book.cakephp.org/2.0/en/controllers/pages-controller.html
  */
 class PagesController extends AppController {
+	public function isAuthorized($user){
+		// Only teacher can use teacher's function
+		return true;
+
+	}
 
 /**
  * This controller does not use a model
