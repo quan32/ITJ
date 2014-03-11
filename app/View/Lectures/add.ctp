@@ -1,9 +1,9 @@
 <fieldset>
-	<legend>Nhap thong tin bai giang moi</legend>
+	<legend>新しい講義の情報を入力してください</legend>
 	<?php 
 		echo $this->Form->create('Lecture');
 		echo $this->Form->input('category_id',
-			array('label'=>'Category',
+			array('label'=>'カテゴリ',
 				'options'=>array('1'=>'数学','2'=>'文学','3'=>'外国語')));
 		echo $this->Form->input('name',array('label' => 'タイトル'));
 		echo $this->Form->input('description',array('label' => '紹介する情報'));	

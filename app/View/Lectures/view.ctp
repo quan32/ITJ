@@ -4,7 +4,8 @@
 	$BlockModel = new Block();
 	$UserModel = new User();
 ?>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script> -->
+<?php echo $this->Html->script('jquery-1.10.2.min');?>
 <style type="text/css">
 	a {
 		color: #618CC7;
@@ -102,6 +103,8 @@
 				}
 		?>
 	</div>
+	 <?php //echo $this->Html->link('Test list', array('controller'=>'tests', 'action'=>'view', $lecture['Lecture']['id']))?>
+
 	<?php if($isLiked==0): ?>
 		<button id="like_button">いいね！</button>
 		<button id="dislike_button" style="display:none">取り消す</button>

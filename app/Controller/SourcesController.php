@@ -100,7 +100,7 @@ class SourcesController extends AppController{
 			$lecture_id = $source['Source']['lecture_id'];
 
 			$this->Source->id = $id;
-			if(!$this->Source->exists())削除した
+			if(!$this->Source->exists())
 				throw new NotFoundException(__('不当な資料'));
 
 			if($this->Source->delete()){

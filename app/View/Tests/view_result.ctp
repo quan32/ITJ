@@ -1,5 +1,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script> -->
+<?php echo $this->Html->script('jquery-1.10.2.min');?>
 <style type="text/css">
 	.correct{
 		color:red;
@@ -26,7 +27,8 @@
 		$attributes = array(
 		    'legend' => false,
 		    'value' => $result[$count]['answer'],
-		    'disabled' => true
+		    'disabled' => true,
+		    'separator' => '<br>'
 		);
 		echo $this->Form->radio($count.'.answer', $question['s'], $attributes);
 		$count++;

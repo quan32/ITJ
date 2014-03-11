@@ -1,5 +1,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=SJIS">
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script> -->
+<?php echo $this->Html->script('jquery-1.10.2.min');?>
 <?php
 	//Hien thi form
 	echo $this->Form->create('Questions', array('url' => array('controller' => 'tests', 'action' => 'view_result')));
@@ -11,6 +12,7 @@
 		//answer choice
 		$attributes = array(
 		    'legend' => false,
+		    'separator' => '<br>'
 		    //'checked'=> ($foo == "pro") ? FALSE : TRUE,
 		);
 		echo $this->Form->radio($count.'.answer', $question['s'], $attributes);
