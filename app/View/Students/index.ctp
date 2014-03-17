@@ -68,6 +68,7 @@ else{
     }
     echo "</table>";
     echo $this->Html->link('全て', array('controller'=>'Students', 'action'=>'registed_lectures'));
+}
 
 //bang 2 : 5 bai hot nhat he thong
     if($fiveHotLectures==NULL){
@@ -135,10 +136,12 @@ else{
                 echo "</tr>";
             }
              echo "</table>";
-        }
+        echo $this->Html->link('全て', array('controller'=>'Students', 'action'=>'top_lectures_hot'));
         }
 
-echo $this->Html->link('全て', array('controller'=>'Students', 'action'=>'top_lectures_hot'));
+        
+
+
 
 
 
@@ -180,9 +183,10 @@ else{
         echo "</tr>";
     }
     echo "</table>";
+    echo $this->Html->link('全て', array('controller'=>'Students', 'action'=>'results_statistics'));
+
 
 }
-   
-echo $this->Html->link('全て', array('controller'=>'Students', 'action'=>'results_statistics'));
+   echo "sai roi";
 
 ?>
