@@ -187,6 +187,5 @@ else{
 
 
 }
-   echo "sai roi";
-
+  
 ?>
