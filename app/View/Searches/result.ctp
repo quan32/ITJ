@@ -20,7 +20,7 @@ if(!empty($posts)){
     echo "<th>".$this->Paginator->sort("name","タイトル");
     echo "<th>".$this->Paginator->sort("description","紹介する情報");
     echo "<th>".$this->Paginator->sort("fullname","作成した先生");
-    echo "<th>".$this->Paginator->sort("Description","登録した学生の数");
+    echo "<th>".$this->Paginator->sort("count","登録した学生の数"); //TODO
     echo "<th>すぐ登録";
     echo "</tr>";
     
@@ -37,12 +37,20 @@ if(!empty($posts)){
     echo "</table>";
     
     //---- Paging 
-    echo $this->Paginator->prev('« 前のページ ', null, null, array('class' => 'disabled')); //Shows the next and previous links
+	//echo $this->Paginator->numbers();
+	//echo $this->Paginator->numbers(array('last' => 'Last page'));
+	//debug($this->Paginator->param('pageCount'));
+	if($this->Paginator->param('pageCount') >1)
+	{
+		echo $this->Paginator->prev('« 前のページ ', null, null, array('class' => 'disabled')); //Shows the next and previous links
     
-    echo " | ".$this->Paginator->numbers()." | "; //Shows the page numbers
+		echo " | ".$this->Paginator->numbers()." | "; //Shows the page numbers
     
-    echo $this->Paginator->next(' 次のページ »', null, null, array('class' => 'disabled')); //Shows the next and previous links
-    
-    echo " ページ ".$this->Paginator->counter(); // prints X of Y, where X is current page and Y is number of pages
-}// else {echo "data empty";}
+		echo $this->Paginator->next(' 次のページ »　', null, null, array('class' => 'disabled')); //Shows the next and previous links
+    }
+    echo " ".$this->Paginator->counter(array(
+    'format' => 'range'
+	//'separator' => ' of'
+	)); // prints X of Y, where X is current page and Y is number of pages
+} else {echo "空きデータ";}
 ?>
