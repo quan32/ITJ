@@ -757,5 +757,45 @@ class StudentsController extends AppController{
 		
 	}
 
+public function checkStatusLecture(){
+
+
+}
+public function testSubQueryAndPaging(){
+
+$conditionsSubQuery['User2.id'] = '29';
+$this->loadModel('User');
+$db = $this->User->getDataSource();
+$subQuery = $db->buildStatement(
+    array(
+        'fields'     => array('User2.id'),
+        'table'      => $db->fullTableName($this->User),
+        'alias'      => 'User2',
+        'limit'      => null,
+        'offset'     => null,
+        'joins'      => array(),
+        'conditions' => $conditionsSubQuery,
+        'order'      => null,
+        'group'      => null
+    ),
+    $this->User
+);
+$subQuery = 'User.id NOT IN (' . $subQuery . ') ';
+$subQueryExpression = $db->expression($subQuery);
+
+$conditions[] = $subQueryExpression;
+
+$this->User->recursive = -1;
+
+$options = compact('conditions');
+$options['limit'] = 2;
+			$this->paginate = $options;
+			 $data = $this->paginate('User');
+
+// $this->User->find('all', compact('conditions'));
+$this->set('data', $data);
+
+}
+
 }
 ?>
