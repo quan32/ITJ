@@ -117,7 +117,18 @@ class LecturesController extends AppController{
 		else
 			$this->set('menu_type','manager_menu');
 
+
 		$lecture = $this->Lecture->read(null, $id);
+		$count=0;
+		foreach ($lecture['Register'] as $register) {
+			if($register['user_id']==$this->Auth->user('id'))
+				$count++;
+		}
+		if($count==0){
+			$this->Session->setFlash(__('貴方はこの講義を登録していない!'));
+			return $this->redirect(array('controller'=>'students','action' => 'lectures_statistics'));
+		}
+
 		$sources = $lecture['Source'];
 		foreach ($sources as $source) {
 			if(in_array($source['type'], array('application/pdf'))){
@@ -134,6 +145,8 @@ class LecturesController extends AppController{
 		$isLiked = count($this->Lecture->Favorite->findAllByLectureIdAndUserId($id,$this->Auth->user('id')))!=0 ? 1: 0;
 		$this->set('isLiked', $isLiked);
 		$this->set('current_user_id', $this->Auth->user('id'));
+		
+		
 	}
 
 //------xuan----2014/4/9 
