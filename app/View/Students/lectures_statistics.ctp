@@ -12,7 +12,7 @@ if($lectures){
             echo "<th>" . $paginator->sort('name', 'タイトル') . "</th>";
             echo "<th>" . $paginator->sort('fullname', '先生の氏名') . "</th>";
             echo "<th>" . $paginator->sort("cost", 'コスト') . "</th>";
-            echo "<th>情報</th>";
+            echo "<th>詳しく</th>";
             echo "<th> 操作</th>";
 
         echo "</tr>";
