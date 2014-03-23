@@ -3,11 +3,17 @@ class LecturesController extends AppController{
 	var $components = array('Common');
 	public function beforeFilter(){
 		parent::beforeFilter();
+
+		if($this->Auth->isAuthorized()==false){
+			$this->redirect(array('controller'=>'pages','action'=>'display', 'error'));
+		}
 	}
 
 	public function isAuthorized($user){
 		// Only teacher can use teacher's function
-		if( ($user['role']=='manager') || ($user['role']=='teacher') || (($user['role']=='student') && (($this->action=='view')||($this->action=='detail'))))
+		if( ($user['role']=='manager') || ($user['role']=='teacher'))
+			return true;
+		elseif($user['role']=='student' && in_array($this->action, array('detail','view')))
 			return true;
 		return false;
 	}

@@ -3,10 +3,15 @@ class StudentsController extends AppController{
 	public function beforeFilter(){
 		parent::beforeFilter();
 		$this->Auth->allow('register');
-	}
+		
+		if($this->Auth->isAuthorized()==false && $this->action!='register'){
+			$this->redirect(array('controller'=>'pages','action'=>'display', 'error'));
+			}
+		}
+	
 
 	public function isAuthorized($user){
-		// Only teacher can use student's function
+		// Only student can use these function
 		if($user['role']=='student')
 			return true;
 		return false;

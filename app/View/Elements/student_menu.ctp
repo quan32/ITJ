@@ -27,12 +27,12 @@ echo $this->Html->link('受けた講義リスト',
 	array('controller' => 'students', 'action' => 'registed_lectures'));
 ?></li>
 <li><?php 
-echo $this->Html->link('気に入りの講義リスト', 
+echo $this->Html->link('お気に入りの講義リスト', 
 	array('controller' => 'students', 'action' => 'top_lectures_hot'));
 ?></li>
 
 <li><?php 
-echo $this->Html->link('パスワード変化', 
+echo $this->Html->link('パスワード変更', 
 	array('controller' => 'users', 'action' => 'changePassword'));
 ?></li>
 

@@ -35,8 +35,9 @@ class AppController extends Controller {
 		'Session',
 		'Auth' => array(
 			'logoutRedirect' => array(
-				'controller' => 'users',
-				'action' => 'login'
+				'controller' => 'pages',
+				'action' => 'display',
+				'home'
 				),
 			'authorize' => array('Controller')
 			),
@@ -50,5 +51,8 @@ class AppController extends Controller {
 		$this->set('temp_username',$this->Auth->user('fullname'));
 	}
 
+	// public function appError($error) {
+ //        $this->redirect(array('controller'=>'pages','action'=>'display','error'));
+ //    }
 
 }

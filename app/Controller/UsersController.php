@@ -5,13 +5,11 @@ class UsersController extends AppController{
 
 	public function beforeFilter(){
 		parent::beforeFilter();
-		$this->Auth->allow('login', 'role', 'verify1','verify2', 'logincu');
+		$this->Auth->allow('login', 'role', 'verify1','verify2');
 	}
 	public function isAuthorized($user){
-		// Only teacher can use teacher's function
-		if($user['role']=='student' || $user['role']=='teacher' || $user['role']=='manager')
-			return true;
-		return false;
+		// Everyone can access
+		return true;
 	}
 
 	public function view($id = null){
@@ -83,8 +81,8 @@ class UsersController extends AppController{
 					return $this->redirect(array('controller'=>'manages','action'=>'index'));
 				elseif($this->Auth->user('role')=='teacher')
 					return $this->redirect(array('controller'=>'teachers','action'=>'index'));
-				else
-					return $this->redirect(array('controllers'=>'students','action'=>'index'));
+				elseif($this->Auth->user('role')=='student')
+					return $this->redirect(array('controller'=>'students','action'=>'index'));
 			}
 
 		// If there is not session -> check usrname & password -> create session
@@ -360,7 +358,7 @@ class UsersController extends AppController{
 	public function logout(){	
 		$this->Session->setFlash('またね！');
 		$this->Auth->logout();
-		$this->redirect(array('controller'=>'users','action'=>'login'));	
+		$this->redirect(array('controller'=>'pages','action'=>'display','home'));	
 		//return $this->redirect($this->Auth->logout());
 	}
 

@@ -62,7 +62,7 @@ else{
                         if($flag == 0)
 
                          {
-                            echo $this->html->link("登録",array 
+                            echo $this->Html->link("登録",array 
                             ("controller" => "Students","action"=>"register_lecture" ,$lecture[0]['Lecture']['id'],$currentLocation),array(),"Gia cua no la ".$lecture[0]['Lecture']['cost'].". Are you sure?",false); 
                             }
                         else

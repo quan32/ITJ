@@ -4,12 +4,17 @@ define ('UPLOAD_FOLDER', realpath(dirname(__FILE__).DS.'..'.DS.'webroot'.DS.'fil
 class TestsController extends AppController {
 	public function beforeFilter(){
 		parent::beforeFilter();
-		// $this->Auth->allow('index','add','edit','view','view_result', 'delete');
+		
+		if($this->Auth->isAuthorized()==false){
+			$this->redirect(array('controller'=>'pages','action'=>'display', 'error'));
+		}
 	}
 
 	public function isAuthorized($user){
 		// Only teacher can use teacher's function
-		if($user['role']=='student' || $user['role']=='teacher' || $user['role']=='manager')
+		if($user['role']=='student' || $user['role']=='manager')
+			return true;
+		elseif($user['role']=='student' && in_array($this->action, array('view')))
 			return true;
 		return false;
 	}

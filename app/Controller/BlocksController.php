@@ -2,7 +2,10 @@
 class BlocksController extends AppController{
 	public function beforeFilter(){
 		parent::beforeFilter();
-		// $this->Auth->allow('add','delete');
+		
+		if($this->Auth->isAuthorized()==false){
+			$this->redirect(array('controller'=>'pages','action'=>'display', 'error'));
+		}
 	}
 
 	public function isAuthorized($user){
