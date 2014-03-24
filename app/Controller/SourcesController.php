@@ -14,9 +14,20 @@ class SourcesController extends AppController{
 		$this->set('menu_type','teacher_menu');
 
 		if ($this->request->is('post')) {
-			// debug($this->request->data);die;
+
+			if($this->request->data['Source']['filename']['type']==""){
+				$this->Session->setFlash('ファイルを選んでください');
+				$this->redirect(array('action' => 'add1', $id));
+			}
+			
+			if($this->request->data['Source']['filename']['type']!='application/pdf'){
+				$this->Session->setFlash('ファイルフォーマットが間違ってしまった。PDFだけできる');
+				$this->redirect(array('action' => 'add1', $id));
+			}
+
 			$this->request->data['Source']['lecture_id']=$id;
 			$this->request->data['Source']['type']=$this->request->data['Source']['filename']['type'];
+			// debug($this->request->data['Source']['filename']['type']);die;
 			$this->Source->create();
 			// attempt to save
 			if ($this->Source->save($this->request->data)) {
@@ -43,6 +54,28 @@ class SourcesController extends AppController{
 		$this->set('sources', $sources);
 
 		if ($this->request->is('post')) {
+
+			if($this->request->data['Source']['filename']['type']==""){
+				$this->Session->setFlash('ファイルを選んでください');
+				$this->redirect(array('action' => 'add', $id));
+			}
+			// debug($this->request->data['Source']['filename']['type']);die;
+			if(!in_array($this->request->data['Source']['filename']['type'], array('image/gif','image/png','image/jpg','image/jpeg','text/tab-separated-values','video/x-flv','audio/mp4', 'audio/mpeg3','audio/mp3','audio/mpeg', 'audio/x-mpeg-3', 'video/mpeg', 'video/x-mpeg'))){
+
+				$this->Session->setFlash('ファイルフォーマットが間違ってしまった。ビデオと音声とイメージでけできる');
+				$this->redirect(array('action' => 'add', $id));
+			}
+			
+
+			foreach ($sources as $source) {
+				list($part1, $part2)=explode("_", $source['Source']['filename'], 2);
+				$part2 = str_replace('_', ' ', $part2);
+				if($part2==$this->request->data['Source']['filename']['name']){
+					$this->Session->setFlash('エラー：このファイルはアップロードされた');
+					$this->redirect(array('action' => 'add', $id));
+				}	
+			}
+
 			// debug($this->request->data);die;
 			$this->request->data['Source']['lecture_id']=$id;
 			$this->request->data['Source']['type']=$this->request->data['Source']['filename']['type'];
@@ -103,7 +136,22 @@ class SourcesController extends AppController{
 			if(!$this->Source->exists())
 				throw new NotFoundException(__('不当な資料'));
 
+			$target=$source['Source']['filename'];
+			$target='uploads/'. $target;
+			// debug($target);die;
+
 			if($this->Source->delete()){
+				
+				if (file_exists($target)) {
+				    unlink($target); // Delete now
+					} 
+				// See if it exists again to be sure it was removed
+				if (file_exists($target)) {
+				    echo "Problem deleting " . $target;
+					} else {
+				    echo "Successfully deleted " . $target;
+					}
+
 				$this->Session->setFlash(__('削除した'));
 				return $this->redirect(array('action'=>'edit', $lecture_id));
 			}

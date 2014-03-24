@@ -12,7 +12,7 @@ class TestsController extends AppController {
 
 	public function isAuthorized($user){
 		// Only teacher can use teacher's function
-		if($user['role']=='student' || $user['role']=='manager')
+		if($user['role']=='teacher' || $user['role']=='manager')
 			return true;
 		elseif($user['role']=='student' && in_array($this->action, array('view')))
 			return true;

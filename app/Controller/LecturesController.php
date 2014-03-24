@@ -70,6 +70,24 @@ class LecturesController extends AppController{
 		if ($this->request->is(array('post','get'))){
 			$this->Lecture->id = $id;
 			$this->loadModel('Source');
+
+			//Delete sources in hard disk
+			$sources = $this->Source->findAllByLectureId($id);
+			foreach($sources as $source){
+				$target=$source['Source']['filename'];
+				$target='uploads/'. $target;
+
+				if (file_exists($target)) {
+				    unlink($target); // Delete now
+					} 
+				// See if it exists again to be sure it was removed
+				if (file_exists($target)) {
+				    echo "Problem deleting " . $target;
+					} else {
+				    echo "Successfully deleted " . $target;
+					}
+			}
+			//Delete sources in database
 			$this->Source->deleteAll(array('lecture_id'=>$id));
 			
 
@@ -78,10 +96,11 @@ class LecturesController extends AppController{
 
 			if($this->Lecture->delete()){
 				$this->Session->setFlash(__('講義は削除した'));
-				if($this->Auth->user('role')=='teacher')
-					return $this->redirect(array('controller'=>'teachers','action'=>'index'));
-				else if($this->Auth->user('role')=='manager')
-					return $this->redirect(array('controller'=>'manages','action'=>'lecture'));
+				return $this->redirect(array('controller'=>'lectures','action'=>'index'));
+				// if($this->Auth->user('role')=='teacher')
+				// 	return $this->redirect(array('controller'=>'teachers','action'=>'index'));
+				// else if($this->Auth->user('role')=='manager')
+				// 	return $this->redirect(array('controller'=>'manages','action'=>'lecture'));
 
 			}
 			$this->Session->setFlash(__('講義の削除するのは失敗した'));
@@ -119,16 +138,18 @@ class LecturesController extends AppController{
 
 
 		$lecture = $this->Lecture->read(null, $id);
-		$count=0;
-		foreach ($lecture['Register'] as $register) {
-			if($register['user_id']==$this->Auth->user('id'))
-				$count++;
+		if($this->Auth->user('role')=='student'){
+			$count=0;
+			foreach ($lecture['Register'] as $register) {
+				if($register['user_id']==$this->Auth->user('id'))
+					$count++;
+			}
+			if($count==0){
+				$this->Session->setFlash(__('貴方はこの講義を登録していない!'));
+				return $this->redirect(array('controller'=>'students','action' => 'lectures_statistics'));
+			}
 		}
-		if($count==0){
-			$this->Session->setFlash(__('貴方はこの講義を登録していない!'));
-			return $this->redirect(array('controller'=>'students','action' => 'lectures_statistics'));
-		}
-
+		
 		$sources = $lecture['Source'];
 		foreach ($sources as $source) {
 			if(in_array($source['type'], array('application/pdf'))){
