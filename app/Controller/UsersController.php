@@ -365,6 +365,10 @@ class UsersController extends AppController{
 	
 	public function logout(){	
 		$this->Session->setFlash('またね！');
+		//Xuan
+		$this->Session->delete('monthxu');
+		$this->Session->delete('yearxu');
+		//Xuan
 		$this->Auth->logout();
 		$this->redirect(array('controller'=>'pages','action'=>'display','home'));	
 		//return $this->redirect($this->Auth->logout());

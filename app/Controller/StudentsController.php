@@ -50,6 +50,7 @@ class StudentsController extends AppController{
 	}
 
 	public function index(){
+
 		$date = date('Y-m-d H:i:s');
 		$this->set('menu_type','student_menu');
 	//lay 5 bai giang moi nhat trong he thong ma user nay dang ki
@@ -221,7 +222,7 @@ class StudentsController extends AppController{
 
 	}
 
-	public function top_lectures_hot()
+	public function topLecturesHot()
 	{
 		$this->set('menu_type','student_menu');
 		$user_id = $this->Auth->user('id');
@@ -300,7 +301,7 @@ class StudentsController extends AppController{
 		return $listBlock;
 	}
 
-	public function view_info(){
+	public function viewInfo(){
 		$this->set('menu_type','student_menu');
 		$user_id = $this->Auth->user('id');
 		$this->loadModel('User');
@@ -310,7 +311,7 @@ class StudentsController extends AppController{
 	}
 
 	
-	public function registed_lectures()
+	public function registedLectures()
 	{
 		$this->set('menu_type','student_menu');
 		$user_id = $this->Auth->User('id');
@@ -405,7 +406,7 @@ class StudentsController extends AppController{
 
 	}
 
-	public function register_lecture($lecture_id = null, $backLink = null)
+	public function registerLecture($lecture_id = null, $backLink = null)
 	{
 		$this->set('menu_type','student_menu');
 		$user_id = $this->Auth->user('id');
@@ -465,38 +466,7 @@ class StudentsController extends AppController{
 
 
 
-	public function money_this_month()
-	{
-		$this->set('menu_type','student_menu');
-		$user_id = $this->Auth->user('id');
-		$this->loadModel('Register');
-
-		$options['joins'] = array(
-					    array('table' => 'lectures',
-					        'alias' => 'Lecture',
-					        'type' => 'inner',
-					        'conditions' => array('Lecture.id = Register.lecture_id' )));
-			
-
-		$options['conditions'] = array('Register.user_id' => $user_id);
-		$options['order'] = array(
-					'Register.created ' => 'ASC' 
-					);
-		$options['fields'] =array('Lecture.id','Lecture.name','Register.created','Lecture.cost');
-		$options['limit'] = 10;
-		$this->Register->recursive = -1;
-
-		$this->paginate = $options;
-		$data = $this->paginate('Register');
-
-		$sum_money = $this->calc_money();
-
-		$this->set('lecturesOnThisMonth',$data);
-		$this->set('sumMoney',$sum_money);
-
-	}
-
-	public function results_statistics()
+	public function resultsStatistics()
 		{
 			$this->set('menu_type','student_menu');
 			$user_id = $this->Auth->user('id');
@@ -556,7 +526,7 @@ class StudentsController extends AppController{
 		    $this->set('results',$data);
 			
 		}
-	public function lectures_statistics()
+	public function lecturesStatistics()
 	{
 		$this->set('menu_type','student_menu');
 		$user_id = $this->Auth->user('id');
@@ -621,7 +591,7 @@ class StudentsController extends AppController{
 	    
 	}
 		
-	public function edit_info($id = null){
+	public function editInfo($id = null){
 		$this->set('menu_type','student_menu');
 		$user_id = $this->Auth->user('id');
 		$this->loadModel('User');
@@ -676,19 +646,25 @@ class StudentsController extends AppController{
 		    }
 	}
 
-	public function calc_money()
+	public function calcMoney($month , $year )
 	{
 		//Tinh tien tu dau thang den ngay hien tai
 		$user_id = $this->Auth->user('id');
 		$this->loadModel('Register');
-		$sql = "SELECT SUM( lectures.cost ) AS money
-			FROM  `registers` ,  `lectures` 
-			WHERE registers.user_id =".$user_id."
-			AND registers.lecture_id = lectures.id
-			AND MONTH( registers.created ) = EXTRACT( 
-			MONTH FROM (NOW()))";
-		$data = $this->Register->query($sql);
-		return $data;
+		$options = array(
+					'conditions' => array(
+						'Register.user_id' => $user_id,
+						'MONTH(Register.created)' => $month,
+						'YEAR(Register.created)' => $year
+					),
+					'fields' => array( 'count(Register.id) as money')
+					
+
+			);
+		$data = $this->Register->find('all',$options);
+		$money = $data[0][0]['money'] * 20000;
+		
+		return $money;
 		
 
 
@@ -716,7 +692,7 @@ class StudentsController extends AppController{
 
 		}
 	
-	public function del_account()
+	public function delAccount()
 	{
 		$this->set('menu_type','student_menu');
 		if($this->request->is('post') || $this->request->is('put')){
@@ -762,5 +738,138 @@ class StudentsController extends AppController{
 		
 	}
 
+public function checkStatusLecture(){
+
+
+}
+public function testSubQueryAndPaging(){
+
+$conditionsSubQuery['User2.id'] = '29';
+$this->loadModel('User');
+$db = $this->User->getDataSource();
+$subQuery = $db->buildStatement(
+    array(
+        'fields'     => array('User2.id'),
+        'table'      => $db->fullTableName($this->User),
+        'alias'      => 'User2',
+        'limit'      => null,
+        'offset'     => null,
+        'joins'      => array(),
+        'conditions' => $conditionsSubQuery,
+        'order'      => null,
+        'group'      => null
+    ),
+    $this->User
+);
+$subQuery = 'User.id NOT IN (' . $subQuery . ') ';
+$subQueryExpression = $db->expression($subQuery);
+
+$conditions[] = $subQueryExpression;
+
+$this->User->recursive = -1;
+
+$options = compact('conditions');
+$options['limit'] = 2;
+			$this->paginate = $options;
+			 $data = $this->paginate('User');
+
+// $this->User->find('all', compact('conditions'));
+$this->set('data', $data);
+
+}
+
+
+public function moneyStatistics(){
+
+
+
+    $this->set('menu_type','student_menu');
+    $user_id = $this->Auth->user('id');
+
+    if($this->request->is('post')) {
+
+    $month=$this->request->data['Money']['mos'];
+    $year=$this->request->data['Money']['yos'];
+
+ 	$this->Session->write('monthxu', $month);
+ 	$this->Session->write('yearxu', $year);
+
+   
+     }
+    else
+    {
+
+    	if((!$month = $this->Session->read('monthxu')) || (!$year = $this->Session->read('yearxu')))
+    	{
+    	$month = date('n');
+	 	$year = date('Y');
+    	}
+
+
+		
+    }
+
+    //Tinh tien thang da chon
+    $moneyOfTheMonth = $this->calcMoney($month,$year);
+
+   	//Phan trang cac bai da hoc cua thang da chon
+   	$this->loadModel('Register');
+
+		$options['joins'] = array(
+					    array('table' => 'lectures',
+					        'alias' => 'Lecture',
+					        'type' => 'inner',
+					        'conditions' => array('Lecture.id = Register.lecture_id' )),
+
+					    array('table' => 'users',
+					    	'alias' => 'User',
+					    	'type' => 'inner',
+					    	'conditions' => array('Lecture.user_id = User.id')
+					    	)
+
+
+					    );
+			
+
+		$options['conditions'] = array('Register.user_id' => $user_id,
+			'MONTH(Register.created)  ' => $month,
+			'YEAR(Register.created) ' => $year
+
+			);
+
+		$options['fields'] =array('Lecture.id as id','Lecture.name as title','User.fullname as fullname','Register.created as time');
+		$options['limit'] = 10;
+		$this->Register->recursive = -1;
+
+		$this->paginate = $options;
+		$data = $this->paginate('Register');
+		
+		if($data != null) 	$this->set('lecturesOfTheMonth',$data);
+		$this->set('moneyOfTheMonth',$moneyOfTheMonth);
+		//Lay gia tien mot bai hoc tu hang so he thong
+		$this->set('cost','20.000 VND');
+
+
+
+	if(($montharr = $this->Session->read('monthxu')) && ($yeararr = $this->Session->read('yearxu')))
+	{
+		 $month = intval($montharr['month']);
+		 $year = intval($yeararr['year']);
+	     $this->set("mos",$month);
+	     $this->set("yos",$year);
+	}
+	else
+	{
+		 $currentMonth = date('n');
+	  	 $currentYear = date('Y');
+	     $this->set("mos",$currentMonth);
+	     $this->set("yos",$currentYear);
+	}
+  
+
+
+	}
+
+	
 }
 ?>
