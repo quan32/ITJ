@@ -4,22 +4,12 @@ echo $this->Html->link('ホームページ',
 	?></li>
 
 <li><?php 
-echo $this->Html->link('自身情報', 
-	array('controller' => 'students', 'action' => 'viewInfo'));
+echo $this->Html->link('一週間間以内の買った講義', 
+	array('controller' => 'students', 'action' => 'registedLectureThisWeek'));
 ?></li>
 <li><?php 
 echo $this->Html->link('講義リスト', 
 	array('controller' => 'students', 'action' => 'lecturesStatistics'));
-?></li>
-
-<li><?php 
-echo $this->Html->link('学費', 
-	array('controller' => 'students', 'action' => 'moneyStatistics'));
-?></li>
-
-<li><?php 
-echo $this->Html->link('テストの結果統計', 
-	array('controller' => 'students', 'action' => 'resultsStatistics'));
 ?></li>
 
 <li><?php 
@@ -31,7 +21,14 @@ echo $this->Html->link('受けた講義リスト',
 echo $this->Html->link('お気に入りの講義リスト', 
 	array('controller' => 'students', 'action' => 'topLecturesHot'));
 ?></li>
-
+<li><?php 
+echo $this->Html->link('学費', 
+	array('controller' => 'students', 'action' => 'moneyStatistics'));
+?></li>
+<li><?php 
+echo $this->Html->link('自身情報', 
+	array('controller' => 'students', 'action' => 'viewInfo'));
+?></li>
 <li><?php 
 echo $this->Html->link('パスワード変更', 
 	array('controller' => 'users', 'action' => 'changePassword'));
