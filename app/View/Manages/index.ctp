@@ -8,8 +8,7 @@
 	<th>生年月日</th>
 	<th>住所</th>
 	<th>電話番号</th>
-    <th>クレジットカード</th>
-    <th>銀行口座</th>
+    <th>スタテス</th>
     <th>管理</th>
 	</tr>
 <?php
@@ -24,8 +23,7 @@
 			echo '<td>'.$user["User"]["date_of_birth"].'</td>';
 			echo '<td>'.$user["User"]["address"].'</td>';
 			echo '<td>'.$user["User"]["mobile_No"].'</td>';
-			echo '<td>'.$user["User"]["credit_card_No"].'</td>';
-			echo '<td>'.$user["User"]["bank_acc"].'</td>';
+		   	echo '<td>'.$user["User"]["bank_acc"].'</td>';
 			
 	    echo '<td>';
        echo $this->Form->postLink('削除 | ', 

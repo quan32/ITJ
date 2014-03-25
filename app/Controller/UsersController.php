@@ -186,6 +186,7 @@ class UsersController extends AppController{
 							if($ip['ip']==$IP)
 								$count++;
 						}
+						//$count=1;
 						if($count==0){
 							$this->Session->setFlash(__('間違ったIPアドレス'));
 							$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', このIPアドレスはIPアドレスリストにない';
