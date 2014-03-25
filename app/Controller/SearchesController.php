@@ -46,18 +46,32 @@ class SearchesController extends  AppController{
         if(!empty($this->passedArgs)){
             if(isset($this->passedArgs['Search.keyword'])) {
     			$keywords = $this->passedArgs['Search.keyword'];
-    			$conditions[] = array(
-                    "OR" => array(
-								'Search.name LIKE' => "%$keywords%",
-                                'Search.description LIKE' => "%$keywords%",
-                                'User.fullname LIKE' => "%$keywords%" 
-                            )
-    			);
+				$catagory = $this->passedArgs['Search.catagory'];
+				if($catagory == "0")
+				{
+					$conditions[] = array(
+						"OR" => array(
+									'Search.name LIKE' => "%$keywords%",
+									'Search.description LIKE' => "%$keywords%",
+									'User.fullname LIKE' => "%$keywords%" 
+								)
+					);
+				}else
+				{
+					$conditions[] = array (
+						"AND" => array('Search.category_id' => "$catagory",
+										"OR" => array(
+												'Search.name LIKE' => "%$keywords%",
+												'Search.description LIKE' => "%$keywords%",
+												'User.fullname LIKE' => "%$keywords%"))
+					);
+					}
+					//echo $conditions;
                 $data['Search']['description'] = $keywords; 
             }
             //Limit and Order By
             $this->paginate= array(
-                'limit' => 5,
+                'limit' => 4,
                 'order' => array('id' => 'asc'),
             );
             

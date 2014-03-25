@@ -27,7 +27,7 @@ if($registedLectures){
                 echo "<td>".$item['Lecture']['name']."</td>";
                 echo "<td>".$item['Register']['created']."</td>";
                 echo "<td>".$item['Lecture']['cost']."</td>";
-                echo "<td>".$this->Html->link('詳しく',array('controller' => 'lectures','action' => 'detail',$item['Lecture']['id'], 'registed_lectures'));
+                echo "<td>".$this->Html->link('詳しく',array('controller' => 'Students','action' => 'detailLecture',$item['Lecture']['id'], 'registedLectures'));
        
 
             if($item['Block'] == 0)

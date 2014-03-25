@@ -30,7 +30,7 @@ if($lectures){
                 echo "<td>".$item['Lecture']['name']."</td>";
                 echo "<td>".$item['User']['fullname']."</td>";
                 echo "<td>".$cost."VND</td>";
-                echo "<td>".$this->Html->link('詳しく',array('controller' => 'lectures','action' => 'detail',$item['Lecture']['id'], 'lectures_statistics'));
+                echo "<td>".$this->Html->link('詳しく',array('controller' => 'Students','action' => 'detailLecture',$item['Lecture']['id'], 'lecturesStatistics'));
 
                 echo "<td>";
             //Check co bi chan ko: 

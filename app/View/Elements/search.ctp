@@ -3,11 +3,12 @@
 ?>
 <?php echo $this->Form->create('Search',array('action'=>'search'));?>
     <fieldset>
-        <legend><?php __('Search');?></legend>
+        <legend><?php __('検索');?></legend>
     <?php
+		echo $this->Form->input('catagory', array('label'=>'カテゴリ', 'options'=>array('0'=>'全部','1'=>'数学','2'=>'文学','3'=>'外国語')));
         echo $this->Form->input('keyword');
         //echo $this->Form->input('description');
-        echo $this->Form->submit('Search');
+        echo $this->Form->submit('検索');
     ?>
     </fieldset>
 <?php echo $this->Form->end();?>
