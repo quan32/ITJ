@@ -21,7 +21,7 @@ if($fiveNewestLecture!=NULL){
         echo "<td>".$item['Lecture']['name']."</td>";
         echo "<td>".$item['Register']['created']."</td>";
         echo "<td>".$item['User']['fullname']."</td>";
-        echo "<td>".$this->Html->link('詳しく',array('controller' => 'lectures','action' => 'detail',$item['Lecture']['id'], 'index'));
+        echo "<td>".$this->Html->link('詳しく',array('controller' => 'Students','action' => 'detailLecture',$item['Lecture']['id'], 'index'));
           
           echo "</td>";
           echo "<td>";
@@ -67,7 +67,7 @@ if($fiveNewestLecture!=NULL){
                 echo "<td>".$item['Lecture']['name']."</td>";
                 echo "<td>".$item['User']['fullname']."</td>";
                 echo "<td>".$cost."VND</td>";
-                echo "<td>".$this->Html->link('詳しく',array('controller' => 'lectures','action' => 'detail',$item['Lecture']['id'], 'index'));
+                echo "<td>".$this->Html->link('詳しく',array('controller' => 'Students','action' => 'detailLecture',$item['Lecture']['id'], 'index'));
                 echo "</td>";
                 echo "<td>";
           if($item['Block'] == 1){
