@@ -5,6 +5,10 @@
     <fieldset>
         <legend><?php __('検索');?></legend>
     <?php
+		echo $this->Form->input('catagory', array(
+			'label' => 'カテゴリ',
+			'options' => array('数学','文学','外国語'),
+			'empty' => '(全部)'));
         echo $this->Form->input('keyword');
         //echo $this->Form->input('description');
         echo $this->Form->submit('検索');
