@@ -2,11 +2,14 @@
 class FavoritesController extends AppController{
 	public function beforeFilter(){
 		parent::beforeFilter();
-		// $this->Auth->allow('add','delete');
+		
+		if($this->Auth->isAuthorized()==false){
+			$this->redirect(array('controller'=>'pages','action'=>'display', 'error'));
+		}
 	}
 
 	public function isAuthorized($user){
-		// Only teacher can use teacher's function
+		// Only student can use this function
 		if($user['role']=='student')
 			return true;
 		return false;

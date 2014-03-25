@@ -50,6 +50,7 @@ class PagesController extends AppController {
  *	or MissingViewException in debug mode.
  */
 	public function display() {
+		$this->set('menu_type','empty');
 		$path = func_get_args();
 
 		$count = count($path);
@@ -79,7 +80,7 @@ class PagesController extends AppController {
 		}
 	}
 
-	public function index(){
-		$this->redirect(array('controller'=>'users','action'=>'login'));	
+	public function error(){
+		
 	}
 }

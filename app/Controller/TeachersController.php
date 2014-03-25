@@ -4,6 +4,10 @@ class TeachersController extends AppController{
 	public function beforeFilter(){
 		parent::beforeFilter();
 		$this->Auth->allow('register');
+
+		if($this->Auth->isAuthorized()==false && $this->action!='register'){
+			$this->redirect(array('controller'=>'pages','action'=>'display', 'error'));
+		}
 	}
 
 	public function isAuthorized($user){

@@ -4,7 +4,6 @@ class SearchesController extends  AppController{
 
 		public function beforeFilter(){
 		parent::beforeFilter();
-		// $this->Auth->allow('search', 'result');
 	}
 
 	public function isAuthorized($user){

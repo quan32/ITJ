@@ -19,7 +19,7 @@ echo $this->Html->link('講義をマネジメント ',
 ?></li>
 
 <li><?php 
-echo $this->Html->link('パスワード変化', 
+echo $this->Html->link('パスワード変更', 
 	array('controller' => 'users', 'action' => 'changePassword'));
 ?></li>
 

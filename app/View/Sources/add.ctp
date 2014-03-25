@@ -23,7 +23,7 @@
 
 
 <fieldset>
-	<legend>もうメディアファイル</legend>
+	<legend>メディアファイルアップロード</legend>
 
 	<?php 
 		echo $this->Form->create('Source', array('type'=>'file','enctype'=>'multipart/form-data'));
@@ -42,6 +42,15 @@
 			'type' => 'file'
 		)); ?>
 		 <?php endif; ?> 
+
+		 <div>
+			<h5>講義の付き資料として音声ファイルやビデオファイルやイメージファイルなどを選んでください</h5>
+			<h5>PDFファイルのみアップロードできる</h5>
+			<h5>ファイルを選んでから、ファイルをアップロードするために</h5>
+			<h5>「アップロード」ボタンを押してください</h5>
+			<h5>付き資料の数は限界ではない</h5>
+			<h5>講義の原料の選ぶのが終わったら、「完了」ボタンを押してください</h5>
+		 <div>
 
 	<?php
 		echo $this->Form->end('アップロード');
