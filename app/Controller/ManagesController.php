@@ -3,10 +3,14 @@ class ManagesController extends AppController{
 	public function beforeFilter(){
 		parent::beforeFilter();
 		$this->Auth->allow('info1', 'info2');
+
+    if($this->Auth->isAuthorized()==false && !in_array($this->action, array('info1', 'info2'))){
+      $this->redirect(array('controller'=>'pages','action'=>'display', 'error'));
+    }
 	}
 
 	public function isAuthorized($user){
-		// Only teacher can use teacher's function
+		// Only manager can use these function
 		if($user['role']=='manager')
 			return true;
 		return false;

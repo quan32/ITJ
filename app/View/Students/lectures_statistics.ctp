@@ -8,12 +8,12 @@ if($lectures){
 
         echo "<tr>";
 
-            echo "<th>" . $paginator->sort('id', 'ID') . "</th>";
-            echo "<th>" . $paginator->sort('name', 'タイトル') . "</th>";
-            echo "<th>" . $paginator->sort('fullname', '先生の氏名') . "</th>";
-            echo "<th>" . $paginator->sort("cost", 'コスト') . "</th>";
-            echo "<th>情報</th>";
-            echo "<th> 操作</th>";
+            echo "<th>" . $paginator->sort('Lecture.id', 'ID') . "</th>";
+            echo "<th>" . $paginator->sort('Lecture.name', 'タイトル') . "</th>";
+            echo "<th>" . $paginator->sort('User.fullname', '先生の氏名') . "</th>";
+            echo "<th>'コスト</th>";
+            echo "<th>詳しく</th>";
+            echo "<th> 選択</th>";
 
         echo "</tr>";
 
@@ -29,38 +29,30 @@ if($lectures){
                 echo "<td>".$item['Lecture']['id']."</td>";
                 echo "<td>".$item['Lecture']['name']."</td>";
                 echo "<td>".$item['User']['fullname']."</td>";
-                echo "<td>".$item['Lecture']['cost']."</td>";
+                echo "<td>".$cost."VND</td>";
                 echo "<td>".$this->Html->link('詳しく',array('controller' => 'lectures','action' => 'detail',$item['Lecture']['id'], 'lectures_statistics'));
 
                 echo "<td>";
-            if($item['Block'] == 0)
-                {
-                    $flag = 0;
-                    $status = 0; // Status de xem hoc hay chua?
-                    foreach ($list_lectures as $lecture) {
-                        if ($lecture['Register']['lecture_id'] == $item['Lecture']['id'])
-                        {
-                            $flag = 1;
-                            $status = $lecture['Register']['status'];
-                            break;
-                        }
-                    }
-                    if($flag == 0)
-
-                     {
-                        echo $this->html->link("登録",array 
-                        ("action"=>"/register_lecture",'full_base' => true ,$item['Lecture']['id'],"lectures_statistics"),array(),"値段は ".$item['Lecture']['cost'].". 登録しますか?",false); 
-                        }
-                    else
-                    {
-                        if($status == 0 )
-                            echo $this->Html->link("勉強", array("controller" => "lectures","action" => "view" ,$item['Lecture']['id']));
-                        else 
-                            echo $this->Html->link("見直す", array("controller" => "lectures","action" => "view" ,$item['Lecture']['id']));
-                    }
+            //Check co bi chan ko: 
+            if($item['Block'] == 1){
+             echo "ブロック";
                 }
+
+        else {
+
+            if($item['statusLecture'] == 0)
+                    echo $this->html->link("登録",array 
+                    ("action"=>"/register_lecture",'full_base' => true ,$item['Lecture']['id'],"index"),array(),"値段は ".$item['Lecture']['cost'].". 登録しますか?",false); 
+                    
                 else
-                    echo "ブロック";
+                {
+                   
+                        echo $this->Html->link('登録した,勉強',array('controller'=>'lectures','action'=>'view', $item['Lecture']['id']));
+                    
+                }
+
+                
+            }
                 echo "</td>";
                       
                 echo "</tr>";

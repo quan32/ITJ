@@ -18,8 +18,8 @@ class Source extends AppModel{
 			),
 			// http://book.cakephp.org/2.0/en/models/data-validation.html#Validation::mimeType
 			'mimeType' => array(
-				'rule' => array('mimeType', array('application/msword','image/gif','image/png','image/jpg','image/jpeg',
-					'text/tab-separated-values','video/x-flv','audio/mp4', 'audio/mpeg')),
+				'rule' => array('mimeType', array('image/gif','image/png','image/jpg','image/jpeg',
+					'text/tab-separated-values','video/x-flv','audio/mp4', 'audio/mpeg3','audio/mp3','audio/mpeg', 'audio/x-mpeg-3', 'video/mpeg', 'video/x-mpeg')),
 				'message' => '不当なファイル',
 				'required' => FALSE,
 				'allowEmpty' => TRUE,

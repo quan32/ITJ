@@ -5,13 +5,11 @@ class UsersController extends AppController{
 
 	public function beforeFilter(){
 		parent::beforeFilter();
-		$this->Auth->allow('login', 'role', 'verify1','verify2', 'logincu');
+		$this->Auth->allow('login', 'role', 'verify1','verify2');
 	}
 	public function isAuthorized($user){
-		// Only teacher can use teacher's function
-		if($user['role']=='student' || $user['role']=='teacher' || $user['role']=='manager')
-			return true;
-		return false;
+		// Everyone can access
+		return true;
 	}
 
 	public function view($id = null){
@@ -71,10 +69,14 @@ class UsersController extends AppController{
 
 	public function login(){
 		$this->layout = false;
-		// var_dump($this->request->data);die;
-		// $this->layout='ajax';
-		$max=3;//so lan dang nhap that bai thi bi khoa tai khoan tam thoi
-		$time=7200;//7200(s)=2(h)
+		$max = $this->Constant->findByName('MAX');
+		$max = $max['Constant']['value'];//so lan dang nhap that bai thi bi khoa tai khoan tam thoi
+
+		$blockTime = $this->Constant->findByName('blockTime');
+		$blockTime = $blockTime['Constant']['value'];
+		$time=$blockTime;//7200(s)=2(h)
+
+		// debug($max);die;
 		$this->set('menu_type','empty');
 
 		// Check session
@@ -83,8 +85,8 @@ class UsersController extends AppController{
 					return $this->redirect(array('controller'=>'manages','action'=>'index'));
 				elseif($this->Auth->user('role')=='teacher')
 					return $this->redirect(array('controller'=>'teachers','action'=>'index'));
-				else
-					return $this->redirect(array('controllers'=>'students','action'=>'index'));
+				elseif($this->Auth->user('role')=='student')
+					return $this->redirect(array('controller'=>'students','action'=>'index'));
 			}
 
 		// If there is not session -> check usrname & password -> create session
@@ -198,6 +200,8 @@ class UsersController extends AppController{
 					$log="INFO, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', ログインした成功して登録した';
 					$this->Log->writeLog('login.txt',$log);
 					$this->Session->setFlash('ログインした');
+					$this->User->id=$user['User']['id'];
+					$this->User->saveField('failedNo',0);
 					
 					if($this->Auth->user('role')=='manager')
 						return $this->redirect(array('controller'=>'manages','action'=>'index'));
@@ -285,6 +289,7 @@ class UsersController extends AppController{
 		$this->User->id = $userId;
 		// current user
 		$currUser = $this->User->findById($userId);
+		// var_dump($currUser);die;
 
 		if(!$this->User->exists()){
 			throw new NotFoundException(__('ユーザが無効だ'));
@@ -301,7 +306,8 @@ class UsersController extends AppController{
 					// assign new password to password
 					$currUser['User']['password'] = $arrPass['User']['newPassword'];
 					// save user, run function beforeSave() to hash new password
-					if($this->User->save($currUser)){
+					// $this->User->id = $userId;
+					if($this->User->saveField('password',$arrPass['User']['newPassword'])){
 						// write success log to log file 7: change_password.txt
 						$log = '"SUCCESS", "'.(string)date('Y-m-d H:i:s').'", "'.(string)$userId.'"';
 						$this->Log->writeLog('change_password.txt',$log);
@@ -347,28 +353,39 @@ class UsersController extends AppController{
 		}
 	}
 
-	// public reset($id){
-	// 	$user= $this->User->findById($id);
-	// 	$this->User->id = $id;
-	// 	$this->User->saveField('password',$user['User']['first_password']);
-	// 		return $this->redirect(array('controller'=>'users','action'=>'login'));	
-	// 	}else{
-	// 		$this->Session->setFlash(__('確認するコードは間違ってしまった'));
-	// 	}
-	// }
+	public function reset($id){
+		$user= $this->User->findById($id);
+		$password=$user['User']['first_password'];
+		$sql = "UPDATE users SET password='$password' WHERE id='$id'";
+		if($this->User->query($sql)){
+			$this->Session->setFlash(__('初期パスワードにリセットした'));
+			return $this->redirect(array('controller'=>'manages','action'=>'index'));
+		}
+	}
 	
 	public function logout(){	
 		$this->Session->setFlash('またね！');
+		//Xuan
+		$this->Session->delete('monthxu');
+		$this->Session->delete('yearxu');
+		//Xuan
 		$this->Auth->logout();
-		$this->redirect(array('controller'=>'users','action'=>'login'));	
+		$this->redirect(array('controller'=>'pages','action'=>'display','home'));	
 		//return $this->redirect($this->Auth->logout());
 	}
 
 	public function lock($id=null){
 		$this->User->id =$id;
-		$this->request->data['User']['state'] = 'locked';
-		if ($this->User->save($this->request->data)) {
-            $this->Session->setFlash(__('The user has been locked'));
+		if ($this->User->saveField('state','locked')) {
+            $this->Session->setFlash(__('アカウントはロックされた'));
+			return $this->redirect(array('controller'=>'manages','action' => 'index')); 
+		}
+	}	
+
+	public function unlock($id=null){
+		$this->User->id =$id;
+		if ($this->User->saveField('state','normal')) {
+            $this->Session->setFlash(__('アカウントはアンロックした'));
 			return $this->redirect(array('controller'=>'manages','action' => 'index')); 
 		}
 	}	

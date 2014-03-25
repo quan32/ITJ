@@ -4,7 +4,9 @@ define ('UPLOAD_FOLDER', realpath(dirname(__FILE__).DS.'..'.DS.'webroot'.DS.'fil
 class ResultsController extends AppController{
 	public function beforeFilter(){
 		parent::beforeFilter();
-		$this->Auth->allow('view');
+	}
+	public function isAuthorized($user){
+		return true;
 	}
 
 	public function view($id = null){
