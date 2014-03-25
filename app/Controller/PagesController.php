@@ -51,6 +51,7 @@ class PagesController extends AppController {
  */
 	public function display() {
 		$this->set('menu_type','empty');
+		$this->layout='ajax';
 		$path = func_get_args();
 
 		$count = count($path);

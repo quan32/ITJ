@@ -764,7 +764,83 @@ public function registedLectureThisWeek(){
 
 }
 
+//------xuan----2014/4/9 
+	//hien thi chi tiet bai giang
 
+	public function detail($id = null,$currentLocation = null)
+	{
+		$this->set('menu_type','student_menu');
+		if($id == null) 
+		{
+			if($currentLocation != null)
+				{
+				$this->Session->setFlash(__('すみません,見つけられない!'));
+				return $this->redirect(array('controller'=>'students','action' => $currentLocation));
+				}
+			else
+				{
+				$this->Session->setFlash(__('すみません,見つけられない!'));
+				return $this->redirect(array('controller'=>'students','action' => 'index'));
+				}
+
+		}
+		else
+		{
+		$this->loadModel('Lecture');
+	
+
+		$options['joins'] = array(
+					    array('table' => 'users',
+					        'alias' => 'User',
+					        'type' => 'inner',
+					        'conditions' => array('Lecture.user_id = User.id' )));
+			
+
+		$options['conditions'] = array('Lecture.id' => $id);
+		$options['fields'] =array('Lecture.id','Lecture.name','User.fullname','User.id','User.username','User.mobile_No','User.mail','Lecture.cost','Lecture.description');
+		$this->Lecture->recursive = -1;
+
+		$data = $this->Lecture->find('all',$options);
+		$user_id = $this->Auth->user('id');
+		if($data != null)
+		{
+		// kiem tra bi block ko
+		$this->loadModel('Block');
+		$isBlock = $this->Block->find('all', array(
+			'conditions' => array(
+				'student_id' => $user_id,
+				'teacher_id' => $data[0]['User']['id']
+				)
+
+			));
+		if($isBlock != null) 
+			$data[0]['Block'] = 1;
+		else 
+			$data[0]['Block'] = 0;
+		}
+
+
+		$this->set('lecture',$data);
+		$this->set('currentLocation',$currentLocation);
+// list cac bai da dang ki cua user nay
+		$user_id = $this->Auth->user('id');
+		$this->loadModel('Register');
+			$data_register = $this->Register->find('all',
+				array(
+					'conditions' => array('Register.user_id' => $user_id,
+					'Register.status <>' => 3,
+					"Register.created >=" => date('Y-m-d H:i:s', strtotime("-1 weeks"))
+						),
+					'limit' => 100000000000,
+					'fields' => array( 'lecture_id','status','user_id')
+					)
+
+				);
+			$this->set('list_lectures', $data_register);
+
+		}
+	}
+	//___________--
 public function moneyStatistics(){
 
 

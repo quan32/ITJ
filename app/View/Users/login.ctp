@@ -40,7 +40,7 @@ font-weight: bold;
             <?php echo $this->Form->end(array('label'=>'ログイン')); ?>
                 <div class="error"><span>+dsdsadsad</span></div>
                 <div class="other-functions">
-            <?
+            <?php
                 echo $this->Html->link('パスワードを忘れた方', 
                     array('controller' => 'manages', 'action' => 'info2'))."<br><br>";
                 echo $this->Html->link('新規登録', 

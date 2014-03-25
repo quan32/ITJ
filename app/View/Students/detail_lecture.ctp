@@ -63,7 +63,7 @@ else{
 
                          {
                             echo $this->Html->link("登録",array 
-                            ("controller" => "Students","action"=>"register_lecture" ,$lecture[0]['Lecture']['id'],$currentLocation),array(),"Gia cua no la ".$lecture[0]['Lecture']['cost'].". Are you sure?",false); 
+                            ("controller" => "Students","action"=>"registerLecture" ,$lecture[0]['Lecture']['id'],$currentLocation),array(),"Gia cua no la ".$lecture[0]['Lecture']['cost'].". Are you sure?",false); 
                             }
                         else
                         {
