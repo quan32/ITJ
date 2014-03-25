@@ -57,7 +57,7 @@ class SearchesController extends  AppController{
             }
             //Limit and Order By
             $this->paginate= array(
-                'limit' => 2,
+                'limit' => 5,
                 'order' => array('id' => 'asc'),
             );
             
