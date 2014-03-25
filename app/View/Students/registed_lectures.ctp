@@ -54,7 +54,7 @@ if($registedLectures){
                   }
                   else {
                     echo "<td>".$this->html->link("もう一度登録",array 
-                        ("action"=>"/register_lecture",'full_base' => true ,$item['Lecture']['id'],"registed_lectures"),array(),"値段は ".$item['Lecture']['cost'].". 登録しますか?",false)."</td>";
+                        ("action"=>"registerLecture",'full_base' => true ,$item['Lecture']['id'],"registed_lectures"),array(),"値段は ".$item['Lecture']['cost'].". 登録しますか?",false)."</td>";
                     echo "<td>なし</td>";
                     echo "<td>なし</td>";
                   }

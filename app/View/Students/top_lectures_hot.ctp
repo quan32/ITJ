@@ -50,7 +50,7 @@ if($hotLectures==NULL){
 
                      {
                         echo $this->html->link("登録",array 
-                        ("action"=>"/register_lecture",'full_base' => true ,$item['Lecture']['id'],"top_lectures_hot"),array(),"価格は ".$item['Lecture']['cost'].". 本気？",false); 
+                        ("action"=>"registerLecture",$item['Lecture']['id'],"top_lectures_hot"),array(),"価格は ".$item['Lecture']['cost'].". 本気？",false); 
                         }
                     else
                     {
