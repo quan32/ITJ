@@ -69,7 +69,7 @@ class DATABASE_CONFIG {
 		'password' => '1',
 		'database' => 'cake',
 		'prefix' => '',
-		//'encoding' => 'utf8',
+		'encoding' => 'utf8',
 	);
 
 	public $test = array(
