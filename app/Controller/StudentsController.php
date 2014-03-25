@@ -767,7 +767,7 @@ public function registedLectureThisWeek(){
 //------xuan----2014/4/9 
 	//hien thi chi tiet bai giang
 
-	public function detail($id = null,$currentLocation = null)
+	public function detailLecture($id = null,$currentLocation = null)
 	{
 		$this->set('menu_type','student_menu');
 		if($id == null) 

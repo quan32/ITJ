@@ -58,7 +58,7 @@ if(isset($lecturesOfTheMonth)){
                 echo "<td>".$item['Lecture']['id']."</td>";
                 echo "<td>".$item['Lecture']['title']."</td>";
                 echo "<td>".$item['Register']['time']."</td>";
-                 echo "<td>".$this->Html->link('見る',array('controller' => 'lectures','action' => 'detail',$item['Lecture']['id'], 'moneyStatistics'));
+                 echo "<td>".$this->Html->link('見る',array('controller' => 'Students','action' => 'detailLecture',$item['Lecture']['id'], 'moneyStatistics'));
                 echo "<td>".$cost."</td>";
                 echo "</tr>";
         }
