@@ -24,6 +24,7 @@
 						<?php echo $this->Form->input('address', array('label'=>'住所'));?>
 						<?php echo $this->Form->input('bank_acc', array('label'=>'銀行口座'));?>
 						<?php echo $this->Form->input('mobile_No', array('label'=>'電話番号'));?>
+						<?php echo $this->Form->input('ip', array('label'=>'IP アドレス'));?>
 					</fieldset>
 				</div>
 

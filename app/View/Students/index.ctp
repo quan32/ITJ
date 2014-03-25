@@ -78,7 +78,7 @@ if($fiveNewestLecture!=NULL){
 
             if($item['statusLecture'] == 0)
                     echo $this->html->link("登録",array 
-                    ("action"=>"/register_lecture",'full_base' => true ,$item['Lecture']['id'],"index"),array(),"値段は ".$item['Lecture']['cost'].". 登録しますか?",false); 
+                    ("action"=>"/registerLecture",'full_base' => true ,$item['Lecture']['id'],"index"),array(),"値段は ".$item['Lecture']['cost'].". 登録しますか?",false); 
                     
                 else
                 {

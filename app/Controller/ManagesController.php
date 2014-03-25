@@ -35,10 +35,10 @@ class ManagesController extends AppController{
       }
       } 
        
-       // $sql = array("conditions"=> array("state"=> "new"));
-        $data = $this->User->find("all");
+        $sql = array("conditions"=> array("role != 'manager' "));
+        $data = $this->User->find("all",$sql);
 		    $this->set("users",$data);
-    // var_dump($data); die();
+        // var_dump($data); die();
 
 	  }
 
@@ -193,12 +193,21 @@ class ManagesController extends AppController{
      
     
     $this->loadModel('User');
+    $this->loadModel('Ip');
     if($this->request->is('post')){
-      // var_dump($this->request->data);die;
+      // var_dump($this->Auth->user("id"));die;
       $this->request->data['User']['role']="manager";
       $this->request->data['User']['state']="normal";
-      $this->User->create();
-      if($this->User->save($this->request->data)){
+      
+      $data['Ip']['ip']=$this->request->data['User']['ip'];
+     // var_dump($data);die();
+       $this->User->create();
+       $this->Ip->create();
+
+      if($user=$this->User->save($this->request->data)){
+      
+        $data['Ip']['user_id']=$user["User"]["id"];
+        $this->Ip->save($data);
         $this->Session->setFlash(__('アカウントは保存されていた。'));
        return $this->redirect(array('action'=>'index'));
       }
@@ -230,7 +239,7 @@ class ManagesController extends AppController{
   public function change(){ // doi pass va edit IP
     $this->set('menu_type','manager_menu');
 
-   $this->loadModel('Ip');
+    $this->loadModel('Ip');
 
      if($this->request->is('post')){
     //   var_dump( $this->Auth->user("id"));die;
@@ -254,6 +263,12 @@ class ManagesController extends AppController{
     )
   );
     $options['fields'] = array('User.username', 'Ip.*');
+    $options["conditions"] = array('user_id' =>$this->Auth->user("id"));
+    
+   // $sql = array("conditions"=> array('user_id' =>$this->Auth->user("id")));
+    
+
+
 
     $data=$this->Ip->find('all',$options);
     //var_dump($data); die();
