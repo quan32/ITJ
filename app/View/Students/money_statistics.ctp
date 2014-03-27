@@ -59,7 +59,7 @@ if(isset($lecturesOfTheMonth)){
                 echo "<td>".$item['Lecture']['title']."</td>";
                 echo "<td>".$item['Register']['time']."</td>";
                  echo "<td>".$this->Html->link('見る',array('controller' => 'Students','action' => 'detailLecture',$item['Lecture']['id'], 'moneyStatistics'));
-                echo "<td>".$cost."</td>";
+                echo "<td>".$COST."VND</td>";
                 echo "</tr>";
         }
         

@@ -11,62 +11,47 @@ if($hotLectures==NULL){
 
         echo "<tr>";
 
-            echo "<th>" . $paginator->sort('id', 'ID') . "</th>";
-            echo "<th>" . $paginator->sort('name', 'タイトル') . "</th>";
-            echo "<th>" . $paginator->sort('fullname', '先生の名前') . "</th>";
-            echo "<th>" . $paginator->sort("cost", 'コスト') . "</th>";
+            echo "<th>講義のID</th>";
+            echo "<th>タイトル</th>";
+            echo "<th>先生の名前'</th>";
+            echo "<th>コスト</th>";
             echo "<th>情報</th>";
-            echo "<th> Option</th>";
+            echo "<th>いいねの数</th>";
+            echo "<th>選択</th>";
         echo "</tr>";
         
 
         foreach( $hotLectures as $item ){
-                $param = array(
-                    'lecture_id' => $item['Lecture']['id'],
-                    'action' => 'top_lecture_hot'
-
-                    )         ;
                 echo "<tr>";
                 echo "<td>".$item['Lecture']['id']."</td>";
                 echo "<td>".$item['Lecture']['name']."</td>";
                 echo "<td>".$item['User']['fullname']."</td>";
-                echo "<td>".$item['Lecture']['cost']."</td>";
+                echo "<td>".$COST."VND</td>";
                 echo "<td>".$this->Html->link('詳しく',array('controller' => 'Students','action' => 'detailLecture',$item['Lecture']['id'], 'topLecturesHot'));
-
-                echo "<td>";
-                if($item['Block'] == 0)
-                {
-                     $flag = 0;
-                    $status = 0; // Status de xem hoc hay chua?
-                    foreach ($list_lectures as $lecture) {
-                        if ($lecture['Register']['lecture_id'] == $item['Lecture']['id'])
-                        {
-                            $flag = 1; // = 1 , tuc la trong list cac bai hoc da dang ki
-                            $status = $lecture['Register']['status'];
-                            break;
-                        }
-                    }
-                    if($flag == 0)
-
-                     {
-                        echo $this->html->link("登録",array 
-                        ("action"=>"registerLecture",$item['Lecture']['id'],"top_lectures_hot"),array(),"価格は ".$item['Lecture']['cost'].". 本気？",false); 
-                        }
-                    else
-                    {
-                        if($status == 0 )
-                            echo $this->Html->link("勉強", array("controller" => "lectures","action" => "view" ,$item['Lecture']['id']));
-                        else 
-                           echo $this->Html->link("見直す", array("controller" => "lectures","action" => "view" ,$item['Lecture']['id']));
-                    }
-                }
-                else
-                    echo "ブロック";
-                 
-           
                 echo "</td>";
+                echo "<td>".$item[0]['iine']."</td>";
+                echo "<td>";
+          if($item['Block'] == 1){
+             echo "ブロック";
+                }
+
+        else {
+
+            if($item['statusLecture'] == 0)
+                    echo $this->html->link("登録",array ("action"=>"registerLecture" ,$item['Lecture']['id'],"topLecturesHot"),array(),"値段は ".$COST."VND。登録しますか?",false); 
+                    
+                else
+                {
                    
-              echo "</tr>";
+                        echo $this->Html->link('勉強',array('controller'=>'lectures','action'=>'view', $item['Lecture']['id']));
+                    
+                }
+
+                
+            }
+                echo "</td>";
+
+                echo "</tr>";
         }
         
     echo "</table>";

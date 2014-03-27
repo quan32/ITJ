@@ -1,4 +1,4 @@
-<h1>受けた講義リスト</h1>
+<h1>買った講義の一覧を表示します。</h1>
 <?php
 $paginator = $this->Paginator;
 
@@ -8,16 +8,13 @@ if($registedLectures){
 
         echo "<tr>";
 
-            echo "<th>" . $paginator->sort('id', 'ID') . "</th>";
-            echo "<th>" . $paginator->sort('name', 'タイトル') . "</th>";
-            echo "<th>" . $paginator->sort('created', '時間') . "</th>";
-            echo "<th>" . $paginator->sort("cost", 'コスト') . "</th>";
+            echo "<th>" . $paginator->sort('Lecture.id', '講義ID') . "</th>";
+            echo "<th>" . $paginator->sort('Lecture.name', 'タイトル') . "</th>";
+            echo "<th>" . $paginator->sort('Register.created', '登録の時間') . "</th>";
+            echo "<th>コスト</th>";
             echo "<th>情報</th>";
-            echo "<th> 操作 1</th>";
-            echo "<th> 操作 2</th>";
-            echo "<th> 操作 3</th>";
-
-        echo "</tr>";
+            echo "<th>選択</th>";
+            echo "</tr>";
         
 
         foreach( $registedLectures as $item ){
@@ -26,49 +23,26 @@ if($registedLectures){
                 echo "<td>".$item['Lecture']['id']."</td>";
                 echo "<td>".$item['Lecture']['name']."</td>";
                 echo "<td>".$item['Register']['created']."</td>";
-                echo "<td>".$item['Lecture']['cost']."</td>";
+                echo "<td>".$COST."VND</td>";
                 echo "<td>".$this->Html->link('詳しく',array('controller' => 'Students','action' => 'detailLecture',$item['Lecture']['id'], 'registedLectures'));
        
 
-            if($item['Block'] == 0)
+            if($item['Block'] == 1)
             {
-                // Neu qua mot tuan thi ban ko the hoc
-                  $lastWeek = time() - 7*24*60*60;
-
-                  if(strtotime($item['Register']['created']) >= $lastWeek)
-                  {
-                        if($item['Register']['status'] == 0)
-                            echo "<td>".$this->Html->link("勉強",array("controller" => "lectures", "action" => "view",$item['Lecture']['id']))."</td>";
-                        else if ($item ['Register']['status'] ==1)
-                            echo "<td>".$this->Html->link("見直す",array("controller" => "lectures", "action" => "view",$item['Lecture']['id']))."</td>";
-                        if($item['isTest'] == 1)
-                                {
-                                echo "<td>".$this->Html->link('もう一度テスト',array('controller' => 'tests','action' => 'view',$item['Test']['id'], ))."</td>";
-                                echo "<td>".$this->Html->link('結果をレビュー',array('controller' => 'results','action' => 'view',$item['result_id']))."</td>";
-                                }
-                        else {
-                            echo "<td>".$this->Html->link('テスト',array('controller' => 'tests','action' => 'view',$item['Test']['id'], ))."</td>";
-                            echo "<td>なし</td>";
-
-                        }
-                  }
-                  else {
-                    echo "<td>".$this->html->link("もう一度登録",array 
-                        ("action"=>"registerLecture",'full_base' => true ,$item['Lecture']['id'],"registed_lectures"),array(),"値段は ".$item['Lecture']['cost'].". 登録しますか?",false)."</td>";
-                    echo "<td>なし</td>";
-                    echo "<td>なし</td>";
-                  }
+                echo "<td>ブロック</td>";
+                              
+            }
+            else
+            {
+                if($item['CanLearn'] == 1)
+                    echo "<td>".$this->Html->link("受講",array("controller" => "lectures", "action" => "view",$item['Lecture']['id']))."</td>";
+                else
+                    echo "<td>".$this->html->link("登録",array 
+                    ("action"=>"registedLectures",$item['Lecture']['id'],"index"),array(),"値段は ".$COST."。 登録しますか?",false)."</td>"; 
 
 
             }
-         
-            else 
-                {
-                    echo "<td>ブロック</td>";
-                    echo "<td>ブロック</td>";
-                    echo "<td>ブロック</td>";
-                }
-
+            
                 echo "</tr>";
         }
         
@@ -89,6 +63,7 @@ if($registedLectures){
         }
 
         echo $paginator->last("後");
+
     
     echo "</div>";
     

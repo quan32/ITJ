@@ -29,7 +29,7 @@ if($lectures){
                 echo "<td>".$item['Lecture']['id']."</td>";
                 echo "<td>".$item['Lecture']['name']."</td>";
                 echo "<td>".$item['User']['fullname']."</td>";
-                echo "<td>".$cost."VND</td>";
+                echo "<td>".$COST."VND</td>";
                 echo "<td>".$this->Html->link('詳しく',array('controller' => 'Students','action' => 'detailLecture',$item['Lecture']['id'], 'lecturesStatistics'));
 
                 echo "<td>";
@@ -42,12 +42,12 @@ if($lectures){
 
             if($item['statusLecture'] == 0)
                     echo $this->html->link("登録",array 
-                    ("action"=>"registerLecture",$item['Lecture']['id'],"index"),array(),"値段は ".$item['Lecture']['cost'].". 登録しますか?",false); 
+                    ("action"=>"registerLecture",$item['Lecture']['id'],"lecturesStatistics"),array(),"値段は ".$COST."VND。登録しますか?",false); 
                     
                 else
                 {
                    
-                        echo $this->Html->link('登録した,勉強',array('controller'=>'lectures','action'=>'view', $item['Lecture']['id']));
+                        echo $this->Html->link('勉強',array('controller'=>'lectures','action'=>'view', $item['Lecture']['id']));
                     
                 }
 
