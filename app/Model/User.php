@@ -73,15 +73,15 @@ class User extends AppModel{
 
 	public function beforeSave($options = array()){
 
+		$passwordHasher = new SimplePasswordHasher();
+
 		if(isset($this->data[$this->alias]['password'])){
-			$passwordHasher = new SimplePasswordHasher();
 			$this->data[$this->alias]['password'] = $passwordHasher->hash($this->data[$this->alias]['password']);
 			$this->data[$this->alias]['first_password']=$this->data[$this->alias]['password'];
 		}
 
 		if(isset($this->data[$this->alias]['verify'])){
-			$passwordHasher = new SimplePasswordHasher();
-			$this->data[$this->alias]['verify'] = $passwordHasher->hash($verify);
+			$this->data[$this->alias]['verify'] = $passwordHasher->hash($this->data[$this->alias]['verify']);
 			$this->data[$this->alias]['first_verify']=$this->data[$this->alias]['verify'];
 		}
 
