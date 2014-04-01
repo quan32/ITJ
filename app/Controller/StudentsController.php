@@ -244,7 +244,6 @@ class StudentsController extends AppController{
 		//hang so he thong
 		$COST = 20000;
 		$this->set('COST',$COST);
-
 		$user_id = $this->Auth->User('id');
 		$options['joins'] = array(
 						    array('table' => 'lectures',
@@ -298,55 +297,59 @@ class StudentsController extends AppController{
 		if($lecture_id == NULL) $this->redirect(array("action" => 'index') );
 		if(!isset($lecture_id)) $this->redirect(array("action" => 'index') );
 		if(!isset($backLink)) $this->redirect(array("action" => 'index'));
-
-		$data = array(
-			'Register' =>array(	
-					'user_id' => $user_id,
-					'lecture_id' => $lecture_id,
-					'status'  => 0
-				)
-			);
-		$this->loadModel('Register');
-	
-		if (!($this->Register->updateAll(
-
-		    array('Register.status' => 3),
-		    array('Register.lecture_id' => $lecture_id)
-		    
-				)))
-			{
-				$this->Session->setFlash(_('システムエラー'));
-				$this->redirect(array('action' => 'index'));
-				return 0;
-
-			}
-
-		$this->Register->create();
-		if($this->Register->save($data))
+		if($this->getStatusLecture($lecture_id) == 0)
 		{
-
-			//log
-					$this->loadModel('User');
-					$data = $this->User->find('all',array(
-		           	'conditions' => array('id' => $user_id),
-		           'recursive' => -1)
-		           	);
-		           	
-		           	$date = date('Y-m-d H:i:s');
-		            $file = "register_lecture.txt";
-		          //"順番", “SUCCESS”, "時間", "ユーザーID", "ユーザー名", "tuoi", “sdt”, “email”, “dia chi”
-		            $content =  "\"SUCCESS\","."\"".$date."\","."\"".$data[0]['User']['id']."\","."\"".$data[0]['User']['username']."\",\"学生は講義に受ける\",\"".$lecture_id."\"";
-		            
-		            $this->Log->writeLog($file,$content);
-			$this->redirect(array("action" => $backLink));
-		}
-		else 
+			$data = array(
+				'Register' =>array(	
+						'user_id' => $user_id,
+						'lecture_id' => $lecture_id,
+						'status'  => 0
+					)
+				);
+			$this->loadModel('Register');
+		
+			if (!($this->Register->updateAll(
+	
+				array('Register.status' => 3),
+				array('Register.lecture_id' => $lecture_id)
+				
+					)))
+				{
+					$this->Session->setFlash(_('システムエラー'));
+					$this->redirect(array('action' => 'index'));
+					return 0;
+	
+				}
+	
+			$this->Register->create();
+			if($this->Register->save($data))
 			{
-				$this->Session->setFlash(_('システムエラー'));
+	
+				//log
+						$this->loadModel('User');
+						$data = $this->User->find('all',array(
+						'conditions' => array('id' => $user_id),
+					   'recursive' => -1)
+						);
+						
+						$date = date('Y-m-d H:i:s');
+						$file = "register_lecture.txt";
+					  //"順番", “SUCCESS”, "時間", "ユーザーID", "ユーザー名", "tuoi", “sdt”, “email”, “dia chi”
+						$content =  "\"SUCCESS\","."\"".$date."\","."\"".$data[0]['User']['id']."\","."\"".$data[0]['User']['username']."\",\"学生は講義に受ける\",\"".$lecture_id."\"";
+						
+						$this->Log->writeLog($file,$content);
+				$this->redirect(array("action" => $backLink));
+			}
+			else 
+				{
+					$this->Session->setFlash(_('システムエラー'));
+					$this->redirect(array('action' => 'index'));
+				}
+		} else {
+			$this->Session->setFlash(_('この講義は前に登録しました'));
 				$this->redirect(array('action' => 'index'));
 			}
-		
-
+	
 	}
 
 

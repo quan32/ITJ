@@ -22,7 +22,7 @@ if(!empty($posts)){
     echo "<th>".$this->Paginator->sort("description","紹介する情報");
     echo "<th>".$this->Paginator->sort("fullname","作成した先生");
     echo "<th>".$this->Paginator->sort("count","登録した学生の数"); //TODO
-    echo "<th>すぐ登録";
+    if($view_regis == 1) echo "<th>すぐ登録";
     echo "</tr>";
     
     foreach($posts as $item){
@@ -32,7 +32,8 @@ if(!empty($posts)){
         echo "<td>".$item['Search']['description']."</td>";
         echo "<td>".$item['User']['fullname']."</td>";
         echo "<td>".count($item['Register'])."</td>";
-        echo "<td>".$this->Html->link("登録", array("controller"))."</td>"; //link to register of Xuan
+        if($view_regis ==1 && $teacher_id != $item['User']['id']) echo "<td>".$this->html->link("登録",array 
+                    ('controller' => 'Students',"action"=>"registerLecture",$item['Search']['id']),array(),"",false); 
         echo "</tr>";
     }
     echo "</table>";
