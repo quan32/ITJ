@@ -33,7 +33,7 @@ if(!empty($posts)){
         echo "<td>".$item['User']['fullname']."</td>";
         echo "<td>".count($item['Register'])."</td>";
         if($view_regis ==1 && $teacher_id != $item['User']['id']) echo "<td>".$this->html->link("登録",array 
-                    ('controller' => 'Students',"action"=>"registerLecture",$item['Search']['id']),array(),"",false); 
+                    ('controller' => 'Students','action' =>"registerLecture",$item['Search']['id'],"lecturesStatistics"),array(),"",false); ; 
         echo "</tr>";
     }
     echo "</table>";
