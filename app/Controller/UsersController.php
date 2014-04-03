@@ -324,7 +324,7 @@ class UsersController extends AppController{
 						elseif($this->Auth->user('role')=='teacher')
 							return $this->redirect(array('controller'=>'teachers','action'=>'info'));
 						else
-							return $this->redirect(array('controller'=>'students','action'=>'view_info'));
+							return $this->redirect(array('controller'=>'students','action'=>'viewInfo'));
 
 					}
 					else{

@@ -44,7 +44,7 @@ if($fiveNewestLecture!=NULL){
         echo "</tr>";
     }
     echo "</table>";
-    echo $this->Html->link('全て', array('controller'=>'Students', 'action'=>'registedLectures'));
+    echo $this->Html->link('全て', array('controller'=>'Students', 'action'=>'registedLectureThisWeek'));
 }
 
 //bang 2 : 5 bai hot nhat he thong
@@ -59,6 +59,7 @@ if($fiveNewestLecture!=NULL){
                     <th>先生の名前</th>
                      <th>コスト</th>
                      <th>情報</th>
+                     <th>いいねの数</th>
                     <th>選択</th>
                   </tr>";
             foreach($fiveHotLectures as $item){
@@ -66,9 +67,10 @@ if($fiveNewestLecture!=NULL){
                 echo "<td>".$item['Lecture']['id']."</td>";
                 echo "<td>".$item['Lecture']['name']."</td>";
                 echo "<td>".$item['User']['fullname']."</td>";
-                echo "<td>".$cost."VND</td>";
+                echo "<td>".$COST."VND</td>";
                 echo "<td>".$this->Html->link('詳しく',array('controller' => 'Students','action' => 'detailLecture',$item['Lecture']['id'], 'index'));
                 echo "</td>";
+                echo "<td>".$item[0]['iine']."</td>";
                 echo "<td>";
           if($item['Block'] == 1){
              echo "ブロック";
@@ -77,13 +79,12 @@ if($fiveNewestLecture!=NULL){
         else {
 
             if($item['statusLecture'] == 0)
-                    echo $this->html->link("登録",array 
-                    ("action"=>"/registerLecture",'full_base' => true ,$item['Lecture']['id'],"index"),array(),"値段は ".$item['Lecture']['cost'].". 登録しますか?",false); 
+                    echo $this->html->link("登録",array ("action"=>"/registerLecture",'full_base' => true ,$item['Lecture']['id'],"index"),array(),"値段は".$COST."VND。 登録しますか?",false); 
                     
                 else
                 {
                    
-                        echo $this->Html->link('登録した,勉強',array('controller'=>'lectures','action'=>'view', $item['Lecture']['id']));
+                        echo $this->Html->link('勉強',array('controller'=>'lectures','action'=>'view', $item['Lecture']['id']));
                     
                 }
 

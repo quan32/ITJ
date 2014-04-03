@@ -36,11 +36,15 @@ class SearchesController extends  AppController{
     
     //resutl
     function result(){
-    	if($this->Auth->user('role')=='student')
-            $this->set('menu_type','student_menu');
-        elseif($this->Auth->user('role')=='teacher')
+    	if($this->Auth->user('role')=='student') {
+			$this->set('view_regis',1);
+            $this->set('menu_type','student_menu');}
+        elseif($this->Auth->user('role')=='teacher'){
             $this->set('menu_type','teacher_menu');
-        
+			$this->set('view_regis',1);
+			
+		} else { $this->set('view_regis',0);}
+        $this->set('teacher_id',$this->Auth->user('id'));
         $conditions = array();
         $data = array();
         if(!empty($this->passedArgs)){

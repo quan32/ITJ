@@ -4,7 +4,7 @@ echo $this->Html->link('ホームページ',
 	?></li>
 
 <li><?php 
-echo $this->Html->link('一週間間以内の買った講義', 
+echo $this->Html->link('一週間以内の買った講義', 
 	array('controller' => 'students', 'action' => 'registedLectureThisWeek'));
 ?></li>
 <li><?php 

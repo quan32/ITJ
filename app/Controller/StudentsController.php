@@ -55,8 +55,8 @@ class StudentsController extends AppController{
 //set menu
 		$this->set('menu_type','student_menu');
 //lay hang so he thong
-		$cost = 20000;
-		$this->set('cost',$cost);
+		$COST = 20000;
+		$this->set('COST',$COST);
 	//lay 5 bai giang moi nhat trong he thong ma user nay dang ki trong vong 1 tuan
 		$user_id = $this->Auth->user('id');
 		$this->loadModel('Register');
@@ -82,8 +82,8 @@ class StudentsController extends AppController{
 							 'Register.created >=' => date('Y-m-d H:i:s', strtotime("-1 weeks"))),
 											
 					
-			 		'fields' => array('Lecture.id', 'Lecture.name','Lecture.cost','User.fullname','Register.created','Register.created','User.id','Register.status'),
-			 		'order' => 'Register.created DESC',
+			 		'fields' => array('Lecture.id', 'Lecture.name','User.fullname','Register.created','Register.created','User.id','Register.status'),
+			 		'order' => array('Register.created' => 'DESC'),
 			 		'limit' => 5
 			 		
 
@@ -126,10 +126,10 @@ class StudentsController extends AppController{
 									),
 					'group'  => 'Lecture.id',
 					
-			 		'fields' => array('Lecture.id','User.id', 'Lecture.name','Lecture.cost','User.fullname','count(Favorite.lecture_id)'),
-			 		'order' => 'count(Favorite.lecture_id) DESC',
+			 		'fields' => array('Lecture.id','User.id', 'Lecture.name','User.fullname','count(Favorite.lecture_id) as iine'),
+			 		'order' => array('iine' => 'DESC'),
 			 		'conditions' => array('Favorite.created >' => date('Y-m-d H:i:s',strtotime("-3 month"))),
-			 		'limti' => 5
+			 		'limit' => 5
 
 				);
 
@@ -159,7 +159,11 @@ class StudentsController extends AppController{
 
 	public function topLecturesHot()
 	{
+		// tinh do hot dua vao so lan like trong 3 thang tro lai day
 		$this->set('menu_type','student_menu');
+		// load hang so he thong
+		$COST = 20000;
+		$this->set('COST',$COST);
 		$user_id = $this->Auth->user('id');
 		$options = 	array(
 					'joins' => array(
@@ -178,9 +182,9 @@ class StudentsController extends AppController{
 									),
 					'group'  => 'Lecture.id',
 					
-			 		'fields' => array('Lecture.id', 'Lecture.name','Lecture.cost','User.id','User.fullname','count(Favorite.lecture_id)'),
-			 		'order' => 'count(Favorite.lecture_id) DESC',
-			 		'conditions' => array('Favorite.created >' => date('Y-m-d H:i:s',strtotime("-1 month"))),
+			 		'fields' => array('Lecture.id', 'Lecture.name','User.id','User.fullname','count(Favorite.lecture_id) as iine'),
+			 		'order' => 'iine DESC',
+			 		'conditions' => array('Favorite.created >' => date('Y-m-d H:i:s',strtotime("-3 month"))),
 			 		'limit' => 10
 
 				);
@@ -190,38 +194,23 @@ class StudentsController extends AppController{
 			$this->paginate = $options;
 			$data = $this->paginate('Favorite');
 
+			// ghi trang thai dang ki chua, co bi block ko
+			if($data != null)
+				{
+					$i = 0;
+					foreach ($data as $item) {
+					$isBlock = $this->isBlock($item['User']['id']);
+					$statusLecture = $this->getStatusLecture($item['Lecture']['id']);
+					$data[$i]['Block'] = $isBlock;
+					$data[$i]['statusLecture'] = $statusLecture;
+					$i++;
 
-			$listBlock = $this->getListBlock();
-				// ghi vao $data bien isBlock
-				
-				if($data != null)
-					{
-						$i = 0;
-						foreach ($data as $item) {
-						$isBlock = $this->checkBlock($item['User']['id'],$listBlock);
-						$data[$i]['Block'] = $isBlock;
-						$i++;
-
-						}
 					}
+				}
 
-			$this->set('hotLectures' , $data);
-			// lay danh sach cac bai ma user nay da dang ki
-			$this->loadModel('Register');
-			$data_register = $this->Register->find('all',
-				array(
-					'conditions' => array('Register.user_id' => $user_id,
-					'Register.status <>' => 3,
-					"Register.created >=" => date('Y-m-d H:i:s', strtotime("-1 weeks"))
-						),
-					'limit' => 100000000000,
-					'fields' => array( 'lecture_id','status','user_id')
-					)
-
-				);
 		
 
-			$this->set('list_lectures', $data_register);
+			$this->set('hotLectures', $data);
 		
 	}
 
@@ -250,101 +239,53 @@ class StudentsController extends AppController{
 	
 	public function registedLectures()
 	{
-		//set menu
-		$this->set('menu_type','student_menu');
-		// lay hang so he thong
-
-
-
-		
+		// set menu
+		$this->set('menu_type', 'student_menu');
+		//hang so he thong
+		$COST = 20000;
+		$this->set('COST',$COST);
 		$user_id = $this->Auth->User('id');
-		$this->loadModel('Register');
-	
-
 		$options['joins'] = array(
-					    array('table' => 'lectures',
-					        'alias' => 'Lecture',
-					        'type' => 'inner',
-					        'conditions' => array('Lecture.id = Register.lecture_id' )),
+						    array('table' => 'lectures',
+						        'alias' => 'Lecture',
+						        'type' => 'inner',
+						        'conditions' => array('Lecture.id = Register.lecture_id' )),
 
-					    array('table' => 'users',
-					    	'alias' => 'User',
-					    	'type' => 'inner',
-					    	'conditions' => array('User.id = Lecture.user_id')
-					    	),
-					    array(
-					    	'table' => 'tests',
-					    	'alias' => 'Test',
-					    	'type' => 'inner',
-					    	'conditions' => array('Test.lecture_id = Lecture.id' )
-					    	)
-					    );
-			
-
-		$options['conditions'] = array('Register.user_id' => $user_id,
-			'Register.status <>' => 3
-			);
+						    array('table' => 'users',
+						    	'alias' => 'User',
+						    	'type' => 'inner',
+						    	'conditions' => array('User.id = Lecture.user_id')
+						    	)
+						       );
+		$options['conditions'] = array('Register.user_id' => $user_id	);
 		$options['order'] = array(
 					'Register.created ' => 'DESC' 
 					);
-		$options['fields'] =array('Lecture.id','Lecture.name','Test.id','Register.created','Lecture.cost','Register.status','User.id');
-		$options['limit'] = 10;
+		$options['fields'] =array('Lecture.id','Lecture.name','Register.created','Register.id','Register.status','User.id');
+		$options['limit'] = 5;
+		$this->loadModel('Register');
 		$this->Register->recursive = -1;
 
 		$this->paginate = $options;
 
 		$data = $this->paginate('Register');
-		
 
-		//// lay danh sach cac giao vien da block em:
-			$listBlock = $this->getListBlock();
-			// ghi vao $data bien isBlock
-			
-			if($data != null)
-				{
-					$i = 0;
-					foreach ($data as $item) {
-					$isBlock = $this->checkBlock($item['User']['id'],$listBlock);
-					$data[$i]['Block'] = $isBlock;
-					$i++;
+		if($data != null)
+						{
+							$i = 0;
+							foreach ($data as $item) {
+							$isBlock = $this->isBlock($item['User']['id']);
+							$canLearn = $this->checkPermissionLecture($item['Register']['id']);
+							$data[$i]['Block'] = $isBlock;
+							$data[$i]['CanLearn'] = $canLearn;
+							$i++;
 
-					}
-				}
-				
-			//Check xem da test chua :
-				$this->loadModel('Result');
-			if($data != null)
-				{
-					$i = 0;
-					foreach ($data as $item) {
-					$test_id = $item['Test']['id'];
-
-					$temp = $this->Result->find('all',
-						array(
-
-							'conditions' => array('test_id' => $test_id,
-										'user_id' => $user_id
-								),
-							'order' => 'Result.created DESC'
-
-							)
-						);
-					if($temp == null)
-						$data[$i]['isTest'] = 0;
-					else 
-					{
-						$data[$i]['isTest'] = 1;
-						$data[$i]['result_id'] = $temp[0]['Result']['id'];
-					}
-					
-					$i++;
-
-					}
-				}
-				
+							}
+						}
 
 
-		$this->set('registedLectures',$data);
+	$this->set('registedLectures',$data);
+	
 
 
 	}
@@ -356,55 +297,59 @@ class StudentsController extends AppController{
 		if($lecture_id == NULL) $this->redirect(array("action" => 'index') );
 		if(!isset($lecture_id)) $this->redirect(array("action" => 'index') );
 		if(!isset($backLink)) $this->redirect(array("action" => 'index'));
-
-		$data = array(
-			'Register' =>array(	
-					'user_id' => $user_id,
-					'lecture_id' => $lecture_id,
-					'status'  => 0
-				)
-			);
-		$this->loadModel('Register');
-	
-		if (!($this->Register->updateAll(
-
-		    array('Register.status' => 3),
-		    array('Register.lecture_id' => $lecture_id)
-		    
-				)))
-			{
-				$this->Session->setFlash(_('システムエラー'));
-				$this->redirect(array('action' => 'index'));
-				return 0;
-
-			}
-
-		$this->Register->create();
-		if($this->Register->save($data))
+		if($this->getStatusLecture($lecture_id) == 0)
 		{
-
-			//log
-					$this->loadModel('User');
-					$data = $this->User->find('all',array(
-		           	'conditions' => array('id' => $user_id),
-		           'recursive' => -1)
-		           	);
-		           	
-		           	$date = date('Y-m-d H:i:s');
-		            $file = "register_lecture.txt";
-		          //"順番", “SUCCESS”, "時間", "ユーザーID", "ユーザー名", "tuoi", “sdt”, “email”, “dia chi”
-		            $content =  "\"SUCCESS\","."\"".$date."\","."\"".$data[0]['User']['id']."\","."\"".$data[0]['User']['username']."\",\"学生は講義に受ける\",\"".$lecture_id."\"";
-		            
-		            $this->Log->writeLog($file,$content);
-			$this->redirect(array("action" => $backLink));
-		}
-		else 
+			$data = array(
+				'Register' =>array(	
+						'user_id' => $user_id,
+						'lecture_id' => $lecture_id,
+						'status'  => 0
+					)
+				);
+			$this->loadModel('Register');
+		
+			if (!($this->Register->updateAll(
+	
+				array('Register.status' => 3),
+				array('Register.lecture_id' => $lecture_id)
+				
+					)))
+				{
+					$this->Session->setFlash(_('システムエラー'));
+					$this->redirect(array('action' => 'index'));
+					return 0;
+	
+				}
+	
+			$this->Register->create();
+			if($this->Register->save($data))
 			{
-				$this->Session->setFlash(_('システムエラー'));
+	
+				//log
+						$this->loadModel('User');
+						$data = $this->User->find('all',array(
+						'conditions' => array('id' => $user_id),
+					   'recursive' => -1)
+						);
+						
+						$date = date('Y-m-d H:i:s');
+						$file = "register_lecture.txt";
+					  //"順番", “SUCCESS”, "時間", "ユーザーID", "ユーザー名", "tuoi", “sdt”, “email”, “dia chi”
+						$content =  "\"SUCCESS\","."\"".$date."\","."\"".$data[0]['User']['id']."\","."\"".$data[0]['User']['username']."\",\"学生は講義に受ける\",\"".$lecture_id."\"";
+						
+						$this->Log->writeLog($file,$content);
+				$this->redirect(array("action" => $backLink));
+			}
+			else 
+				{
+					$this->Session->setFlash(_('システムエラー'));
+					$this->redirect(array('action' => 'index'));
+				}
+		} else {
+			$this->Session->setFlash(_('この講義は前に登録しました'));
 				$this->redirect(array('action' => 'index'));
 			}
-		
-
+	
 	}
 
 
@@ -474,8 +419,8 @@ class StudentsController extends AppController{
 	//set menu
 		$this->set('menu_type','student_menu');
 	//lay hang so he thong
-		$cost = 20000;
-		$this->set('cost',$cost);
+		$COST = 20000;
+		$this->set('COST',$COST);
 
 
 		$user_id = $this->Auth->user('id');
@@ -496,7 +441,7 @@ class StudentsController extends AppController{
 						),
 			'order' => array('Lecture.created' => 'ASC'),
 			'limit' => 10,
-			'fields' => array('Lecture.id','Lecture.cost','User.fullname','Lecture.name','User.id')
+			'fields' => array('Lecture.id','User.fullname','Lecture.name','User.id')
 		);
 
 		$this->Lecture->recursive = -1;
@@ -557,7 +502,7 @@ class StudentsController extends AppController{
 		            $this->Log->writeLog($file,$content);
 
 				//	return $this->redirect(array('action' => 'index')); 
-		            return $this->redirect(array('action' => 'view_info'));
+		            return $this->redirect(array('action' => 'viewInfo'));
 				}
 				//log loi 
 				// ghi log
@@ -632,8 +577,9 @@ class StudentsController extends AppController{
 		if($this->request->is('post') || $this->request->is('put')){
 					$user_id = $this->Auth->user('id');
 					$this->loadModel('User');
-					$data = $this->calc_money();
-					$money = $data[0][0]['money'];
+					$month = date('n');
+ 					$year = date('Y');
+					$money = $this->calcMoney($month,$year);
 					if ($money == null||$money == 0) {
 						// du dieu kien xoa tai khoan
 						$data = array('id' => $user_id, 'state' => 'deleted');
@@ -713,7 +659,8 @@ public function registedLectureThisWeek(){
 	// set menu
 	$this->set('menu_type', 'student_menu');
 	//hang so he thong
-	$cost = 20000;
+	$COST = 20000;
+	$this->set('COST',$COST);
 
 	$user_id = $this->Auth->User('id');
 	$options['joins'] = array(
@@ -735,8 +682,8 @@ public function registedLectureThisWeek(){
 		$options['order'] = array(
 					'Register.created ' => 'DESC' 
 					);
-		$options['fields'] =array('Lecture.id','Lecture.name','Register.created','Register.id','Lecture.cost','Register.status','User.id');
-		$options['limit'] = 10;
+		$options['fields'] =array('Lecture.id','Lecture.name','Register.created','Register.id','Register.status','User.id');
+		$options['limit'] = 5;
 		$this->loadModel('Register');
 		$this->Register->recursive = -1;
 
@@ -749,9 +696,9 @@ public function registedLectureThisWeek(){
 							$i = 0;
 							foreach ($data as $item) {
 							$isBlock = $this->isBlock($item['User']['id']);
-							$statusTest = $this->getStatusTest($item['Register']['id']);
+							$hasTest = $this->lectureHasTest($item['Register']['id']);
 							$data[$i]['Block'] = $isBlock;
-							$data[$i]['StatusTest'] = $statusTest;
+							$data[$i]['HasTest'] = $hasTest;
 							$i++;
 
 							}
@@ -759,7 +706,7 @@ public function registedLectureThisWeek(){
 
 
 	$this->set('registedLectureThisWeek',$data);
-	$this->set('cost',$cost);
+	
 
 
 }
@@ -769,7 +716,11 @@ public function registedLectureThisWeek(){
 
 	public function detailLecture($id = null,$currentLocation = null)
 	{
+		// set menu
 		$this->set('menu_type','student_menu');
+		//lay hang he thong
+		$COST = 20000;
+		$this->set('COST',$COST);
 		if($id == null) 
 		{
 			if($currentLocation != null)
@@ -797,7 +748,7 @@ public function registedLectureThisWeek(){
 			
 
 		$options['conditions'] = array('Lecture.id' => $id);
-		$options['fields'] =array('Lecture.id','Lecture.name','User.fullname','User.id','User.username','User.mobile_No','User.mail','Lecture.cost','Lecture.description');
+		$options['fields'] =array('Lecture.id','Lecture.name','User.fullname','User.id','User.username','User.mobile_No','User.mail','Lecture.description');
 		$this->Lecture->recursive = -1;
 
 		$data = $this->Lecture->find('all',$options);
@@ -844,8 +795,11 @@ public function registedLectureThisWeek(){
 public function moneyStatistics(){
 
 
-
+	//set menu
     $this->set('menu_type','student_menu');
+    // Lay hang he thong
+    $COST = 20000;
+    $this->set('COST',$COST);
     $user_id = $this->Auth->user('id');
 
     if($this->request->is('post')) {
@@ -932,6 +886,119 @@ public function moneyStatistics(){
 
 	}
 
+public function viewListTest($register_id = null)
+{
+// set menu
+	$this->set('menu_type', 'student_menu');
+	//hang so he thong
+
+
+	//check block
+	$this->loadModel('Register');
+	$this->loadModel('Lecture');
+	$flag = 0;
+	$this->Register->recursive = -1;
+	$this->Lecture->recursive = -1;
+	$register = $this->Register->findAllById($register_id);
+	
+	if($register == null ) $flag = 1;
+	else
+	{
+		$lecture = $this->Lecture->findAllById($register[0]['Register']['lecture_id']);
+		
+		if($lecture == null) $flag = 1;
+		else
+			$isBlock = $this->isBlock($lecture[0]['Lecture']['user_id']);
+	}
+	//Khong tim thay register_id
+	if($flag == 1)
+	{
+		$this->set('exist',0);
+				return 0;
+	}
+	else
+	
+		$this->set('exist',1);
+
+	
+	//--------------------
+	if((!$this->checkPermissionLecture($register_id))||($isBlock == 1))
+	{
+		$this->set('permission',0);
+		return 0; 
+	}
+	else
+	{
+			$this->set('permission',1);
+
+			$user_id = $this->Auth->user('id');
+			$student_id = $this->Auth->user('id');
+			$this->loadModel('Register');
+
+
+			// co test ko?
+			$options['joins'] = array(
+							array(
+								'table' => 'lectures',
+								'alias' => 'Lecture',
+								'type' => 'inner',
+								'conditions' => array('Lecture.id = Register.lecture_id')
+
+								),
+							array(
+								'table' => 'tests',
+								'alias' => 'Test',
+								'type' => 'inner',
+								'conditions' => array('Lecture.id = Test.lecture_id')
+								),
+											
+							);
+			$options['fields'] = array('Register.id','Test.id','Test.name','Lecture.id','Lecture.name');
+			$options['conditions'] = array('Register.id' => $register_id);
+
+			$this->Register->recursive = -1;
+			$data =	$this->Register->find('all',$options);
+			//ko co test
+			if($data == null) {
+				$this->set('hasTest',0);
+				return 0;	}
+			//co test
+			else
+			{
+				$this->loadModel('Result');
+				$this->set('hasTest',1);
+
+				// da test chua
+				$i = 0;
+				foreach ($data as $test) {
+					//Neu da tung test bai nay thi lay ket qua moi nhat
+					$options = array(
+						'conditions' => array('Result.test_id' => $data[$i]['Test']['id']),
+						'order' => array('Result.created' => 'DESC'),
+						'limit' => 1
+							
+						);
+					$resultData = $this->Result->find('all',$options);
+					if($resultData == null)
+					{
+						$data[$i]['HasResult'] = 0;
+
+					}
+					else
+					{
+						$data[$i]['HasResult'] = 1;
+						$data[$i]['Result_id'] = $resultData[0]['Result']['id'];
+					}
+					$i++;
+				}
+			}
+		$this->set('data',$data);
+
+	}
+
+
+}
+
 public function isBlock($teacher_id = null){
 
 if($teacher_id == null ) 
@@ -961,12 +1028,11 @@ $options = array(
 
 
 
-public function	getStatusTest($register_id = null){
+public function	lectureHasTest($register_id = null){
 /* 
 		-> ko co bai test  return 0
-		-> co bai test
-				-> chua test return 1
-				-> test roi return  2
+		-> co bai test  return 1
+				
 
 */
 if($register_id == null ) 
@@ -1011,20 +1077,27 @@ if($data == null ){
 }
 //Neu bai nay co test di kem
 else
-{
-
-	$sql = "SELECT * FROM registers, results WHERE registers.id = results.register_id AND results.created > registers.created AND registers.id = ".$register_id;
-	$data = $this->Register->query($sql);
+return 1;
 
 
-	//chua tham gia test
-	if($data == null)
-	{
-		return 1;
-	}
-	else return 2;
 }
+public function checkPermissionLecture($register_id = null ){
 
+//Nguoi dung hien tai co dang ki bai nay trong 1 tuan ko?
+	$user_id = $this->Auth->user('id');
+	$this->loadModel('Register');
+	$this->Register->recursive = -1;
+	$options = array(
+		'conditions' => array('Register.id' => $register_id,
+			'Register.created >=' => date('Y-m-d H:i:s', strtotime("-1 weeks")),
+			'Register.user_id' => $user_id
+
+			)
+
+		);
+	$data = $this->Register->find('all',$options);
+	if($data == null) return 0;
+	else return 1;
 
 }
 

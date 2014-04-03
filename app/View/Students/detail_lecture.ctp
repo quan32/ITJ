@@ -12,33 +12,33 @@ else{
     <caption> 具体的に講義の情報を表示します </caption>";
 
             echo "<tr>";
-            echo "<th>講義のID</th>";
-            echo "<th>".$lecture[0]['Lecture']['id']."</th>";
+            echo "<td>講義のID</td>";
+            echo "<td>".$lecture[0]['Lecture']['id']."</td>";
             echo "</tr>";
 
             echo "<tr>";
-            echo "<th>講義のタイトル</th>";
-            echo "<th>".$lecture[0]['Lecture']['name']."</th>";
+            echo "<td>講義のタイトル</td>";
+            echo "<td>".$lecture[0]['Lecture']['name']."</td>";
             echo "</tr>";
         
             echo "<tr>";
-            echo "<th>講義の説明</th>";
-            echo "<th>".$lecture[0]['Lecture']['name']."</th>";
+            echo "<td>講義の説明</td>";
+            echo "<td>".$lecture[0]['Lecture']['name']."</td>";
             echo "</tr>";
 
             echo "<tr>";
-            echo "<th>コスト</th>";
-            echo "<th>".$lecture[0]['Lecture']['cost']."</th>";
+            echo "<td>コスト</td>";
+            echo "<td>".$COST."</td>";
             echo "</tr>";
 
             echo "<tr>";
-            echo "<th>講義の先生の名前</th>";
-            echo "<th>".$lecture[0]['User']['fullname']."</th>";
+            echo "<td>講義の先生の名前</td>";
+            echo "<td>".$lecture[0]['User']['fullname']."</td>";
             echo "</tr>";
 
             echo "<tr>";
-            echo "<th>ユーザーネーム</th>";
-            echo "<th>".$lecture[0]['User']['username']."</th>";
+            echo "<td>ユーザーネーム</td>";
+            echo "<td>".$lecture[0]['User']['username']."</td>";
             echo "</tr>";
 
  
@@ -63,7 +63,7 @@ else{
 
                          {
                             echo $this->Html->link("登録",array 
-                            ("controller" => "Students","action"=>"registerLecture" ,$lecture[0]['Lecture']['id'],$currentLocation),array(),"Gia cua no la ".$lecture[0]['Lecture']['cost'].". Are you sure?",false); 
+                            ("controller" => "Students","action"=>"registerLecture" ,$lecture[0]['Lecture']['id'],$currentLocation),array(),"値段は".$COST."VND。 登録しますか?",false); 
                             }
                         else
                         {

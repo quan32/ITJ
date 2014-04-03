@@ -14,8 +14,7 @@ if($registedLectureThisWeek){
             echo "<th>コスト</th>";
             echo "<th>情報</th>";
             echo "<th> 勉強 </th>";
-            echo "<th> テスト </th>";
-            echo "<th> 結果 </th>";
+            echo "<th> テストと結果 </th>";
             echo "</tr>";
         
 
@@ -25,7 +24,7 @@ if($registedLectureThisWeek){
                 echo "<td>".$item['Lecture']['id']."</td>";
                 echo "<td>".$item['Lecture']['name']."</td>";
                 echo "<td>".$item['Register']['created']."</td>";
-                echo "<td>".$cost."</td>";
+                echo "<td>".$COST."VND</td>";
                 echo "<td>".$this->Html->link('詳しく',array('controller' => 'Students','action' => 'detailLecture',$item['Lecture']['id'], 'registedLectureThisWeek'));
        
 
@@ -33,7 +32,7 @@ if($registedLectureThisWeek){
             {
                 echo "<td>ブロック</td>";
                 echo "<td>ブロック</td>";
-                echo "<td>ブロック</td>"; 
+                
             }
             else
             {
@@ -44,23 +43,17 @@ if($registedLectureThisWeek){
                     echo "<td>".$this->Html->link("もう一度",array("controller" => "lectures", "action" => "view",$item['Lecture']['id']))."</td>";
                     else echo "なし";
 
-                if($item['StatusTest'] == 0)
+                if($item['HasTest'] == 0)
                      
                     {
                         echo "<td>なし</td>";
-                        echo "<td>なし</td>";
                     }
 
-                 else if($item['StatusTest'] == 1)
+                 else if($item['HasTest'] == 1)
                         {
-                            echo "<td>".$this->Html->link('受ける',array('controller' => 'tests','action' => 'view',$item['Lecture']['id'], ))."</td>";
-                            echo "<td>なし</td>";
+                            echo "<td>".$this->Html->link('見る',array('controller' => 'Students','action' => 'viewListTest',$item['Register']['id'] ))."</td>";
                         }
-                        else if($item['StatusTest'] ==2 )
-                        {
-                            echo "<td>".$this->Html->link('もう一度',array('controller' => 'tests','action' => 'view',$item['Register']['id'], ))."</td>";
-                            echo "<td>".$this->Html->link('レビュー',array('controller' => 'results','action' => 'view',$item['Register']['id']))."</td>";
-                        }
+                       
                         else echo "<td>なし</td>";
 
 
@@ -86,6 +79,7 @@ if($registedLectureThisWeek){
         }
 
         echo $paginator->last("後");
+
     
     echo "</div>";
     
