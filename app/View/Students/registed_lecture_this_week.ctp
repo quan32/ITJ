@@ -41,7 +41,7 @@ if($registedLectureThisWeek){
                 else
                     if($item['Register']['status'] == 1)
                     echo "<td>".$this->Html->link("もう一度",array("controller" => "lectures", "action" => "view",$item['Lecture']['id']))."</td>";
-                    else echo "なし";
+                    else echo "<td>なし</td>";
 
                 if($item['HasTest'] == 0)
                      

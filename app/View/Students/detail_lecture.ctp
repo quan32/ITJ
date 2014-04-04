@@ -28,7 +28,7 @@ else{
 
             echo "<tr>";
             echo "<td>コスト</td>";
-            echo "<td>".$COST."</td>";
+            echo "<td>".$COST."VND</td>";
             echo "</tr>";
 
             echo "<tr>";
