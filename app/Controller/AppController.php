@@ -49,6 +49,7 @@ class AppController extends Controller {
 		$this->loadModel("Constant");
 		$this->constants=$this->Constant->find("all");
 		$this->set('temp_username',$this->Auth->user('fullname'));
+		$this->set('user_role', $this->Auth->user('role'));
 	}
 
 	// public function appError($error) {

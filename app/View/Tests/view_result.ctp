@@ -26,6 +26,7 @@
 		echo $this->Form->input($count.'.ks', array('value'=>$question['ks'] ,'type'=>'hidden') );
 		$attributes = array(
 		    'legend' => false,
+		    'separator' => '<br>',
 		    'value' => $result[$count]['answer'],
 		    'disabled' => true,
 		    'separator' => '<br>'
