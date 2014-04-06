@@ -28,7 +28,7 @@
 
 	<?php
 		echo $this->Form->end('アップロード');
-		echo "<button onclick='window.history.back();'>戻る</button>";
-		echo $this->Html->link('｜　完成', array('controller'=>'lectures', 'action'=>'index'));
+		echo '<button class = "link_buttonx"'." onclick='window.history.back();'>戻る</button>";
+		echo $this->Html->link('完成', array('controller'=>'lectures', 'action'=>'index'),array('class'=>'link_buttonx'));
 	?>
 </fieldset>

@@ -38,12 +38,18 @@ if($hotLectures==NULL){
         else {
 
             if($item['statusLecture'] == 0)
-                    echo $this->html->link("登録",array ("action"=>"registerLecture" ,$item['Lecture']['id'],"topLecturesHot"),array(),"値段は ".$COST."VND。登録しますか?",false); 
+            {
+            echo $this->Form->create('Lecture',array('url'=>'registerLecture','onsubmit'=>'return confirm("値段は'.$COST.'VND。 登録しますか?");'));
+               echo $this->Form->input('lecture_id', array('value' => $item['Lecture']['id'],'type' => 'hidden'));
+               echo $this->Form->input('backLink', array('value' => 'topLecturesHot','type' => 'hidden'));
+               echo $this->Form->end('登録');
+            }
+                    // echo $this->html->link("登録",array ("action"=>"registerLecture" ,$item['Lecture']['id'],"topLecturesHot"),array(),"値段は ".$COST."VND。登録しますか?",false); 
                     
                 else
                 {
                    
-                        echo $this->Html->link('勉強',array('controller'=>'lectures','action'=>'view', $item['Lecture']['id']));
+                        echo $this->Html->link('勉強',array('controller'=>'lectures','action'=>'view', $item['Lecture']['id']),array('class'=>'link_buttonx'));
                     
                 }
 

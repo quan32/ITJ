@@ -19,6 +19,24 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $title_for_layout; ?></title>
+    <style type="text/css">
+      .link_buttonx{
+        margin:10px;
+        font-weight: normal;
+        border:1px solid;
+        padding-top: 8px;
+        padding-right: 10px;
+        padding-bottom: 8px;
+        padding-left: 10px;
+        background-color: #5BA150!important;
+        border-radius: 4px;
+        color:white!important;
+        border-color: #2d6324;
+        font-size: 110%;
+        
+      }
+      
+    </style>
     <?php
       echo $this->Html->meta('icon');
 
