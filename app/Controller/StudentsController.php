@@ -280,10 +280,20 @@ class StudentsController extends AppController{
 	public function registerLecture($lecture_id = null, $backLink = null)
 	{
 		$this->set('menu_type','student_menu');
+		// if ($this->request->is('post')) { 
+		// 	debug($this->request->data); die;
+		
+		// }
+	if ($this->request->is('post'))
+	{	
 		$user_id = $this->Auth->user('id');
+		$lecture_id = $this->request->data['Lecture']['lecture_id'];
+		$backLink = $this->request->data['Lecture']['backLink'];
+	
 		if($lecture_id == NULL) $this->redirect(array("action" => 'index') );
 		if(!isset($lecture_id)) $this->redirect(array("action" => 'index') );
 		if(!isset($backLink)) $this->redirect(array("action" => 'index'));
+
 		if($this->getStatusLecture($lecture_id) == 0)
 		{
 			$data = array(
@@ -338,6 +348,7 @@ class StudentsController extends AppController{
 			}
 	
 	}
+}
 
 
 

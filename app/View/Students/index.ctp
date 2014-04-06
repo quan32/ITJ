@@ -79,7 +79,14 @@ if($fiveNewestLecture!=NULL){
         else {
 
             if($item['statusLecture'] == 0)
-                    echo $this->html->link("登録",array ("action"=>"/registerLecture",'full_base' => true ,$item['Lecture']['id'],"index"),array(),"値段は".$COST."VND。 登録しますか?",false); 
+              {
+                    // echo $this->html->link("登録",array ("action"=>"registerLecture",$item['Lecture']['id'],"index"),array(),"値段は".$COST."VND。 登録しますか?",false); 
+               echo $this->Form->create('Lecture',array('url'=>'registerLecture','onsubmit'=>'return confirm("値段は'.$COST.'VND。 登録しますか?");'));
+               echo $this->Form->input('lecture_id', array('value' => $item['Lecture']['id'],'type' => 'hidden'));
+               echo $this->Form->input('backLink', array('value' => 'index','type' => 'hidden'));
+               echo $this->Form->end('登録');
+            }
+            
                     
                 else
                 {
