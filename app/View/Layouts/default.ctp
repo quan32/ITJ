@@ -2,7 +2,7 @@
 <html lang="jp">
   <head>
     <script>
-      //disable right click
+      /*/disable right click
       var message="Function Disabled!"; function clickIE4(){ if (event.button==2){ alert(message); return false; } } function clickNS4(e){ if (document.layers||document.getElementById&&!document.all){ if (e.which==2||e.which==3){ alert(message); return false; } } } if (document.layers){ document.captureEvents(Event.MOUSEDOWN); document.onmousedown=clickNS4; } else if (document.all&&!document.getElementById){ document.onmousedown=clickIE4; } document.oncontextmenu=new Function("alert(message);return false");
     
       //disable copy
@@ -14,7 +14,7 @@
               clipboardData.clearData();
           }
       }
-      setInterval("cldata();", 1000);
+      setInterval("cldata();", 1000);*/
     </script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -33,7 +33,9 @@
       echo $this->Html->css('mystyle');
     ?>
   </head>
-  <body ondragstart="return false;" onselectstart="return false;"  oncontextmenu="return false;" onload="clearData();" onblur="clearData();">
+  <!--
+  <body ondragstart="return false;" onselectstart="return false;"  oncontextmenu="return false;" onload="clearData();" onblur="clearData();">-->
+    <body>
 
     <div id="wrapper">
 
@@ -41,7 +43,20 @@
       <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-          <a class="navbar-brand" href="#">eラーニングシステム</a>
+          <?php
+                        if($user_role == "teacher")
+                            echo $this->Html->link('<span style="font-size:200%;">e</span>ラーニングシステム', 
+                                array('controller' => 'teachers',
+                                 'action' => 'index'),array('escape'=>false, 'class'=>"navbar-brand"));
+                        else if($user_role == "student")
+                            echo $this->Html->link('<span style="font-size:200%;">e</span>ラーニングシステム', 
+                                array('controller' => 'students',
+                                 'action' => 'index'),array('escape'=>false, 'class'=>"navbar-brand"));
+                        else if($user_role == "manager")
+                            echo $this->Html->link('<span style="font-size:200%;">e</span>ラーニングシステム', 
+                                array('controller' => 'manages',
+                                 'action' => 'index'),array('escape'=>false, 'class'=>"navbar-brand"));
+                    ?>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -54,12 +69,26 @@
 
           <ul class="nav navbar-nav navbar-right navbar-user">
             <li class="dropdown user-dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i><?=$temp_username;?><b class="caret"></b></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span style="color:white;"><i class="fa fa-user"></i> <?=$temp_username;?><b class="caret"></b></span></a>
               <ul class="dropdown-menu">
-                <li><a href="#"><i class="fa fa-user"></i> Profile</a></li>
-                <li><a href="#"><i class="fa fa-gear"></i> Settings</a></li>
+                    <li>
+                      <?php
+                          if($user_role == "teacher")
+                              echo $this->Html->link('<i class="fa fa-user"></i> 自身情報', 
+                                  array('controller' => 'teachers', 'action' => 'info'),array('escape'=>false));
+                          else if($user_role == "student")
+                              echo $this->Html->link('<i class="fa fa-user"></i> 自身情報', 
+                                  array('controller' => 'students', 'action' => 'viewInfo'),array('escape'=>false));
+                          else if($user_role == "manager")
+                              echo $this->Html->link('<i class="fa fa-user"></i> 自身情報', 
+                                  array('controller' => 'manages', 'action' => 'viewInfo'),array('escape'=>false));
+                      ?>
+                    </li>
                 <li class="divider"></li>
-                <li><a href="#"><i class="fa fa-power-off"></i> Log Out</a></li>
+                <li><?php 
+                  echo $this->Html->link('<i class="fa fa-power-off"></i> ログアウト ', 
+                    array('controller' => 'users', 'action' => 'logout'),array('escape'=>false));
+                  ?></li>
               </ul>
             </li>
           </ul>

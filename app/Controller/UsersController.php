@@ -283,6 +283,8 @@ class UsersController extends AppController{
 			$this->set('menu_type','student_menu');
 		elseif($this->Auth->user('role')=='teacher')
 			$this->set('menu_type','teacher_menu');
+		elseif($this->Auth->user('role')=='manager')
+			$this->set('menu_type','manager_menu');
 		
 		$this->pageTitle = "パスワード変化";
 
