@@ -35,9 +35,9 @@ if($fiveNewestLecture!=NULL){
     // check user da hoc chua de hien thi cho dung
 
                        if($item['Register']['status']== 0 )
-                            echo $this->Html->link('勉強',array('controller'=>'lectures','action'=>'view', $item['Lecture']['id']));
+                            echo $this->Html->link('勉強',array('controller'=>'lectures','action'=>'view', $item['Lecture']['id']),array('class'=>'link_buttonx'));
                         else 
-                            echo $this->Html->link('見直す',array('controller'=>'lectures','action'=>'view', $item['Lecture']['id']));
+                            echo $this->Html->link('見直す',array('controller'=>'lectures','action'=>'view', $item['Lecture']['id']),array('class'=>'link_buttonx'));
                                         
                 }
          
@@ -91,7 +91,8 @@ if($fiveNewestLecture!=NULL){
                 else
                 {
                    
-                        echo $this->Html->link('勉強',array('controller'=>'lectures','action'=>'view', $item['Lecture']['id']));
+                        echo $this->Html->link('勉強',array('controller'=>'lectures','action'=>'view', $item['Lecture']['id']),array('class'=>'link_buttonx'));
+
                     
                 }
 
@@ -105,7 +106,5 @@ if($fiveNewestLecture!=NULL){
         echo $this->Html->link('全て', array('controller'=>'Students', 'action'=>'topLecturesHot'));
         }
 
-   
- 
   
 ?>
