@@ -6,178 +6,190 @@
 ?>
 <!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script> -->
 <?php echo $this->Html->script('jquery-1.10.2.min');?>
-<style type="text/css">
-	a {
-		color: #618CC7;
-	}
-
-	ul.nested-comments-complex {
-		width: 700px;
-		margin: 5em auto;
-		border: 1px solid #777;
-	}
-	ul, ol, li {
-		list-style: none;
-	}
-
-	em {
-		font-size: 0.75em;
-		color: #777;
-		font-style: italic;
-	}
-
-	ul.nested-comments-complex li {
-		margin: 0 3em;
-	}
-
-	ul.nested-comments-complex li ul {
-		position: relative;
-	}
-
-	ul.nested-comments-complex li ul::before {
-		content: '';
-		position: absolute;
-		width: 2em;
-		top: 2em;
-		height: 5px;
-	}
-
-	div.comment {
-		background: white;
-		/*border: 1px solid #999;*/
-		padding: 0.5em;
-		margin-bottom: 0;
-	}
-	ul.nested-comments-complex textarea{
-		height: 3em;
-		resize:vertical;
-		font-size: 14px;
-	}
-
-	ul.nested-comments-complex p{
-		margin: 0 0 0.5em;
-	}
-	a.action{
-		text-decoration: none;
-		font-size: 0.8em;
-		color: #777;
-		font-style: normal;
-		font-weight: bold;
-	}
-	a.action:hover{
-		text-decoration:underline;
-		cursor:pointer;
-	}
-</style>
+<?php echo $this->Html->css('lecture_view');?>
 <div id="container">
-	<div id="lecture_content">
-		<h1 id="lecture-title"><?=$lecture['Lecture']['name']?></h1>
-		<div id="description"><?=$lecture['Lecture']['description']?></div>
-		<?php
-		if(isset($src)){
-		?>
-			<iframe width="100%" height="600" src="<?php echo $src;?>"></iframe>
-		<?php }?>
 
-		<h1>メディアファイル</h1>
-		<?php
-			foreach ($sources as $source) {
-					if($source['type']=='video/x-flv'){
-						$name = $source['filename'];
-						?>
-							<h1>Media<?echo $source['id'];?></h1>
-							<object classid="" codebase=" " width="352" height=" 308" align="middle">
-						    <param name="FlashVars" value="">
-						    <param name="movie" value="">
-						    <param name="quality" value="high">
-						    <param name="allowScriptAccess" value="always"><param name="wmode" value="transparent"><param name="base" value="http://d.violet.vn/plugins/flash/">
-						    <embed src="http://localhost/ITJ/app/webroot/files/flvPlayer.swf" quality="high" width="352" height="308"align="middle" type="application/x-shockwave-flash" allowscriptaccess="always" wmode="transparent" base=""  flashvars="file=http://localhost/ITJ/app/webroot/uploads/<?echo $source['filename'];?>">
-							</object>
-						<?php
-					}elseif(in_array($source['type'], array('image/gif','image/png','image/jpg','image/jpeg'))){
-						?>
-							<h2>Image <? echo $source['id'];?></h2>
-							<img src="http://localhost/ITJ/app/webroot/uploads/<?echo $source['filename'];?>">
-						<?php
-					}
-				}
-		?>
-	</div>
-	 <?php //echo $this->Html->link('Test list', array('controller'=>'tests', 'action'=>'view', $lecture['Lecture']['id']))?>
+<section id="page"> <!-- Defining the #page section with the section tag -->
+    <section id="articles"> <!-- A new section with the articles -->
+		<!-- Article 1 start -->
+        
+        <article id="article1"> <!-- The new article tag. The id is supplied so it can be scrolled into view. -->
+		<h2 id="lecture-title"><?=$lecture['Lecture']['name']?></h2>
+            
+            <div class="line"></div>
+            
+            <div class="articleBody clear">
+            	<h3>Created By: <?= $UserModel->username($lecture['Lecture']['user_id']); ?></h3>
+                <p><?=$lecture['Lecture']['description']?></p>
+            </div>
+        </article>
+        
+		<!-- Article 1 end -->
 
-	<?php if($isLiked==0): ?>
-		<button id="like_button">いいね！</button>
-		<button id="dislike_button" style="display:none">取り消す</button>
-	<?php else: ?>
-		<button id="like_button" style="display:none">いいね！</button>
-		<button id="dislike_button">取り消す</button>
-	<?php endif ?>
-<em id="num_liked"><?=$num_liked?></em> 人はこの講義について「いいね！」
-	<ul class="nested-comments-complex">
-		<?php foreach ($comments as $value): ?>
-			<li>
-				<div class="comment">
-					<p><a href="" class="author"><?= $UserModel->username($value['Comment']['user_id']); ?></a></p>
-					<p><?= $value['Comment']['content']; ?></p>
-					<em><?= $value['Comment']['created']; ?></em>
-					<a class="reply-link action" id="reply<?= $value['Comment']['id']; ?>">Reply</a>
-					<?php if($current_user_id==$lecture['Lecture']['user_id'] &&  $current_user_id!= $value['Comment']['user_id']){
-						if($BlockModel->isBlocked($current_user_id,$value['Comment']['user_id'])){
-							//da block
-							echo "<a class='unblock-link action' id='".$value['Comment']['user_id']."'>Unblock</a>";
-							echo "<a class='block-link action' id='".$value['Comment']['user_id']."' style='display:none;'>Block</a>";
+
+		<!-- Article 2 start -->
+        
+        <article id="article2">
+            <h2>Noi dung PDF</h2>
+            
+            <div class="line"></div>
+            
+            <div class="articleBody clear">
+                <?php
+				if(isset($src)){
+				?>
+					<iframe width="100%" height="600" src="<?php echo $src;?>"></iframe>
+				<?php }?>
+            </div>
+        </article>
+        
+		<!-- Article 2 end -->
+		
+		<!-- Article 3 start -->
+        
+        <article id="article2">
+            <h2>Media</h2>
+            
+            <div class="line"></div>
+            
+            <div class="articleBody clear">
+                
+				<?php
+					foreach ($sources as $source) {
+							if($source['type']=='video/x-flv'){
+								$name = $source['filename'];
+								?>
+									<object classid="" codebase=" " width="560" height="315" align="middle">
+								    <param name="FlashVars" value="">
+								    <param name="movie" value="">
+								    <param name="quality" value="high">
+								    <param name="allowScriptAccess" value="always"><param name="wmode" value="transparent"><param name="base" value="http://d.violet.vn/plugins/flash/">
+								    <embed src="http://localhost/ITJ/app/webroot/files/flvPlayer.swf" quality="high" width="560" height="315"align="middle" type="application/x-shockwave-flash" allowscriptaccess="always" wmode="transparent" base=""  flashvars="file=http://localhost/ITJ/app/webroot/uploads/<?echo $source['filename'];?>">
+									</object>
+									<br><br>
+								<?php
+							}
 						}
-						else{
-							echo "<a class='block-link action' id='".$value['Comment']['user_id']."'>Block</a>";
-							echo "<a class='unblock-link action' id='".$value['Comment']['user_id']."' style='display:none;'>Unblock</a>";
+				?>
+            </div>
+        </article>
+        
+		<!-- Article 3 end -->
+
+		<!-- Article 3 start -->
+        
+        <article id="article2">
+            <h2>Picture</h2>
+            
+            <div class="line"></div>
+            
+            <div class="articleBody clear">
+                
+				<?php
+					foreach ($sources as $source) {
+						if(in_array($source['type'], array('image/gif','image/png','image/jpg','image/jpeg'))){
+								?>
+									<img src="http://localhost/ITJ/app/webroot/uploads/<?echo $source['filename'];?>">
+									<br>
+								<?php
+							}
 						}
-					}
-
-						
-					?>
-
-				</div>
-				<ul>
-					<?php foreach ($value['Reply'] as $reply): ?>
+				?>
+            </div>
+        </article>
+        
+		<!-- Article 3 end -->
+		
+		<!-- Article 4 start -->
+        
+        <article id="article2">
+            <h2>Comment</h2>
+            
+            <div class="line"></div>
+            
+            <div class="articleBody clear">
+                <?php if($isLiked==0): ?>
+					<button id="like_button">いいね！</button>
+					<button id="dislike_button" style="display:none">取り消す</button>
+				<?php else: ?>
+					<button id="like_button" style="display:none">いいね！</button>
+					<button id="dislike_button">取り消す</button>
+				<?php endif ?>
+				<em id="num_liked"><?=$num_liked?></em> 人はこの講義について「いいね！」
+				<ul class="nested-comments-complex">
+					<?php foreach ($comments as $value): ?>
 						<li>
 							<div class="comment">
-								<p><a href="" class="author"><?= $UserModel->username($reply['user_id']); ?></a></p>
-								<p><?= $reply['content']; ?></p>
-								<em><?= $reply['created']; ?></em>
-								<?php 
-									if($current_user_id==$lecture['Lecture']['user_id'] &&  $current_user_id!= $reply['user_id']){
-										if($BlockModel->isBlocked($current_user_id,$reply['user_id'])){
-											//da block
-											echo "<a class='unblock-link action' id='".$reply['user_id']."'>Unblock</a>";
-											echo "<a class='block-link action' id='".$reply['user_id']."' style='display:none;'>Block</a>";
-										}
-										else{
-											echo "<a class='block-link action' id='".$reply['user_id']."'>Block</a>";
-											echo "<a class='unblock-link action' id='".$reply['user_id']."' style='display:none;'>Unblock</a>";
-										}
+								<p><a href="" class="author"><?= $UserModel->username($value['Comment']['user_id']); ?></a></p>
+								<p><?= $value['Comment']['content']; ?></p>
+								<em><?= $value['Comment']['created']; ?></em>
+								<a class="reply-link action" id="reply<?= $value['Comment']['id']; ?>">Reply</a>
+								<?php if($current_user_id==$lecture['Lecture']['user_id'] &&  $current_user_id!= $value['Comment']['user_id']){
+									if($BlockModel->isBlocked($current_user_id,$value['Comment']['user_id'])){
+										//da block
+										echo "<a class='unblock-link action' id='".$value['Comment']['user_id']."'>Unblock</a>";
+										echo "<a class='block-link action' id='".$value['Comment']['user_id']."' style='display:none;'>Block</a>";
 									}
+									else{
+										echo "<a class='block-link action' id='".$value['Comment']['user_id']."'>Block</a>";
+										echo "<a class='unblock-link action' id='".$value['Comment']['user_id']."' style='display:none;'>Unblock</a>";
+									}
+								}
+
+									
 								?>
+
 							</div>
+							<ul>
+								<?php foreach ($value['Reply'] as $reply): ?>
+									<li>
+										<div class="comment">
+											<p><a href="" class="author"><?= $UserModel->username($reply['user_id']); ?></a></p>
+											<p><?= $reply['content']; ?></p>
+											<em><?= $reply['created']; ?></em>
+											<?php 
+												if($current_user_id==$lecture['Lecture']['user_id'] &&  $current_user_id!= $reply['user_id']){
+													if($BlockModel->isBlocked($current_user_id,$reply['user_id'])){
+														//da block
+														echo "<a class='unblock-link action' id='".$reply['user_id']."'>Unblock</a>";
+														echo "<a class='block-link action' id='".$reply['user_id']."' style='display:none;'>Block</a>";
+													}
+													else{
+														echo "<a class='block-link action' id='".$reply['user_id']."'>Block</a>";
+														echo "<a class='unblock-link action' id='".$reply['user_id']."' style='display:none;'>Unblock</a>";
+													}
+												}
+											?>
+										</div>
+									</li>
+								<?php endforeach; ?>
+								<li id="reply<?= $value['Comment']['id']; ?>" style="display:none;">					
+									<div class="comment">
+										<p><a href="" class="author">あなた</a></p>
+										<textarea class="reply_text" id="<?= $value['Comment']['id']; ?>">あなたのコメントを入力...</textarea>
+									</div>
+								</li>
+							</ul>
 						</li>
 					<?php endforeach; ?>
-					<li id="reply<?= $value['Comment']['id']; ?>" style="display:none;">					
-						<div class="comment">
-							<p><a href="" class="author">Current User</a></p>
-							<textarea class="reply_text" id="<?= $value['Comment']['id']; ?>">Write your comment here...</textarea>
+
+					<li class="comment<?= $lecture['Lecture']['id']; ?>">					
+						<div class="comment_text">
+							<p><a href="" class="author">あなた</a></p>
+							<textarea class="comment_text" id="<?= $lecture['Lecture']['id']; ?>">あなたのコメントを入力...</textarea>
 						</div>
 					</li>
 				</ul>
-			</li>
-		<?php endforeach; ?>
+            </div>
+        </article>
+    </section>
+    
+</section>
 
-		<li class="comment<?= $lecture['Lecture']['id']; ?>">					
-			<div class="comment_text">
-				<p><a href="" class="author">あなた</a></p>
-				<textarea class="comment_text" id="<?= $lecture['Lecture']['id']; ?>">あなたのコメントを入力...</textarea>
-			</div>
-		</li>
-	</ul>
+
+	
 </div>
+
 <script type="text/javascript">
 $(document).ready(function(){
 	var lecture_id = <?=$lecture['Lecture']['id']?>;
