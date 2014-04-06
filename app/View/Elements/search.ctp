@@ -4,15 +4,41 @@
 <?php echo $this->Form->create('Search',array('action'=>'search'));?>
     <fieldset>
         <legend><?php __('検索');?></legend>
-    <?php
-		echo $this->Form->input('catagory', array('label'=>'カテゴリ', 'options'=>array('0'=>'全部','1'=>'数学','2'=>'文学','3'=>'外国語')));
-        echo $this->Form->input('keyword');
-        //echo $this->Form->input('description');
-        echo $this->Form->submit('検索');
-    ?>
+        <table class="search_box">
+            <tr>
+                <td class="td1"><?php echo $this->Form->input('keyword',array('label'=>'')); ?></td>
+                <td class="td2"><?php echo $this->Form->input('catagory', array('label'=>'','options'=>array('0'=>'全部','1'=>'数学','2'=>'文学','3'=>'外国語'))); ?></td>
+                <td class="td3"><?php echo $this->Form->submit('検索'); ?></td>
+            </tr>
+        </table>
     </fieldset>
 <?php echo $this->Form->end();?>
+<style type="text/css">
+    td.td1{
+        width:60%;
+        margin-top:2px!important;
+    }
+    .search_box input[type="text"]{
+        width:600px;
+    }
 
+    td.td2{
+        width:10%;
+    }
+
+    td.td3{
+        height:30px;
+        padding:0px;
+        margin:0px;
+    }
+
+    form .submit input[type=submit]{
+        padding:5px;
+        margin:0px;
+    }
+    
+
+</style>
 <?php
 if(!empty($posts)){
     echo "<table>";
