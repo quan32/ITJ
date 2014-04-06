@@ -13,7 +13,6 @@ if($registedLectures){
             echo "<th>" . $paginator->sort('Register.created', '登録の時間') . "</th>";
             echo "<th>コスト</th>";
             echo "<th>情報</th>";
-            echo "<th>選択</th>";
             echo "</tr>";
         
 
@@ -25,24 +24,7 @@ if($registedLectures){
                 echo "<td>".$item['Register']['created']."</td>";
                 echo "<td>".$COST."VND</td>";
                 echo "<td>".$this->Html->link('詳しく',array('controller' => 'Students','action' => 'detailLecture',$item['Lecture']['id'], 'registedLectures'));
-       
-
-            if($item['Block'] == 1)
-            {
-                echo "<td>ブロック</td>";
                               
-            }
-            else
-            {
-                if($item['CanLearn'] == 1)
-                    echo "<td>".$this->Html->link("受講",array("controller" => "lectures", "action" => "view",$item['Lecture']['id']))."</td>";
-                else
-                    echo "<td>".$this->html->link("登録",array 
-                    ("action"=>"registedLectures",$item['Lecture']['id'],"index"),array(),"値段は ".$COST."。 登録しますか?",false)."</td>"; 
-
-
-            }
-            
                 echo "</tr>";
         }
         

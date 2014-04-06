@@ -270,20 +270,7 @@ class StudentsController extends AppController{
 
 		$data = $this->paginate('Register');
 
-		if($data != null)
-						{
-							$i = 0;
-							foreach ($data as $item) {
-							$isBlock = $this->isBlock($item['User']['id']);
-							$canLearn = $this->checkPermissionLecture($item['Register']['id']);
-							$data[$i]['Block'] = $isBlock;
-							$data[$i]['CanLearn'] = $canLearn;
-							$i++;
-
-							}
-						}
-
-
+		
 	$this->set('registedLectures',$data);
 	
 
