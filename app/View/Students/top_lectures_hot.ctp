@@ -1,4 +1,4 @@
-<h1>気に入りの講義リスト</h1>
+<h1>お気に入りの講義リスト</h1><br />
 <?php
 $paginator = $this->Paginator;
 if($hotLectures==NULL){
@@ -11,12 +11,12 @@ if($hotLectures==NULL){
 
         echo "<tr>";
 
-            echo "<th>講義のID</th>";
+            echo "<th>講義ID</th>";
             echo "<th>タイトル</th>";
-            echo "<th>先生の名前'</th>";
+            echo "<th>先生名'</th>";
             echo "<th>コスト</th>";
             echo "<th>情報</th>";
-            echo "<th>いいねの数</th>";
+            echo "<th>「いいね」数</th>";
             echo "<th>選択</th>";
         echo "</tr>";
         
@@ -84,3 +84,9 @@ if($hotLectures==NULL){
 
 
 ?>
+
+<style type="text/css">
+    table tr td{
+        padding:15px;
+    }
+</style>

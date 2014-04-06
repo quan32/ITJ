@@ -9,10 +9,10 @@ if($lecture==NULL){
 else{
 
     echo "<table>
-    <caption> 具体的に講義の情報を表示します </caption>";
+    <caption><br /> <h3>講義の詳しい情報<h3><br /> </caption>";
 
             echo "<tr>";
-            echo "<td>講義のID</td>";
+            echo "<td>講義ID</td>";
             echo "<td>".$lecture[0]['Lecture']['id']."</td>";
             echo "</tr>";
 
@@ -32,12 +32,12 @@ else{
             echo "</tr>";
 
             echo "<tr>";
-            echo "<td>講義の先生の名前</td>";
+            echo "<td>作成者</td>";
             echo "<td>".$lecture[0]['User']['fullname']."</td>";
             echo "</tr>";
 
             echo "<tr>";
-            echo "<td>ユーザーネーム</td>";
+            echo "<td>ユーザ名</td>";
             echo "<td>".$lecture[0]['User']['username']."</td>";
             echo "</tr>";
 
@@ -63,27 +63,37 @@ else{
 
                          {
 
-             echo $this->Form->create('Lecture',array('url'=>'registerLecture','onsubmit'=>'return confirm("値段は'.$COST.'VND。 登録しますか?");'));
-               echo $this->Form->input('lecture_id', array('value' => $item[0]['Lecture']['id'],'type' => 'hidden'));
-               echo $this->Form->input('backLink', array('value' => $currentLocation,'type' => 'hidden'));
-               echo $this->Form->end('登録');
-           }
+                           echo $this->Form->create('Lecture',array('url'=>'registerLecture','onsubmit'=>'return confirm("値段は'.$COST.'VND。 登録しますか?");'));
+                           echo $this->Form->input('lecture_id', array('value' => $item[0]['Lecture']['id'],'type' => 'hidden'));
+                           echo $this->Form->input('backLink', array('value' => $currentLocation,'type' => 'hidden'));
+                           echo $this->Form->end('登録');
+                         }
                             // echo $this->Html->link("登録",array 
                             // ("controller" => "Students","action"=>"registerLecture" ,$lecture[0]['Lecture']['id'],$currentLocation),array(),"値段は".$COST."VND。 登録しますか?",false); 
                             // }
-                        else
-                        {
-                            if($status == 0 )
+                        else{
+
+                            echo "<br />".$this->Html->link("戻る",array('controller' => 'Students', 'action' => $currentLocation),array('class'=>'link_buttonx'));
+                            if($status == 0 ){
                                 echo $this->Html->link("勉強", array("controller" => "lectures","action" => "view" ,$lecture[0]['Lecture']['id']),array('class'=>'link_buttonx'));
-                            else 
+                            }else 
                                 echo $this->Html->link("見直す", array("controller" => "lectures","action" => "view" ,$lecture[0]['Lecture']['id']),array('class'=>'link_buttonx'));
                         }
-                        echo "<br>";
+                        // echo "<br>";
                     }
-                    else
+                    else{
                         echo "あなたは今、この先生にブロックられています。<br>";
-                echo $this->Html->link("戻る",array('controller' => 'Students', 'action' => $currentLocation),array('class'=>'link_buttonx'));
+                        echo $this->Html->link("戻る",array('controller' => 'Students', 'action' => $currentLocation),array('class'=>'link_buttonx'));
+                    }
+                        
+                
             }
 
 }
     ?>
+
+<style type="text/css">
+    table{
+        border:1px solid dotted!important;
+    }
+</style>

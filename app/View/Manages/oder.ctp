@@ -1,4 +1,4 @@
-<h1>請求書 </h1>
+<h1 padding-bottom="5px">請求書 </h1>
 
 <?php 
 
@@ -50,3 +50,8 @@ echo $this->Form->end('作成');
 }
 
 ?>
+<style type="text/css">
+	label{
+		margin-right:5px;
+	}
+</style>

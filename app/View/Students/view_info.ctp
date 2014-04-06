@@ -8,12 +8,9 @@ if(!isset($info))
 else
 {
 
-        echo "<table>";
+        echo "<table >";
 
-            echo "<tr>";
-            echo "<td></td>";
-            echo "<td></td>";
-            echo "</tr>";
+            
        
             echo "<tr>";
             echo "<td>氏名</td>";
@@ -50,10 +47,18 @@ else
             echo "<td>".$info['User']['credit_card_No']."</td>";
             echo "</tr></table>";
 
+            echo "<br />";
 
-    echo "<button>".$this->Html->link('変化', array('controller'=>'students','action'=>'editInfo'))."</button>";
-    echo "<button>".$this->Html->link('アカウントの利用解除', array('controller'=>'students','action'=>'delAccount'))."</button>";
+    echo $this->Html->link('変化', array('controller'=>'students','action'=>'editInfo'), array('class'=>'link_buttonx'));
+    echo $this->Html->link('アカウント解除', array('controller'=>'students','action'=>'delAccount'), array('class'=>'link_buttonx'));
 
 }
 ?>
 </div>
+
+<style type="text/css">
+    table{
+        border:1px dotted #4c66a4!important;
+        margin:10px;
+    }
+</style>

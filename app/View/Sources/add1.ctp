@@ -1,6 +1,11 @@
 <fieldset>
 	<legend>講義の添付ファイルを選択してください</legend>
-
+	<div id="hd1">
+		 	<h3 padding-bottom="3px">案内</h3>
+			<h5>講義の主な資料としてPDFファイルを選んでください。PDFファイルのみアップロードできる。</h5>
+			<h5>ファイルを選んでから、ファイルをアップロードするために,「アップロード」ボタンを押してください。</h5>
+			<h5>講義の原料の選ぶのが終わったら、「完了」ボタンを押してください。</h5>
+		 </div>
 	<?php 
 		echo $this->Form->create('Source', array('type'=>'file','enctype'=>'multipart/form-data'));
 	?>
@@ -18,13 +23,7 @@
 			'type' => 'file'
 		)); ?>
 		 <?php endif; ?> 
-		 <div>
-			<h5>講義の主な資料としてPDFファイルを選んでください</h5>
-			<h5>PDFファイルのみアップロードできる</h5>
-			<h5>ファイルを選んでから、ファイルをアップロードするために</h5>
-			<h5>「アップロード」ボタンを押してください</h5>
-			<h5>講義の原料の選ぶのが終わったら、「完了」ボタンを押してください</h5>
-		 <div>
+		 
 
 	<?php
 		echo $this->Form->end('アップロード');
@@ -32,3 +31,13 @@
 		echo $this->Html->link('完成', array('controller'=>'lectures', 'action'=>'index'),array('class'=>'link_buttonx'));
 	?>
 </fieldset>
+<style type="text/css">
+	#hd1{
+		border:1px dotted;
+		padding-left:10px;
+	}
+
+	button.link_buttonx{
+		height:37px;
+	}
+</style>

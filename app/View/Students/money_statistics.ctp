@@ -1,14 +1,14 @@
-<h1>学費の統計 </h1>
+<h1>学費統計 </h1>
 
 <?php 
 
 
 echo $this->Form->create('Money'); 
 
-echo "時間 :";
+echo "時間 :  ";
 if( isset($mos) && isset($yos))
 {
-echo $this->Form->month('mos', array('monthNames' => false,'value' => $mos,'empty'=>false));
+echo $this->Form->month('mos', array('monthNames' => false,'value' => $mos,'empty'=>false))."   ";
 echo $this->Form->year('yos', 2013, date('Y'), array('value' => $yos,'empty'=>false ));
 }
 else
@@ -23,7 +23,7 @@ if(isset($moneyOfTheMonth))
 {
 
 if($moneyOfTheMonth > 0)
-    echo "<h2>この月の学費の合計 : ".$moneyOfTheMonth." VND</h2>";
+    echo "<br /><h3>学費の合計 : ".$moneyOfTheMonth." VND</h3>";
 else
 	if($moneyOfTheMonth == null)
 	echo "この月に、登録した講義がありません";
@@ -36,7 +36,7 @@ else
 
 if(isset($lecturesOfTheMonth)){
 
-	echo '<h1>この月のお金を払った講義</h1>';
+	echo '<h3>詳しい情報の一覧表:</h3>';
 
 	$paginator = $this->Paginator;
 
