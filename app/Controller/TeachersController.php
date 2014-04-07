@@ -321,5 +321,56 @@ class TeachersController extends AppController{
 		$this->set('lectures',$lectures);
 		$this->set('countRegister',$countRegister);
 	}
+
+/* -------------
+*	caculate number like of the lecture
+* 	07.04 
+*	Author : xuan
+*/
+	public function countLikeByLecture($lecture_id = null)
+	{
+
+		if($lecture_id == null) return 0;
+		$this->loadModel('Favorite');
+		$numLike = $this->Favorite->find('count', array(
+        'conditions' => array('Favorite.lecture_id' => $lecture_id)));
+        return $numLike;
+	}
+
+/*
+*	caculate number of times which this lecture is registed (not number of student, because student can two time register a lectures)
+* 07.04
+* Author Xuan
+*/
+
+	public function countRegisterByLecture($lecture_id = null){
+
+		if($lecture_id == null ) return 0;
+		$this->loadModel('Register');
+		$numRegister = $this->Register->find('count', array(
+			'conditions' => array('Register.lecture_id' => $lecture_id)
+			));
+		debug ($numRegister); die;
+		return $numRegister;
+	}
+
+/*
+*	caculate number of times  this lecture is registed in the month which (not number of student, because student can two time register a lectures)
+* 07.04
+* Author Xuan
+*/
+	public function countRegisterByLectureAndMonth($lecture_id = null, $month = null){
+
+ //debug(date('n')); die;
+		if($lecture_id == null ) return 0;
+		$this->loadModel('Register');
+		$numRegisterInMonth = $this->Register->find('count', array(
+			'conditions' => array('Register.lecture_id' => $lecture_id,
+			'MONTH(Register.created)' => $month
+				)
+			));
+		return $numRegisterInMonth;
+
+	}
 }
 ?>
