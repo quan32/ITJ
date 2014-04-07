@@ -14,7 +14,7 @@
 				<h1><span>e</span>ラーニングシステム</h1>
 				<h2>より簡単、より速い、より安価</h2>
 				<div id="divLogin">';
-				echo "<a href='users/login'>".$this->Html->image('login.png')."</a>";
+				echo "<a href='users/login'>".$this->Html->image('login.gif')."</a>";
 			echo '
 				</div>
 			</div>
