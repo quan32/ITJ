@@ -15,4 +15,20 @@ class Search extends AppModel{
 				'foreignKey'    => 'lecture_id'
 			)
 		);
+	public $validate = array(
+        'slug' => array(
+            'rule'    => 'alphaNumericDashUnderscore',
+            'message' => '
+			'
+        )
+    );
+
+    public function alphaNumericDashUnderscore($check) {
+        // $data array is passed using the form field name as the key
+        // have to extract the value to make the function generic
+        $value = array_values($check);
+        $value = $value[0];
+
+        return preg_match('|^[0-9a-zA-Z_-]*$|', $value);
+    }
 }

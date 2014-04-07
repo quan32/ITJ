@@ -12,7 +12,7 @@ class User extends AppModel{
                 'message'  => '文字又は数字を入力してください'
             ),
             'between' => array(
-                'rule'    => array('between', 3, 30),
+                'rule'    => array('between', 8, 30),
                 'message' => '3～30桁のユーザ名を入力してください'
             )
         ),
@@ -23,13 +23,18 @@ class User extends AppModel{
 			'message' => '最低の長さは8桁'),
 
 		'fullname' => array(
-        	'rule' => 'notEmpty',
+        	'rule' => array('minLength', 10),
 			// 'required' => true,
 			'message' => '空きフィールドをしないでください'),	
 
 		'mobile_No' => array(
-        	'rule' => 'numeric',
-        	'message' => '数字を入力してください'),
+        	 'alphaNumeric' => array(
+                'rule'     => 'numeric',
+                // 'required' => true,
+                'message'  => '数字を入力してください'),
+            'between' => array(
+                'rule'    => array('between', 10, 15),
+                'message' => '10～15桁の電話番号を入力してください')),
 
 		'mail' => array(
 			'rule'=>'email',
