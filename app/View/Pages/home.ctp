@@ -26,12 +26,12 @@
 				<div class="content-box">
 					
 					<div class="box-left">
-						<h1>ようこそ</h1>
-						Tận dụng nguồn sức mạnh đó, xuất phát từ tình yêu đối với thành phố Hà Nội và sự đam mê yêu thích du lịch, em muốn chia sẻ tình yêu đó, lòng đam mê đó với tất cả mọi người có sự quan tâm đến các danh lam thắng cảnh, địa điểm văn hóa, lịch sử, ẩm thực
+						<h1>Welcome</h1>
+						
 					</div>
 					
 					<div class="box-right">
-						Tận dụng nguồn sức mạnh đó, xuất phát từ tình yêu đối với thành phố Hà Nội và sự đam mê yêu thích du lịch, em muốn chia sẻ tình yêu đó, lòng đam mê đó với tất cả mọi người có sự quan tâm đến các danh lam thắng cảnh, địa điểm văn hóa, lịch sử, ẩm thựcTận dụng nguồn sức mạnh đó, xuất phát từ tình yêu đối với thành phố Hà Nội và sự đam mê yêu thích du lịch, em muốn chia sẻ tình yêu đó, lòng đam mê đó với tất cả mọi người có sự quan tâm đến các danh lam thắng cảnh, địa điểm văn hóa, lịch sử, ẩm thực
+						Chào mừng đến với hệ thống e-learning. Hiện nay internet đã rất phát triển. Vì vậy giáo viên, học sinh có thể giảng dạy và học tại nhà bằng hệ thống e-learning. Với hệ thống của chúng tôi, giáo viên sẽ có cơ hội truyền tri thức và cảm hứng của mình tới nhiều học sinh trên mọi miền đất nước, học sinh sẽ được học nhiều giáo viên giỏi với nguồn tài liệu, bài giảng dồi dào, chất lượng.
 					</div>
 
 				</div>
@@ -39,11 +39,11 @@
 				<div class="content-box">
 					
 					<div class="box-left">
-						Tận dụng nguồn sức mạnh đó, xuất phát từ tình yêu đối với thành phố Hà Nội và sự đam mê yêu thích du lịch, em muốn chia sẻ tình yêu đó, lòng đam mê đó với tất cả mọi người có sự quan tâm đến các danh lam thắng cảnh, địa điểm văn hóa, lịch sử, ẩm thực
+						<h1>Mission</h1>
 					</div>
 					
 					<div class="box-right">
-						Tận dụng nguồn sức mạnh đó, xuất phát từ tình yêu đối với thành phố Hà Nội và sự đam mê yêu thích du lịch, em muốn chia sẻ tình yêu đó, lòng đam mê đó với tất cả mọi người có sự quan tâm đến các danh lam thắng cảnh, địa điểm văn hóa, lịch sử, ẩm thựcTận dụng nguồn sức mạnh đó, xuất phát từ tình yêu đối với thành phố Hà Nội và sự đam mê yêu thích du lịch, em muốn chia sẻ tình yêu đó, lòng đam mê đó với tất cả mọi người có sự quan tâm đến các danh lam thắng cảnh, địa điểm văn hóa, lịch sử, ẩm thực
+						Nhiệm vụ, sứ mệnh của chúng tôi là là tạo một cầu nối giữa giáo viên học sinh không kể khoảng cách địa lý, làm giáo viên hứng khởi trong việc dạy, học sinh năng động, vui vẻ trong việc học.
 					</div>
 
 				</div>	
