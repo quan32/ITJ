@@ -108,3 +108,9 @@ if($fiveNewestLecture!=NULL){
 
   
 ?>
+
+<style type="text/css">
+    table tr td{
+        padding:15px;
+    }
+</style>

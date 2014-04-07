@@ -1,4 +1,4 @@
-<h1>統計表示</h1>
+<h1>統計表示</h1><br />
 <?php
 	echo '<table>
 		<tr>
@@ -18,3 +18,9 @@
 echo "<button class = ".'"link_buttonx"'.">".$this->Html->link('戻る', array('controller'=>'teachers','action'=>'info'))."</button>";
 
 ?>
+
+<style type="text/css">
+    button{
+        height:37px;
+    }
+</style>

@@ -1,4 +1,4 @@
-<h1>各テスト</h1>
+<h1>各テスト</h1><br />
 <table>
 <tr>
 	<th>ID</th>
@@ -20,7 +20,7 @@
 			echo '<td>'.$value["time"].'</td>';
 			echo '<td>'.$value["lecture_id"].'</td>';			
 			echo '<td>'.$value["created"].'</td>';
-			echo '<td>'.$this->Html->link('編集　｜', 
+			echo '<td>'.$this->Html->link('編集　', 
 				array('action' => 'edit', $value["id"]));
 			echo " ";
 			echo $this->Form->postLink('　削除', 
@@ -32,5 +32,6 @@
 	}
 ?>
 </table>
+<br /><br />
 <?=	$this->Html->link('新しいテストを作成',
 				array('controller' => 'tests','action' => 'add',$lecture_id)); ?>

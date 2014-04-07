@@ -1,4 +1,4 @@
-<h1>買った講義の一覧を表示します。</h1>
+<h1>買った講義の一覧</h1><br />
 <?php
 $paginator = $this->Paginator;
 

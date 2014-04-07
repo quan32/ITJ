@@ -35,8 +35,12 @@
 				array('controller'=>'users','action' => 'lock', $user["User"]["id"]));
 			
 		
-		echo $this->Html->link('リセット', 
+		echo $this->Html->link('Pリセット', 
 				array('controller'=>'users','action' => 'reset', $user["User"]["id"]));
+
+		if($user["User"]["role"]=="teacher")
+			echo $this->Html->link(' | Vリセット', 
+				array('controller'=>'users','action' => 'resetVerifyCode', $user["User"]["id"]));
 			
 		echo "</td>";    
 

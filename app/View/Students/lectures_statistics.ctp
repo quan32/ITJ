@@ -1,4 +1,4 @@
-<h1>講義リスト</h1>
+<h1>講義リスト</h1><br />
 <?php
 $paginator = $this->Paginator;
 
@@ -6,12 +6,12 @@ if($lectures){
 
     echo "<table>";
 
-        echo "<tr>";
+        echo "<tr align='center'>";
 
             echo "<th>" . $paginator->sort('Lecture.id', 'ID') . "</th>";
             echo "<th>" . $paginator->sort('Lecture.name', 'タイトル') . "</th>";
             echo "<th>" . $paginator->sort('User.fullname', '先生の氏名') . "</th>";
-            echo "<th>'コスト</th>";
+            echo "<th>コスト</th>";
             echo "<th>詳しく</th>";
             echo "<th> 選択</th>";
 
@@ -93,3 +93,9 @@ else{
 
 
 ?>
+
+<style type="text/css">
+    table tr td{
+        padding:15px;
+    }
+</style>

@@ -19,7 +19,7 @@
             <div class="line"></div>
             
             <div class="articleBody clear">
-            	<h3>Created By: <?= $UserModel->username($lecture['Lecture']['user_id']); ?></h3>
+            	<h4>作者: <?= $UserModel->username($lecture['Lecture']['user_id']); ?></h4>
                 <p><?=$lecture['Lecture']['description']?></p>
             </div>
         </article>
@@ -30,7 +30,7 @@
 		<!-- Article 2 start -->
         
         <article id="article2">
-            <h2>Noi dung PDF</h2>
+            <h2>講義内容</h2>
             
             <div class="line"></div>
             
@@ -48,7 +48,7 @@
 		<!-- Article 3 start -->
         
         <article id="article2">
-            <h2>Media</h2>
+            <h2>メディアファイル</h2>
             
             <div class="line"></div>
             
@@ -79,7 +79,7 @@
 		<!-- Article 3 start -->
         
         <article id="article2">
-            <h2>Picture</h2>
+            <h2>イメージ</h2>
             
             <div class="line"></div>
             
@@ -103,17 +103,17 @@
 		<!-- Article 4 start -->
         
         <article id="article2">
-            <h2>Comment</h2>
+            <h2>コメント</h2>
             
             <div class="line"></div>
             
             <div class="articleBody clear">
                 <?php if($isLiked==0): ?>
-					<button id="like_button">いいね！</button>
-					<button id="dislike_button" style="display:none">取り消す</button>
+					<button id="like_button" class="link_buttonx">いいね！</button>
+					<button id="dislike_button" class="link_buttonx" style="display:none">取り消す</button>
 				<?php else: ?>
-					<button id="like_button" style="display:none">いいね！</button>
-					<button id="dislike_button">取り消す</button>
+					<button id="like_button" class="link_buttonx" style="display:none">いいね！</button>
+					<button id="dislike_button" class="link_buttonx">取り消す</button>
 				<?php endif ?>
 				<em id="num_liked"><?=$num_liked?></em> 人はこの講義について「いいね！」
 				<ul class="nested-comments-complex">
@@ -166,7 +166,7 @@
 								<li id="reply<?= $value['Comment']['id']; ?>" style="display:none;">					
 									<div class="comment">
 										<p><a href="" class="author">あなた</a></p>
-										<textarea class="reply_text" id="<?= $value['Comment']['id']; ?>">あなたのコメントを入力...</textarea>
+										<textarea class="reply_text" id="<?= $value['Comment']['id']; ?>">コメントを投稿する...</textarea>
 									</div>
 								</li>
 							</ul>
@@ -176,7 +176,7 @@
 					<li class="comment<?= $lecture['Lecture']['id']; ?>">					
 						<div class="comment_text">
 							<p><a href="" class="author">あなた</a></p>
-							<textarea class="comment_text" id="<?= $lecture['Lecture']['id']; ?>">あなたのコメントを入力...</textarea>
+							<textarea class="comment_text" id="<?= $lecture['Lecture']['id']; ?>">コメントを投稿する...</textarea>
 						</div>
 					</li>
 				</ul>
@@ -225,13 +225,13 @@ $(document).ready(function(){
 		    });
 	     }
 	}).focus(function(){
-	    if(this.value == "あなたのコメントを入力..."){
+	    if(this.value == "コメントを投稿する..."){
 	         this.value = "";
 	    }
 
 	}).blur(function(){
 	    if(this.value==""){
-	         this.value = "あなたのコメントを入力...";
+	         this.value = "コメントを投稿する...";
 	    }
 	});
 	//like
@@ -318,3 +318,9 @@ document.onmousedown=disableselect
 document.onclick=reEnable
 }
 </script>
+
+<style type="text/css">
+	button.link_buttonx{
+		height:37px;
+	}
+</style>

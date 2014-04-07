@@ -1,11 +1,10 @@
-<h1>講義をマネジメント</h1>
+<h1>講義管理</h1><br />
 
 <table>
 <tr>
 	<th>ID</th>
 	<th>タイトル</th>
-	<th>値段(コスト)</th>
-	<th>作成した時間</th>
+	<th>作成時</th>
 	<th>テスト</th>
 	<th>表現</th>
 	<th>管理</th>
@@ -16,7 +15,6 @@
 		echo '<tr>';
 			echo '<td>'.$lecture['Lecture']["id"].'</td>';
 			echo '<td>'.$lecture['Lecture']['name'].'</td>';
-			echo '<td>'.$lecture['Lecture']['cost'].'</td>';
 			echo '<td>'.$lecture['Lecture']['created'].'</td>';
 			
 			echo '<td>';
@@ -31,7 +29,7 @@
 			echo '</td>';
 
 			echo '<td>';
-			echo $this->Html->link('編集　｜', 
+			echo $this->Html->link('編集　', 
 				array('action' => 'edit', $lecture['Lecture']["id"]));
 			echo " ";
 			echo $this->Form->postLink('　削除', 

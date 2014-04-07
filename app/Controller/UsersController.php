@@ -244,31 +244,37 @@ class UsersController extends AppController{
 		// $this->set('menu_type','menu');
 		if($this->request->is('post')){
 			$user= $this->User->findById($id);
-			if($user['User']['verify']==$this->request->data['User']['verify']){
+			$passwordHasher = new SimplePasswordHasher();
+			if($user['User']['verify']==$passwordHasher->hash($this->request->data['User']['verify'])){
 
-				$this->Session->setFlash(__('確認するコードは間違ってしまった。'));
+				$this->Session->setFlash(__('確認するコードは正しい'));
 				$this->User->id=$id;
 				$this->User->saveField('state','normal');
 				return $this->redirect(array('controller'=>'users','action'=>'login'));	
 			}else{
-				$this->Session->setFlash(__('確認するコードは正しい'));
+				$this->Session->setFlash(__('確認するコードは間違ってしまった。'));
 			}
 		}
 	}
 
 	public function verify2($id =null, $IP =null){
+
 		$this->set('menu_type','empty');
 		if($this->request->is('post')){
 			$user= $this->User->findById($id);
-			if($user['User']['verify']==$this->request->data['User']['verify']){
+			$passwordHasher = new SimplePasswordHasher();
+			echo ($passwordHasher->hash($this->request->data['User']['verify']));
+			echo ('<br/>');
+			echo ($user['User']['verify']);
+			if($user['User']['verify']==$passwordHasher->hash($this->request->data['User']['verify'])){
 
-				$this->Session->setFlash(__('確認するコードは間違ってしまった。'));
+				$this->Session->setFlash(__('確認するコードは正しい'));
 				$this->User->id = $id;
 				$this->User->saveField('prevIP',$IP);
 				return $this->redirect(array('controller'=>'users','action'=>'login'));
 				
 			}else{
-				$this->Session->setFlash(__('確認するコードは正しい'));
+				$this->Session->setFlash(__('確認するコードは間違ってしまった。'));
 			}
 		}
 	}
@@ -365,6 +371,17 @@ class UsersController extends AppController{
 			return $this->redirect(array('controller'=>'manages','action'=>'index'));
 		}
 	}
+
+	public function resetVerifyCode($id){
+		$user= $this->User->findById($id);
+		$verify=$user['User']['first_verify'];
+		$sql = "UPDATE users SET verify='$verify' WHERE id='$id'";
+		if($this->User->query($sql)){
+			$this->Session->setFlash(__('初期VerifyCodeにリセットした'));
+			return $this->redirect(array('controller'=>'manages','action'=>'index'));
+		}
+	}
+
 	
 	public function logout(){	
 		$this->Session->setFlash('またね！');

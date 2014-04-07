@@ -14,7 +14,7 @@ class TestsController extends AppController {
 		// Only teacher can use teacher's function
 		if($user['role']=='teacher' || $user['role']=='manager')
 			return true;
-		elseif($user['role']=='student' && in_array($this->action, array('view')))
+		elseif($user['role']=='student' && in_array($this->action, array('view','view_result')))
 			return true;
 		return false;
 	}

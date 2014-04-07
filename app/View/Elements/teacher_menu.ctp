@@ -17,7 +17,7 @@
   <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-caret-square-o-down"></i> 講義管理 <b class="caret"></b></a>
   <ul class="dropdown-menu">
     <li><?php 
-	echo $this->Html->link('新しい講義を作成', 
+	echo $this->Html->link('新しい講義作成', 
 		array('controller' => 'lectures', 'action' =>'add'));
 	?></li>
 
@@ -29,7 +29,7 @@
 </li>
 
 <li><?php 
-echo $this->Html->link('統計値', 
+echo $this->Html->link('統計', 
 	array('controller' => 'teachers', 'action' => 'statistic'));
 ?></li>
 
