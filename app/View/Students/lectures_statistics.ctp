@@ -1,4 +1,15 @@
 <h1>講義リスト</h1><br />
+<?php echo $this->Form->create('Students',array('action'=>'lecturesStatistics'));?>
+    <fieldset>
+        <legend><?php __('漉す');?></legend>
+     <table class="search_box">
+            <tr>
+                <td class="td2"><?php echo $this->Form->input('catagory', array('label'=>'','options'=>array('0'=>'全部','1'=>'数学','2'=>'文学','3'=>'外国語','4'=>'体育','5'=>'普通科学','6'=>'IT','7'=>'食品','8'=>'社会','9'=>'心理','10'=>'芸術'))); ?></td>
+                <td class="td3"><?php echo $this->Form->submit('漉す'); ?></td>
+            </tr>
+        </table>
+    </fieldset>
+<?php echo $this->Form->end();?>
 <?php
 $paginator = $this->Paginator;
 
@@ -97,5 +108,24 @@ else{
 <style type="text/css">
     table tr td{
         padding:15px;
+    }
+	td.td1{
+        width:60%;
+        margin-top:2px!important;
+    }
+
+    td.td2{
+        width:10%;
+    }
+
+    td.td3{
+        height:30px;
+        padding:0px;
+        margin:0px;
+    }
+
+    form .submit input[type=submit]{
+        padding:5px;
+        margin:0px;
     }
 </style>

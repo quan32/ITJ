@@ -420,11 +420,14 @@ class StudentsController extends AppController{
 		$COST = 20000;
 		$this->set('COST',$COST);
 
-
+		$catagory = "0";
+		if ($this->request->is('post'))
+		{	
+		$catagory = $this->request->data['Students']['catagory'];
+		}
 		$user_id = $this->Auth->user('id');
 		$this->loadModel('Lecture');
 		$this->loadModel('Register');
-
 		$options=  array(
 			'joins' => array(
 	
@@ -437,11 +440,14 @@ class StudentsController extends AppController{
 							)
 					
 						),
+			
 			'order' => array('Lecture.created' => 'ASC'),
 			'limit' => 10,
+			//'conditions' =>array('Lecture.category_id' => "$catagory"),
 			'fields' => array('Lecture.id','User.fullname','Lecture.name','User.id')
 		);
-
+		if($catagory != "0") $options['conditions'] = array('Lecture.category_id' => $catagory);
+		//debug($options);
 		$this->Lecture->recursive = -1;
 		$this->paginate = $options;
 		$data = $this->paginate('Lecture');
