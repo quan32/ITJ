@@ -26,12 +26,18 @@
 				<div class="content-box">
 					
 					<div class="box-left">
-						<h1>Welcome</h1>
+						<h1>ようこそ</h1>
 						
 					</div>
 					
 					<div class="box-right">
-						Chào mừng đến với hệ thống e-learning. Hiện nay internet đã rất phát triển. Vì vậy giáo viên, học sinh có thể giảng dạy và học tại nhà bằng hệ thống e-learning. Với hệ thống của chúng tôi, giáo viên sẽ có cơ hội truyền tri thức và cảm hứng của mình tới nhiều học sinh trên mọi miền đất nước, học sinh sẽ được học nhiều giáo viên giỏi với nguồn tài liệu, bài giảng dồi dào, chất lượng.
+						eラーニングシステムへようこそ！</br ></br >
+						インターネットの発展により塾などへ行かず、</br >
+						自宅で勉強することが出きるようになりました。</br >
+						知識を持っている人（先生）と知識を学びたい人（学生）の距離を減らす目的としてeラーニング</br >
+						システムを開発しました。このシステムは生活や</br >
+						科学などの色んな知識を提供しているものです。</br >
+						私たちはシステム内の講義の内容と著作権について責任を持っています。</br >興味がある講義を選んで、勉強しましょう！
 					</div>
 
 				</div>
@@ -39,11 +45,13 @@
 				<div class="content-box">
 					
 					<div class="box-left">
-						<h1>Mission</h1>
+						<h1>ミッション</h1>
 					</div>
 					
 					<div class="box-right">
-						Nhiệm vụ, sứ mệnh của chúng tôi là là tạo một cầu nối giữa giáo viên học sinh không kể khoảng cách địa lý, làm giáo viên hứng khởi trong việc dạy, học sinh năng động, vui vẻ trong việc học.
+						システムのミッションは先生方と学生方のブリッジとして、
+						距離問題を除き、学びたい人に知識を持ってくるのです。</br >
+						貴方の学習の進歩は私たちの責任です。
 					</div>
 
 				</div>	
