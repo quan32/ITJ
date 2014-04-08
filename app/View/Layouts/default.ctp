@@ -36,6 +36,11 @@
         font-size: 110%;
         
       }
+      select {
+        text-transform: none;
+        height: 35px;
+        width: 55px;
+        }
       
     </style>
     <?php
