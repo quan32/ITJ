@@ -30,15 +30,55 @@ class LecturesController extends AppController{
 		$this->set('menu_type','teacher_menu');
 		if ($this->request->is('post')) {
 			if($this->request->data['Lecture']['NQ']==1){
-				$this->request->data['Lecture']['user_id']=$this->Auth->user('id');
-				$this->Lecture->create();
 
-				// attempt to save
-				if ($this->Lecture->save($this->request->data)) {
-					$lecture = $this->Lecture->find('first', array('order'=>array('Lecture.id'=>'desc')));
-					$id=$lecture['Lecture']['id'];
-					$this->redirect(array('controller'=>'sources','action' => 'add1',$id));
-				} 
+				$exist = $this->Lecture->findByName($this->request->data['Lecture']['name']);
+				if($exist){
+					$this->Session->setFlash(__('この講義のタイトルは使用されているから、他のタイトルを選んでください。'));
+				}else{
+
+					$this->request->data['Lecture']['user_id']=$this->Auth->user('id');
+					$this->Lecture->create();
+					$tags = $this->request->data['Lecture']['tag'];
+					$this->loadModel('Tag');
+					$this->loadModel('Vovan');
+					
+					// attempt to save
+					if ($this->Lecture->save($this->request->data)) {
+						$lecture = $this->Lecture->find('first', array('order'=>array('Lecture.id'=>'desc')));
+						$id=$lecture['Lecture']['id'];
+						
+						// Su ly tag
+						$tags = explode(",", $tags);
+						//var_dump($tags);die;
+						for($i=0; $i<count($tags); $i++) {
+							$tag = $tags[$i];
+							$tag = trim($tag);
+							// echo $tag;
+
+							$result = $this->Tag->findByContent($tag);
+							if($result){
+								$tag_id = $result['Tag']['id'];
+								$vovan['Vovan']['lecture_id']=$id;
+								$vovan['Vovan']['tag_id']=$tag_id;
+								$this->Vovan->create();
+								if(!$this->Vovan->save($vovan)){
+									$this->Session->setFlash(__('Vovanテーブルにデータを保存することは失敗！'));
+								}
+							}else{
+								$new_tag['Tag']['content']=$tag;
+								$this->Tag->create();
+								if(!$this->Tag->save($new_tag)){
+									$this->Session->setFlash(__('Tagテーブルにデータを保存することは失敗！'));
+								}
+								$i--;
+							}
+
+						}
+
+						$this->redirect(array('controller'=>'sources','action' => 'add1',$id));
+					} 
+				}
+				
 			}else{
 				$this->Session->setFlash(__('この資料の著作権はまだ証明されていない'));
 			}
@@ -50,13 +90,52 @@ class LecturesController extends AppController{
 		$this->set('menu_type','teacher_menu');
 		$this->Lecture->id =$id;
 		if(!$this->Lecture->exists()){
-			throw new NotFoundException(__('Invalid Lecture'));
+			throw new NotFoundException(__('不当な講義'));
 		}
 
 		if ($this->request->is('post') || $this->request->is('put')) { 
 			if ($this->Lecture->save($this->request->data)) {
-		            $this->Session->setFlash(__('講義はシステムに保存していた'));
-					$this->redirect(array('controller'=>'sources','action' => 'edit',$id));
+				$this->loadModel('Tag');
+				$this->loadModel('Vovan');
+
+				//Edit tag
+					//Xoa het cac tag cua lecture
+				if(!$this->Vovan->deleteAll(array('lecture_id'=>$id))){
+					$this->Session->setFlash(__('Vovaテーブルからデータを削除することは失敗！'));
+
+				}else{
+					//Them moi lai tat ca cac tag
+					$tags = $this->request->data['Lecture']['tag'];
+					$tags = explode(",", $tags);
+					for($i=0; $i<count($tags); $i++) {
+						$tag = $tags[$i];
+						$tag = trim($tag);
+						// echo $tag;
+
+						$result = $this->Tag->findByContent($tag);
+						if($result){
+							$tag_id = $result['Tag']['id'];
+							$vovan['Vovan']['lecture_id']=$id;
+							$vovan['Vovan']['tag_id']=$tag_id;
+							$this->Vovan->create();
+							if(!$this->Vovan->save($vovan)){
+								$this->Session->setFlash(__('Vovanテーブルにデータを保存することは失敗！'));
+							}
+						}else{
+							$new_tag['Tag']['content']=$tag;
+							$this->Tag->create();
+							if(!$this->Tag->save($new_tag)){
+								$this->Session->setFlash(__('Tagテーブルにデータを保存することは失敗！'));
+							}
+							$i--;
+						}
+
+					}
+
+				}	
+
+	            $this->Session->setFlash(__('講義はシステムに保存していた'));
+				$this->redirect(array('controller'=>'sources','action' => 'edit',$id));
 				}
 		        $this->Session->setFlash(
 		            __('講義はシステムに保存していない。もう一度してみてください'));
@@ -70,6 +149,7 @@ class LecturesController extends AppController{
 		if ($this->request->is(array('post','get'))){
 			$this->Lecture->id = $id;
 			$this->loadModel('Source');
+			$this->loadModel('Vovan');
 
 			//Delete sources in hard disk
 			$sources = $this->Source->findAllByLectureId($id);
@@ -89,6 +169,8 @@ class LecturesController extends AppController{
 			}
 			//Delete sources in database
 			$this->Source->deleteAll(array('lecture_id'=>$id));
+			//Delete tag of lectures
+			$this->Vovan->deleteAll(array('lecture_id'=>$id));
 			
 
 			if(!$this->Lecture->exists())
@@ -114,6 +196,8 @@ class LecturesController extends AppController{
 
 	public function preview($id =null){
 		$this->set('menu_type','teacher_menu');
+
+
 		$lecture = $this->Lecture->read(null, $id);
 		$sources = $lecture['Source'];
 		foreach ($sources as $source) {
@@ -166,6 +250,17 @@ class LecturesController extends AppController{
 		$isLiked = count($this->Lecture->Favorite->findAllByLectureIdAndUserId($id,$this->Auth->user('id')))!=0 ? 1: 0;
 		$this->set('isLiked', $isLiked);
 		$this->set('current_user_id', $this->Auth->user('id'));
+
+		//Hien thi tag
+		$this->loadModel('Vovan');
+		$this->loadModel('Tag');
+		$i=0;
+		$tags = $this->Vovan->findAllByLectureId($id);
+		foreach ($tags as $tag) {
+			$t[$i] = $this->Tag->findById($tag['Vovan']['tag_id']);
+			$i++;
+		}
+		$this->set('tags',$t);
 		
 		
 	}

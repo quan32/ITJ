@@ -14,6 +14,7 @@ class Lecture extends AppModel {
                 'rule'    => array('between', 30, 225),
                 'message' => '30～225桁の紹介する情報を入力してください'
             ))
+		
 	);
 	
 }
