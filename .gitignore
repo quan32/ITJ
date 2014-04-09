@@ -3,6 +3,7 @@
 /app/Config/database.php
 /app/tmp
 /app/webroot/log/*
+/app/webroot/log/login.txt
 /app/webroot/uploads
 /app/webroot/files
 /app/Config/database.php

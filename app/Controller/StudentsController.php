@@ -214,19 +214,6 @@ class StudentsController extends AppController{
 		
 	}
 
-	public function getListBlock()
-	{
-	
-		$user_id = $this->Auth->user('id');
-		$this->loadModel('Block');
-		$listBlock = $this->Block->find('all',
-				array(
-					'conditions' => array('Block.student_id' => $user_id)
-					)
-			);
-		return $listBlock;
-	}
-
 	public function viewInfo(){
 		$this->set('menu_type','student_menu');
 		$user_id = $this->Auth->user('id');
@@ -291,127 +278,67 @@ class StudentsController extends AppController{
 		$backLink = $this->request->data['Lecture']['backLink'];
 	
 		if($lecture_id == NULL) $this->redirect(array("action" => 'index') );
-		if(!isset($lecture_id)) $this->redirect(array("action" => 'index') );
-		if(!isset($backLink)) $this->redirect(array("action" => 'index'));
 
-		if($this->getStatusLecture($lecture_id) == 0)
+		//Neu ma bi Block
+		if(($this->checkBlockByLectureID($lecture_id)) == 0)
 		{
-			$data = array(
-				'Register' =>array(	
-						'user_id' => $user_id,
-						'lecture_id' => $lecture_id,
-						'status'  => 0
-					)
-				);
-			$this->loadModel('Register');
-		
-			if (!($this->Register->updateAll(
-	
-				array('Register.status' => 3),
-				array('Register.lecture_id' => $lecture_id)
-				
-					)))
-				{
-					$this->Session->setFlash(_('システムエラー'));
-					$this->redirect(array('action' => 'index'));
-					return 0;
-	
-				}
-	
-			$this->Register->create();
-			if($this->Register->save($data))
+
+			
+			if($this->getStatusLecture($lecture_id) == 0)
 			{
-	
-				//log
-						$this->loadModel('User');
-						$data = $this->User->find('all',array(
-						'conditions' => array('id' => $user_id),
-					   'recursive' => -1)
-						);
-						
-						$date = date('Y-m-d H:i:s');
-						$file = "register_lecture.txt";
-					  //"順番", “SUCCESS”, "時間", "ユーザーID", "ユーザー名", "tuoi", “sdt”, “email”, “dia chi”
-						$content =  "\"SUCCESS\","."\"".$date."\","."\"".$data[0]['User']['id']."\","."\"".$data[0]['User']['username']."\",\"学生は講義に受ける\",\"".$lecture_id."\"";
-						
-						$this->Log->writeLog($file,$content);
-				$this->redirect(array("action" => $backLink));
-			}
-			else 
+				$data = array(
+					'Register' =>array(	
+							'user_id' => $user_id,
+							'lecture_id' => $lecture_id,
+							'status'  => 0
+						)
+					);
+				$this->loadModel('Register');
+			
+		
+				$this->Register->create();
+				if($this->Register->save($data))
 				{
-					$this->Session->setFlash(_('システムエラー'));
+		
+					//log
+							$this->loadModel('User');
+							$data = $this->User->find('all',array(
+							'conditions' => array('id' => $user_id),
+						   'recursive' => -1)
+							);
+							
+							$date = date('Y-m-d H:i:s');
+							$file = "register_lecture.txt";
+					//"順番", “SUCCESS”, "時間", "ユーザーID", "ユーザー名", "tuoi", “sdt”, “email”, “dia chi”
+							$content =  "\"SUCCESS\","."\"".$date."\","."\"".$data[0]['User']['id']."\","."\"".$data[0]['User']['username']."\",\"学生は講義に受ける\",\"".$lecture_id."\"";
+							
+							$this->Log->writeLog($file,$content);
+							$this->Session->setFlash(_('登録が成功しました'));
+				if($backLink == null)	$this->redirect(array('action' => 'index'));	
+				else $this->redirect(array('action' => $backLink));
+			
+				}
+				else 
+					{
+						$this->Session->setFlash(_('システムエラー'));
+						$this->redirect(array('action' => 'index'));
+					}
+			} else {
+				$this->Session->setFlash(_('この講義は前に登録しました'));
 					$this->redirect(array('action' => 'index'));
 				}
-		} else {
-			$this->Session->setFlash(_('この講義は前に登録しました'));
-				$this->redirect(array('action' => 'index'));
-			}
+		}
+		else
+		{
+		$this->Session->setFlash(_('あなたは今、この先生にブロックられています'));
+		if($backLink == null)	$this->redirect(array('action' => 'index'));	
+		else $this->redirect(array('action' => $backLink));
+
+		}
 	
 	}
 }
 
-
-
-	public function resultsStatistics()
-		{
-			$this->set('menu_type','student_menu');
-			$user_id = $this->Auth->user('id');
-			$this->loadModel('Result');
-			$options['joins'] = array(
-				array(
-					'table' => 'tests',
-					'alias' => 'Test',
-					'type' => 'inner',
-					'conditions' => array('Test.id = Result.test_id')
-
-					),
-				array(
-					'table' => 'lectures',
-					'alias' => 'Lecture',
-					'type' => 'inner',
-					'conditions' => array('Lecture.id = Test.lecture_id')
-					),
-				array(
-					'table' => 'users',
-					'alias' => 'User',
-					'type' => 'inner',
-					'conditions' => array('User.id = Lecture.user_id')
-					),
-				array(
-					'table' => 'registers',
-					'alias' => 'Register',
-					'type' => 'inner',
-					'conditions' => array('Register.lecture_id = Lecture.id')
-					)
-				);
-			$options['limit'] = 10;
-			$options['conditions'] = array('Result.user_id' => $user_id);
-			$options['order'] = array('Result.created' => 'DESC');
-			$options['fields'] =array('Result.id','Lecture.name','Register.created','User.id','Test.id','Lecture.id','Result.created','Result.score');
-			$this->Result->recursive = -1;
-
-			$this->paginate = $options;
-			$data = $this->paginate('Result');
-			
-			//// lay danh sach cac giao vien da block em:
-			$listBlock = $this->getListBlock();
-			// ghi vao $data bien isBlock
-			
-			if($data != null)
-				{
-					$i = 0;
-					foreach ($data as $item) {
-					$isBlock = $this->checkBlock($item['User']['id'],$listBlock);
-					$data[$i]['Block'] = $isBlock;
-					$i++;
-
-					}
-				}
-		
-
-		    $this->set('results',$data);
-			
-		}
 	public function lecturesStatistics()
 	{
 	//set menu
@@ -553,27 +480,27 @@ class StudentsController extends AppController{
 
 	}
 
-	function checkBlock($teacher_id = null, $listBlock = null)
-		{
-		    // isBlock = 0 : ko bi block , if = 1 blocked.
+	// function checkBlock($teacher_id = null, $listBlock = null)
+	// 	{
+	// 	    // isBlock = 0 : ko bi block , if = 1 blocked.
 
-		if($listBlock == null)
-		    return 0;
-		else
-		{
-			foreach ($listBlock as $item) {
-				if($item['Block']['teacher_id'] == $teacher_id)
-					{
-						return 1;
+	// 	if($listBlock == null)
+	// 	    return 0;
+	// 	else
+	// 	{
+	// 		foreach ($listBlock as $item) {
+	// 			if($item['Block']['teacher_id'] == $teacher_id)
+	// 				{
+	// 					return 1;
 
-					}
+	// 				}
 			    
-			}
+	// 		}
 
-		}
-		return 0;
+	// 	}
+	// 	return 0;
 
-		}
+	// 	}
 	
 	public function delAccount()
 	{
@@ -718,7 +645,7 @@ public function registedLectureThisWeek(){
 //------xuan----2014/4/9 
 	//hien thi chi tiet bai giang
 
-	public function detailLecture($id = null,$currentLocation = null)
+	public function detailLecture($id = null, $backLink = null)
 	{
 		// set menu
 		$this->set('menu_type','student_menu');
@@ -730,7 +657,7 @@ public function registedLectureThisWeek(){
 			if($currentLocation != null)
 				{
 				$this->Session->setFlash(__('すみません,見つけられない!'));
-				return $this->redirect(array('controller'=>'students','action' => $currentLocation));
+				return $this->redirect(array('controller'=>'students','action' => $backLink));
 				}
 			else
 				{
@@ -742,8 +669,20 @@ public function registedLectureThisWeek(){
 		else
 		{
 		$this->loadModel('Lecture');
-	
+		
+		// Tang so lan tham khao bai giang :
+		//khi sua thi xoa het di
+		//$this->Lecture->recursive = -1;
+		$data = $this->Lecture->findById($id);
+		if($data != null )
+		{
 
+			$refer_times = $data['Lecture']['refer_times'] + 1;
+			$this->Lecture->id = $id;
+			$this->Lecture->saveField('refer_times', $refer_times);
+			
+		}
+		//----------------- ket thuc doan xu ly tang tham khao them 1
 		$options['joins'] = array(
 					    array('table' => 'users',
 					        'alias' => 'User',
@@ -753,49 +692,33 @@ public function registedLectureThisWeek(){
 
 		$options['conditions'] = array('Lecture.id' => $id);
 		$options['fields'] =array('Lecture.id','Lecture.name','User.fullname','User.id','User.username','User.mobile_No','User.mail','Lecture.description');
-		$this->Lecture->recursive = -1;
+ 		$this->Lecture->recursive = -1;
 
-		$data = $this->Lecture->find('all',$options);
-		$user_id = $this->Auth->user('id');
-		if($data != null)
+ 		$data = $this->Lecture->find('all',$options);
+ 		$user_id = $this->Auth->user('id');
+ 		if($data != null)
 		{
-		// kiem tra bi block ko
-		$this->loadModel('Block');
-		$isBlock = $this->Block->find('all', array(
-			'conditions' => array(
-				'student_id' => $user_id,
-				'teacher_id' => $data[0]['User']['id']
-				)
+ 		// kiem tra bi block ko
 
-			));
-		if($isBlock != null) 
-			$data[0]['Block'] = 1;
-		else 
-			$data[0]['Block'] = 0;
-		}
+			$i = 0;
+			foreach ($data as $item) {
+			$isBlock = $this->isBlock($item['User']['id']);
+			$statusLecture = $this->getStatusLecture($item['Lecture']['id']);
+			$data[$i]['Block'] = $isBlock;
+			$data[$i]['statusLecture'] = $statusLecture;
+			$i++;
 
-
-		$this->set('lecture',$data);
-		$this->set('currentLocation',$currentLocation);
-// list cac bai da dang ki cua user nay
-		$user_id = $this->Auth->user('id');
-		$this->loadModel('Register');
-			$data_register = $this->Register->find('all',
-				array(
-					'conditions' => array('Register.user_id' => $user_id,
-					'Register.status <>' => 3,
-					"Register.created >=" => date('Y-m-d H:i:s', strtotime("-1 weeks"))
-						),
-					'limit' => 100000000000,
-					'fields' => array( 'lecture_id','status','user_id')
-					)
-
-				);
-			$this->set('list_lectures', $data_register);
+			}
+			$this->set('lecture',$data);
+ 		}
 
 		}
+		$this->set('backLink', $backLink);
+
+
 	}
 	//___________--
+
 public function moneyStatistics(){
 
 
@@ -1004,7 +927,8 @@ public function viewListTest($register_id = null)
 }
 
 public function isBlock($teacher_id = null){
-
+// 0 la ko block
+// 1 la block
 if($teacher_id == null ) 
 		{
 				$this->Session->setFlash(_('システムエラー.見つけない'));
@@ -1028,6 +952,25 @@ $options = array(
 		$data = $this->Block->find('all',$options);
 		if($data == null) return 0;
 		else return 1;
+}
+public function checkBlockByLectureID($lecture_id = null)
+{
+if($lecture_id == null) {
+	$this->redirect(array('action' => 'index'));
+}
+else
+{
+	$this->loadModel('Lecture');
+	$this->Lecture->recursive = -1;
+	$data = $this->Lecture->findById($lecture_id);
+	if($data == null)
+	{
+		return 3;
+	}
+	else
+		return ($this->isBlock($data['Lecture']['user_id']));
+}
+
 }
 
 
@@ -1108,7 +1051,7 @@ public function checkPermissionLecture($register_id = null ){
 public function getStatusLecture($lecture_id = null){
 /* 
 - Chua dang ki return 0
-- Dang ki
+- Da dang ki trong vong mot tuan
 		- chua hoc return 1
 		- da hoc return 2
 
