@@ -56,13 +56,15 @@ else{
                 if($lecture[0]['statusLecture'] == 0)
                 {
                   // chuan bi dang ki
-                echo $this->Form->create('Lecture',array('url'=>'registerLecture','onsubmit'=>'return confirm("値段は'.$COST.'VND。 登録しますか?");'));
+
+                echo $this->Form->create('Lecture',array('url'=>'registerLecture','onsubmit'=>'return confirm("値段は'.$COST.'VND。 買いますか?");'));
                 echo $this->Form->input('lecture_id', array('value' => $lecture[0]['Lecture']['id'],'type' => 'hidden'));
                 if($backLink != null)
                     echo $this->Form->input('backLink', array('value' => $backLink,'type' => 'hidden'));
                 else 
                     echo $this->Form->input('backLink', array('value' => 'registedLectureThisWeek','type' => 'hidden'));
-                echo $this->Form->end('登録');
+
+                echo $this->Form->end('買う');
 
                 }                       
                 else
