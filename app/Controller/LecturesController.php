@@ -221,7 +221,12 @@ class LecturesController extends AppController{
 			$this->set('menu_type','manager_menu');
 
 
+
 		$lecture = $this->Lecture->read(null, $id);
+		if(!$lecture){
+			$this->redirect(array('controller'=>'pages','action'=>'display', 'error'));
+		}
+		
 		if($this->Auth->user('role')=='student'){
 			$count=0;
 			foreach ($lecture['Register'] as $register) {
@@ -230,7 +235,7 @@ class LecturesController extends AppController{
 			}
 			if($count==0){
 				$this->Session->setFlash(__('貴方はこの講義を登録していない!'));
-				return $this->redirect(array('controller'=>'students','action' => 'lectures_statistics'));
+				$this->redirect(array('controller'=>'pages','action'=>'display', 'error'));
 			}
 		}
 		

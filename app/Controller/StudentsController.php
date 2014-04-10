@@ -682,7 +682,8 @@ public function registedLectureThisWeek(){
 			$this->Lecture->saveField('refer_times', $refer_times);
 			
 		}
-		//----------------- ket thuc doan xu ly tang tham khao them 1
+
+		//----------------- ket thuc doan xu ly tang luot tham khao them 1
 		$options['joins'] = array(
 					    array('table' => 'users',
 					        'alias' => 'User',

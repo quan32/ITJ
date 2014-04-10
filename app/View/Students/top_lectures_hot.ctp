@@ -39,10 +39,11 @@ if($hotLectures==NULL){
 
             if($item['statusLecture'] == 0)
             {
-            echo $this->Form->create('Lecture',array('url'=>'registerLecture','onsubmit'=>'return confirm("値段は'.$COST.'VND。 登録しますか?");'));
-               echo $this->Form->input('lecture_id', array('value' => $item['Lecture']['id'],'type' => 'hidden'));
-               echo $this->Form->input('backLink', array('value' => 'topLecturesHot','type' => 'hidden'));
-               echo $this->Form->end('登録');
+                echo $this->Html->link('登録',array('controller' => 'Students','action' => 'detailLecture',$item['Lecture']['id'], 'topLecturesHot'),array('class'=>'link_buttonx'));
+            // echo $this->Form->create('Lecture',array('url'=>'registerLecture','onsubmit'=>'return confirm("値段は'.$COST.'VND。 登録しますか?");'));
+            //    echo $this->Form->input('lecture_id', array('value' => $item['Lecture']['id'],'type' => 'hidden'));
+            //    echo $this->Form->input('backLink', array('value' => 'topLecturesHot','type' => 'hidden'));
+            //    echo $this->Form->end('登録');
             }
                     // echo $this->html->link("登録",array ("action"=>"registerLecture" ,$item['Lecture']['id'],"topLecturesHot"),array(),"値段は ".$COST."VND。登録しますか?",false); 
                     
