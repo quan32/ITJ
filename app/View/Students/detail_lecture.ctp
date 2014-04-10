@@ -59,6 +59,9 @@ else{
             if($lecture[0]['Block'] == 1)
             {
                 echo "あなたは今、この先生にブロックられています。<br>"; 
+                if(isset($backLink)){
+                        echo $this->Html->link('戻る',array('controller' => 'Students', 'action' => $backLink),array('class'=>'link_buttonx'));
+                    } 
             }                    
 
             else
