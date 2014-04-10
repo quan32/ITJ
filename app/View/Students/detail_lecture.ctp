@@ -67,29 +67,33 @@ else{
                 if($lecture[0]['statusLecture'] == 0)
                 {
                   // chuan bi dang ki
+
                 echo $this->Form->create('Lecture',array('url'=>'registerLecture','onsubmit'=>'return confirm("値段は'.$COST.'VND。 買いますか?");'));
                 echo $this->Form->input('lecture_id', array('value' => $lecture[0]['Lecture']['id'],'type' => 'hidden'));
                 if($backLink != null)
                     echo $this->Form->input('backLink', array('value' => $backLink,'type' => 'hidden'));
                 else 
                     echo $this->Form->input('backLink', array('value' => 'registedLectureThisWeek','type' => 'hidden'));
-                echo $this->Form->end('買う');
+
+                echo "<table><tr>";
+                    if(isset($backLink)){
+                    echo "<td>".$this->Html->link('戻る',array('controller' => 'Students', 'action' => $backLink),array('class'=>'link_buttonx'))
+                    ."</td>";
+                    }
+                    echo "<td>".$this->Form->end('買う')."</td>";
+                echo "</tr></table>";
 
                 }                       
-                else
-                {
+                else{
+                    if(isset($backLink)){
+                        echo $this->Html->link('戻る',array('controller' => 'Students', 'action' => $backLink),array('class'=>'link_buttonx'));
+                    } 
                    
-                  echo $this->Html->link('勉強',array('controller'=>'lectures','action'=>'view', $lecture[0]['Lecture']['id']),array('class'=>'link_buttonx'));
+                    echo $this->Html->link('勉強',array('controller'=>'lectures','action'=>'view', $lecture[0]['Lecture']['id']),array('class'=>'link_buttonx'));
                     
                 }
                  
-            }
-
-
-    if(isset($backLink))
-    {
-        echo $this->Html->link('戻る',array('controller' => 'Students', 'action' => $backLink),array('class'=>'link_buttonx'));
-    }                      
+            }                     
 
 }
 }
@@ -98,5 +102,8 @@ else{
 <style type="text/css">
     table{
         border:1px solid dotted!important;
+    }
+    form div.submit{
+        margin-top:0px!important;
     }
 </style>

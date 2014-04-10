@@ -110,9 +110,12 @@
             <div class="articleBody clear">
                 
 				<?php
-					foreach ($tags as $tag) {
-						 echo "<a class='tag' href='/searchs/q=".$tag['Tag']['id']."'>".$tag['Tag']['content']."</a>";
+					if(isset($tags)){
+						foreach ($tags as $tag) {
+						 echo "<a class='tag' href='/ITJ/tags/view/".$tag['Tag']['id']."'>".$tag['Tag']['content']."</a>";
+						}
 					}
+					
 				?>
             </div>
         </article>
