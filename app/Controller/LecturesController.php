@@ -256,11 +256,14 @@ class LecturesController extends AppController{
 		$this->loadModel('Tag');
 		$i=0;
 		$tags = $this->Vovan->findAllByLectureId($id);
-		foreach ($tags as $tag) {
+		if($tags){
+			foreach ($tags as $tag) {
 			$t[$i] = $this->Tag->findById($tag['Vovan']['tag_id']);
 			$i++;
+			}
+			$this->set('tags',$t);
+		
 		}
-		$this->set('tags',$t);
 		
 		
 	}
