@@ -8,9 +8,20 @@ if(!isset($lecture)){
     }
 }
 else{
+    if($lecture == null)
+    {
+        echo "<h2>すみません,見つけられない!</h2>";
+        if(isset($backLink))
+        {
+           
+          echo $this->Html->link('戻る',array('controller' => 'Students', 'action' => $backLink),array('class'=>'link_buttonx'));
+        }
+    }
+    else
+    {
 
-    echo "<table>
-    <caption><br /> <h3>講義の詳しい情報<h3><br /> </caption>";
+             echo "<table>
+            <caption><br /> <h3>講義の詳しい情報<h3><br /> </caption>";
 
             echo "<tr>";
             echo "<td>講義ID</td>";
@@ -80,6 +91,7 @@ else{
         echo $this->Html->link('戻る',array('controller' => 'Students', 'action' => $backLink),array('class'=>'link_buttonx'));
     }                      
 
+}
 }
     ?>
 
