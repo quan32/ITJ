@@ -9,18 +9,30 @@ else
 echo '<h2>学生が受講した:</h2>
 				<table>
 				<tr>
-					<td>参照の数</td>
-					<td>登録の数</td>
-					<td>「いいね」の数</td>
-					<td>「いいね」/登録者</td>
+				<th></th>
+				<th></th>
 				</tr>
 				<tr>
+					<td>参照の数</td>
 					<td>'.$referenceTimes.'</td>
-					<td>'.$numRegister.'</td>
+				</tr>
+				<tr>
+					<td>登録の数</td>				
+					<td>'.$numRegister.'</td>						
+				</tr>
+
+				<tr>
+					<td>「いいね」の数</td>
 					<td>'.$numLike .'</td>
+				</tr>
+
+				<tr>
+					<td>「いいね」/登録者</td>
 					<td>'.$percent.'%</td>
 				</tr>
-				</table>';
+
+				</table><br><br>';
+
 
 
 if(isset($users))
@@ -77,6 +89,11 @@ if(isset($users))
 		echo 'この講義は誰にも受講しません。';
 	}
 }
+}
+if(isset($backLink))
+{
+	if($backLink!=null)
+		echo $this->Html->link('戻る',array('controller' => 'lectures', 'action' => $backLink),array('class'=>'link_buttonx'));
 }
 
 ?>
