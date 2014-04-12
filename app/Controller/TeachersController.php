@@ -381,8 +381,74 @@ class TeachersController extends AppController{
 		$this->set('countRegister',$countRegister);
 	}
 
+	public function moneyStatistics()
+	{
+		//set menu
+	    $this->set('menu_type','teacher_menu');
+	    // Lay hang he thong
+	    $COST = 20000;
+	    $this->set('COST',$COST);
+	    $user_id = $this->Auth->user('id');
 
+	    if($this->request->is('post')) {
+	    $month=$this->request->data['Money']['mos'];
+	    $year=$this->request->data['Money']['yos'];
+	     }
+	    else
+	    {
+	  
+	    	$month = date('n');
+		 	$year = date('Y');
+		 	$this->set('mos',$month);
+	   		$this->set('yos',$year);
+	    	
+	    }
+	        //Tinh tien thang da chon
+
+	    $moneyOfTheMonth = $this->calcMoney($month,$year);
+	    $this->set('moneyOfTheMonth',$moneyOfTheMonth);
+	}
+
+	public function calcMoney($month = null,$year =null)
+	{
+		//load hang so he thong
+		$COST = 20000;
+		$user_id = $this->Auth->user('id');
+		$this->loadModel('Lecture');
+		$options = array(
+					'joins' => array(
+									    array('table' => 'users',
+									        'alias' => 'User',
+									        'type' => 'inner',
+									        'conditions' => array('Lecture.user_id = User.id')
+									    ),
+									    array(
+									    	'table' => 'registers',
+									    	'alias' => 'Register',
+									    	'type'  => 'inner',
+									    	'conditions' => array('Lecture.id = Register.lecture_id')
+									    	)
+				            
+										),
+					'conditions' => array(
+						'MONTH(Register.created)' => $month,
+						'YEAR(Register.created)' => $year,
+						'User.id' => $user_id
+					),
+					'fields' => array( 'count(Register.id) as registerTimes')
+					
+
+			);
+		$this->Lecture->recursive = -1;
+		$data = $this->Lecture->find('all',$options);
+		$money = $data[0][0]['registerTimes'] * $COST;
+		return $money;
+		
+
+
+	}
 
 }
+
 
 ?>

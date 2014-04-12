@@ -27,9 +27,26 @@
 	?></li>
   </ul>
 </li>
+<!-- 
+ 12-04-2014 edit by Xuan
+-->
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-caret-square-o-down"></i> 統計 <b class="caret"></b></a>
+  <ul class="dropdown-menu">
+    <li><?php 
+	echo $this->Html->link('課金', 
+		array('controller' => 'teachers', 'action' =>'moneyStatistics'));
+	?></li>
 
-<li><?php 
+	<li><?php 
+	echo $this->Html->link('統計', 
+		array('controller' => 'teachers', 'action' =>'statistic'));
+	?></li>
+  </ul>
+</li>
+
+<!-- <li><?php 
 echo $this->Html->link('統計', 
 	array('controller' => 'teachers', 'action' => 'statistic'));
-?></li>
+?></li> -->
 
