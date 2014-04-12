@@ -351,6 +351,134 @@ class LecturesController extends AppController{
 	}
 	//___________--
 
+/*
+*
+* 10.04
+* Author Xuan
+* Thong ke cac thong so cua mot bai giang : so like, so tham khao, hoc sinh nao tham gia...
+*/
+public function statisticsOfALecture($lecture_id = null,$backLink = null)
+{
+	$this->set('menu_type','teacher_menu');
+
+	if($lecture_id == null ) 
+	{
+		$this->Session->setFlash(_('システムエラー, 見つけない'));
+		$this->redirect(array('action' => 'index'));
+	}
+	$this->loadModel('Lecture');
+	$this->Lecture->recursive = -1;
+	$lecture = $this->Lecture->findById($lecture_id);
+	if($lecture == null)
+	{
+		$this->Session->setFlash(_('システムエラー, 見つけない'));
+		$this->redirect(array('action' => 'index'));
+	}
+	//backLink
+	$this->set('backLink',$backLink);
+	$this->set('lectureName',$lecture['Lecture']['name']);
+//Tinh so like bai giang nay:
+	$numLike = $this->countLikeByLecture($lecture_id);
+	$this->set('numLike' , $numLike);
+
+// So lan tham khao
+	$referenceTimes = $this->countReferenceTimesByLecture($lecture_id);
+	$this->set('referenceTimes',$referenceTimes);
+// So lan hoc sinh dang ki bai giang nay
+	$numRegister = $this->countRegisterByLecture($lecture_id);
+	$this->set('numRegister',$numRegister);
+// So lan dang ky bai hoc trong thang nay
+	$numRegisterThisMonth = $this->countRegisterByLectureAndMonth($lecture_id);
+// Thong ke hoc sinh nao da mua bai giang nay (ko phai la da hoc, vi co nhung thang dang ki ma ko hoc)
+	$this->loadModel('Register');
+
+
+	$user_id = $this->Auth->User('id');
+	$options['joins'] = array(
+					    array('table' => 'lectures',
+					        'alias' => 'Lecture',
+					        'type' => 'inner',
+					        'conditions' => array('Lecture.id = Register.lecture_id' )),
+
+					    array('table' => 'users',
+					    	'alias' => 'User',
+					    	'type' => 'inner',
+					    	'conditions' => array('User.id = Register.user_id')
+					    	)
+					       );
+	$options['conditions'] = array('Register.lecture_id' => $lecture_id	);
+	$options['fields'] =array('Lecture.id','Lecture.name','User.id','User.username','User.fullname','User.mail','User.role','User.mobile_No','count(Register.user_id) as registerTimes');
+	$options['limit'] = 5;
+	$options['group'] = 'Register.user_id';
+	$this->loadModel('Register');
+	$this->Register->recursive = -1;
+
+	$this->paginate = $options;
+
+	$data = $this->paginate('Register');
+	
+	$this->set('users',$data);
+
+
+
+}
+/* -------------
+*	caculate number like of the lecture
+* 	07.04 
+*	Author : xuan
+*/
+public function countLikeByLecture($lecture_id = null)
+{
+
+	if($lecture_id == null) return 0;
+	$this->loadModel('Favorite');
+	$numLike = $this->Favorite->find('count', array(
+    'conditions' => array('Favorite.lecture_id' => $lecture_id)));
+    return $numLike;
+}
+
+/*
+*	caculate number of times which this lecture is registed (not number of student, because student can two time register a lectures)
+* 07.04
+* Author Xuan
+*/
+
+public function countRegisterByLecture($lecture_id = null){
+
+		if($lecture_id == null ) return 0;
+		$this->loadModel('Register');
+		$numRegister = $this->Register->find('count', array(
+			'conditions' => array('Register.lecture_id' => $lecture_id)
+			));
+		return $numRegister;
+	}
+
+/*
+*	caculate number of times  this lecture is registed in the month which (not number of student, because student can two time register a lectures)
+* 07.04
+* Author Xuan
+*/
+public function countRegisterByLectureAndMonth($lecture_id = null, $month = null){
+
+//debug(date('n')); die;
+	if($lecture_id == null ) return 0;
+	$this->loadModel('Register');
+	$numRegisterInMonth = $this->Register->find('count', array(
+		'conditions' => array('Register.lecture_id' => $lecture_id,
+		'MONTH(Register.created)' => $month
+			)
+		));
+	return $numRegisterInMonth;
+
+}
+	
+public function countReferenceTimesByLecture($lecture_id = null){
+	if($lecture_id == null ) return 0;
+	$this->loadModel('Lecture');
+	$numReference = $this->Lecture->find('count',
+		array('conditions' => array('Lecture.id' => $lecture_id)));
+	return $numReference;
+	}
 }
 
 ?>
