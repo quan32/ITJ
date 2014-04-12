@@ -181,7 +181,8 @@ class UsersController extends AppController{
 					}else{//Xu ly dang nhap cho manager
 						$count=0;
 
-						// debug($user);die;
+						//debug($user);die;
+						//debug($IP); die;
 						foreach ($user['Ip'] as $ip) {
 							if($ip['ip']==$IP)
 								$count++;
