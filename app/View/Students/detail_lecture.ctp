@@ -58,7 +58,7 @@ else{
 
             if($lecture[0]['Block'] == 1)
             {
-                echo "あなたは今、この先生にブロックられています。<br>"; 
+                echo "<span color='red!important'>あなたは今、この先生にブロックられています。</span><br><br>"; 
                 if(isset($backLink)){
                         echo $this->Html->link('戻る',array('controller' => 'Students', 'action' => $backLink),array('class'=>'link_buttonx'));
                     } 
@@ -78,7 +78,7 @@ else{
                 else 
                     echo $this->Form->input('backLink', array('value' => 'registedLectureThisWeek','type' => 'hidden'));
 
-                echo "<table><tr>";
+                echo "<br><table><tr>";
                     if(isset($backLink)){
                     echo "<td>".$this->Html->link('戻る',array('controller' => 'Students', 'action' => $backLink),array('class'=>'link_buttonx'))
                     ."</td>";
@@ -88,6 +88,7 @@ else{
 
                 }                       
                 else{
+                    echo "<br>";
                     if(isset($backLink)){
                         echo $this->Html->link('戻る',array('controller' => 'Students', 'action' => $backLink),array('class'=>'link_buttonx'));
                     } 
@@ -103,6 +104,9 @@ else{
     ?>
 
 <style type="text/css">
+    body{
+        color:red;
+    }
     table{
         border:1px solid dotted!important;
     }
