@@ -216,7 +216,10 @@
  *
  */
 	Configure::write('Session', array(
-		'defaults' => 'php'
+		'defaults' => 'php',
+		'timeout' => 30,            // auto logout after 30 minutes
+    	'cookieTimeout' => 1440,    // session cookie 24 hours
+    	'autoRegenerate' => true    // regenerate session
 	));
 
 /**
