@@ -59,7 +59,8 @@ if(!empty($posts)){
         echo "<td>".$item['User']['fullname']."</td>";
         echo "<td>".count($item['Register'])."</td>";
         if($view_regis ==1) echo "<td>".$this->Html->link('詳しく',array('controller' => 'Students','action' => 'detailLecture',$item['Search']['id'], 'index'));
-		if($view_regis  == 2) echo "<td>".$this->Html->link('レポート',array('controller' => 'Reports','action' => 'index',$item['Search']['id'], $item['Search']['name'],$item['User']['fullname']));
+		if($view_regis  == 2 && $item['User']['id'] != $teacher_id) echo "<td>".$this->Html->link('レポート',array('controller' => 'Reports','action' => 'index',$item['Search']['id'], $item['Search']['name'],$item['User']['fullname']));
+		if($item['User']['id'] == $teacher_id) echo "<td>".$this->Html->link('編集　',array('controller'=>'lectures','action' => 'edit',$item['Search']["id"]));
 		//.$this->html->link("登録",array 
         //            ('controller' => 'Students','action' =>"registerLecture",$item['Search']['id'],"lecturesStatistics"),array(),"",false); ; 
         echo "</tr>";
