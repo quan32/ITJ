@@ -54,6 +54,20 @@ class User extends AppModel{
 			'rule' => array('minLength', 8),
 			// 'required' => true,
 			'message' => '確認するパスワードを入力してください'),
+		'currVerify' => array(
+			'rule' => array('minLength', 8),
+			// 'required' => true,
+			'message' => '現在確認するコードを入力してください'),
+
+		'newVerify' => array(
+			'rule' => array('minLength', 8),
+			// 'required' => true,
+			'message' => '８桁以上の新確認するコードを入力してください'),
+
+		'confVerify' => array(
+			'rule' => array('minLength', 8),
+			// 'required' => true,
+			'message' => 'もう一度確認するコードを入力してください'),
 
 		'address' => array(
 			'rule' => 'notEmpty',

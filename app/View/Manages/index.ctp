@@ -40,7 +40,7 @@
 
 		if($user["User"]["role"]=="teacher")
 			echo $this->Html->link(' | Vリセット', 
-				array('controller'=>'users','action' => 'resetVerifyCode', $user["User"]["id"]));
+				array('controller'=>'manages','action' => 'resetVerifyCode', $user["User"]["id"]));
 			
 		echo "</td>";    
 
