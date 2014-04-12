@@ -13,7 +13,7 @@ class User extends AppModel{
             ),
             'between' => array(
                 'rule'    => array('between', 8, 30),
-                'message' => '3～30桁のユーザ名を入力してください'
+                'message' => '8～30桁のユーザ名を入力してください'
             )
         ),
 
