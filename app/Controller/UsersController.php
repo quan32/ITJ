@@ -220,6 +220,8 @@ class UsersController extends AppController{
 					if($user['User']['failedNo'] == $max){
 						$this->Session->setFlash(__('失敗したログインの回数は3回になってしまった。
 						アカウントは一時にブロックされることになっている。あとで戻ってください。'));
+						$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 失敗したログインの回数は3回になってしまった。アカウントは一時にブロックされることになっている';
+						$this->Log->writeLog('login.txt',$log);
 
 						$this->User->id=$user['User']['id'];
 						$this->User->saveField('state','blocked');
@@ -242,7 +244,7 @@ class UsersController extends AppController{
 	}
 
 	public function verify1($id =null){
-		// $this->set('menu_type','menu');
+		$this->set('menu_type','empty');
 		if($this->request->is('post')){
 			$user= $this->User->findById($id);
 			$passwordHasher = new SimplePasswordHasher();
