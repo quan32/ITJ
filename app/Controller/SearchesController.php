@@ -35,7 +35,10 @@ class SearchesController extends  AppController{
             $this->set('menu_type','teacher_menu');
 			$this->set('view_regis',2);
 			
-		} else { $this->set('view_regis',0);}
+		} else { 
+			$this->set('view_regis',0);
+			$this->set('menu_type','manager_menu');
+				}
         $this->set('teacher_id',$this->Auth->user('id'));
         $conditions = array();
         $data = array();
