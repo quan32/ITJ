@@ -46,16 +46,17 @@ class SearchesController extends  AppController{
 				if($catagory == "0")
 				{
 					$conditions[] = array(
-						"OR" => array(
-									'Search.name LIKE' => "%$keywords%",
-									'Search.description LIKE' => "%$keywords%",
-									'User.fullname LIKE' => "%$keywords%" 
-								)
+						"AND" => array( 'Search.reported'=> "0",
+											"OR" => array(
+														'Search.name LIKE' => "%$keywords%",
+														'Search.description LIKE' => "%$keywords%",
+														'User.fullname LIKE' => "%$keywords%" ))
 					);
 				}else
 				{
 					$conditions[] = array (
 						"AND" => array('Search.category_id' => "$catagory",
+										'Search.reported' => "0",
 										"OR" => array(
 												'Search.name LIKE' => "%$keywords%",
 												'Search.description LIKE' => "%$keywords%",

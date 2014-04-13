@@ -18,6 +18,6 @@ echo "<table>";
 	echo "</table>";
 
 	echo "<td>".$this->Html->link('戻る　 |',array('controller' => 'Reports','action' => 'viewreports'));
-	echo "<td>".$this->Html->link('　　反対　 |',array('controller' => 'Reports','action' => 'delreport',$rep_id));
-	if($rep_status == 1) echo "<td>".$this->Html->link(' 　賛成',array('controller' => 'Reports','action' => 'reported',$rep_id));
+	echo "<td>".$this->Html->link('　　反対　 |',array('controller' => 'Reports','action' => 'delreport',$rep_id,$lecture['id']));
+	if($rep_status == 1) echo "<td>".$this->Html->link(' 　賛成',array('controller' => 'Reports','action' => 'reported',$rep_id,$lecture['id']));
 	?>

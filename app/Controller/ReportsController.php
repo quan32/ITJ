@@ -81,18 +81,24 @@ class ReportsController extends AppController{
 	
 
 	}
-	public function reported($rep_id = null) {
+	public function reported($rep_id = null,$lec_id = null) {
 		$this->set('menu_type','manager_menu');
 		$this->loadModel('Report');
 		$this->Report->id = $rep_id;
 		$this->Report->saveField('status',2);
+		$this->loadModel('Lecture');
+		$this->Lecture->id = $lec_id;
+		$this->Lecture->saveField('reported',1);
 		$this->Session->setFlash(_('賛成！データベースに処理しました'));
 		$this->redirect(array('action' => 'viewreports'));
 		}
-	public function delreport($rep_id = null) {
+	public function delreport($rep_id = null, $lec_id = null) {
 		$this->set('menu_type','manager_menu');
 		$this->loadModel('Report');
 		$this->Report->delete(array('id'=>$rep_id));
+		$this->loadModel('Lecture');
+		$this->Lecture->id = $lec_id;
+		$this->Lecture->saveField('reported',0);
 		$this->Session->setFlash(_('反対！　データベースに処理しました'));
 		$this->redirect(array('action' => 'viewreports'));
 		}
