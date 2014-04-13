@@ -1,4 +1,7 @@
-<h1>学生管理</h1>
+<?php
+echo $this->element('search');
+?>
+<br><h1>学生管理</h1>
 <?php
 $paginator = $this->Paginator;
     echo "<table>";

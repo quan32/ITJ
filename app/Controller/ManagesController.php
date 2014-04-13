@@ -80,10 +80,10 @@ class ManagesController extends AppController{
         //$data = $this->User->find("all",$sql);
          $this->set("users",$data);
         // var_dump($data); die();
-
-    }
- public function manager(){ // quan ly' User
-    $this->set('menu_type','manager_menu');
+}
+    
+    public function manager(){ // quan ly' User
+     $this->set('menu_type','manager_menu');
      $this->loadModel('User');
       if (!empty($this->request->data)) 
       {         
@@ -109,7 +109,7 @@ class ManagesController extends AppController{
     }
 
   public function viewinfo(){
-    $this->set('menu_type','student_menu');
+     $this->set('menu_type','manager_menu');
     $user_id = $this->Auth->user('id');
     $this->loadModel('User');
     $info = $this->User->findById($user_id);
@@ -117,7 +117,8 @@ class ManagesController extends AppController{
     $this->set("user_id", $user_id);
   }
   public function detail($id){
-    $this->set('menu_type','student_menu');
+   $this->set('menu_type','manager_menu');
+   
     $user_id = $id;
     $this->loadModel('User');
     $info = $this->User->findById($user_id);
@@ -160,6 +161,7 @@ class ManagesController extends AppController{
         }
 
         if ($this->request->is('post') || $this->request->is('put')) { 
+
           if ($this->Constant->save($this->request->data)) {
 
               $this->Session->setFlash(__('IPアドレスは保存されていた'));
@@ -179,6 +181,8 @@ class ManagesController extends AppController{
     $this->set('menu_type','manager_menu');
      $users = array();
      $alls=null;
+     $this->loadModel('Constant');
+     $cost=$this->Constant->findByName("cost");
 
     if($this->request->is('post')) {
      $month=$this->request->data['Manage']['month'];
@@ -189,10 +193,19 @@ class ManagesController extends AppController{
      $sql = array("conditions"=> array('MONTH(Register.created)' => $month),
                    'group' => 'Lecture.user_id');
      
-     $sql['fields']=array('Lecture.user_id','COUNT(Lecture.cost) AS total');
+     $sql['fields']=array('Lecture.user_id','COUNT(Register.id) AS total');
      //debug($sql);
      $alls=$this->Register->find('all',$sql);
-      
+     $i=0;
+     foreach ($alls as $all ) {
+     //
+     $x=$all[0]["total"]*$cost["Constant"]["value"];
+     //var_dump($x); die();
+     $alls[$i][0]["total"]=$x;
+     $i++;
+     }
+
+    // var_dump($alls); die();
      //debug($alls);
     foreach ($alls as $all ) {
      $id=$all["Lecture"]["user_id"];

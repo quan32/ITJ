@@ -63,8 +63,21 @@ echo $this->Html->link('新管理者追加',
 echo $this->Html->link('マスターデータ', 
 	array('controller' => 'manages', 'action' => 'masterdata'));
 ?></li>
-<li><?php 
-echo $this->Html->link('請求書作成', 
+
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-caret-square-o-down"></i>統計<b class="caret"></b></a>
+  <ul class="dropdown-menu">
+    <li><?php 
+echo $this->Html->link('先生', 
 	array('controller' => 'manages', 'action' => 'oder'));
 ?></li>
+
+	<li><?php 
+	echo $this->Html->link('管理者', 
+		array('controller' => 'manages', 'action' => 'statistic'));
+		?>
+	</li>
+  </ul>
+</li>
+
 
