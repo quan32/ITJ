@@ -1,4 +1,4 @@
-<h1>学生管理</h1>
+<h1>先生管理</h1>
 <?php
 $paginator = $this->Paginator;
     echo "<table>";
@@ -22,10 +22,11 @@ $paginator = $this->Paginator;
 			echo '<td>'.$user["User"]["username"].'</td>';
 			echo '<td>'.$user["User"]["fullname"].'</td>';
 			echo '<td>'.$user["User"]["role"].'</td>';
+			
 			echo '<td>';
 			echo $this->Html->link('詳細', 
 				array('controller'=>'manages','action' => 'detail', $user["User"]["id"]));
-			echo '</td>';			
+			echo '</td>';						
 	    echo '<td>';
        echo $this->Form->postLink('削除 | ', 
 				array('controller'=>'users','action' => 'delete', $user["User"]["id"]),

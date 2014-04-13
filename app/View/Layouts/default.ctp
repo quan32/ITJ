@@ -15,6 +15,13 @@
           }
       }
       setInterval("cldata();", 1000);*/
+     /*
+     window.onbeforeunload = function() {
+       // Add your code here
+       alert("abc");
+       return true;
+     }*/
+      
     </script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -100,7 +107,7 @@
                                   array('controller' => 'students', 'action' => 'viewInfo'),array('escape'=>false));
                           else if($user_role == "manager")
                               echo $this->Html->link('<i class="fa fa-user"></i> 自身情報', 
-                                  array('controller' => 'manages', 'action' => 'viewInfo'),array('escape'=>false));
+                                  array('controller' => 'manages', 'action' => 'viewinfo'),array('escape'=>false));
                       ?>
                     </li>
                 <li class="divider"></li>

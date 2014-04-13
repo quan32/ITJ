@@ -3,7 +3,7 @@
   <ul class="dropdown-menu">
     <li><?php 
 	echo $this->Html->link('自身情報', 
-		array('controller' => 'teachers', 'action' => 'info'));
+		array('controller' => 'manages', 'action' => 'viewinfo'));
 	?></li>
 
 	<li><?php 
@@ -17,8 +17,18 @@
   <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-caret-square-o-down"></i>ユーザ管理<b class="caret"></b></a>
   <ul class="dropdown-menu">
     <li><?php 
-	echo $this->Html->link('ユーザリスト', 
+	echo $this->Html->link('学生リスト', 
 		array('controller' => 'manages', 'action' => 'index'));
+		?>
+	</li>
+	<li><?php 
+	echo $this->Html->link('先生リスト', 
+		array('controller' => 'manages', 'action' => 'teacher'));
+		?>
+	</li>
+	<li><?php 
+	echo $this->Html->link('管理者リスト', 
+		array('controller' => 'manages', 'action' => 'manager'));
 		?>
 	</li>
 

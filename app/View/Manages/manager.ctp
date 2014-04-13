@@ -1,4 +1,4 @@
-<h1>学生管理</h1>
+<h1>先生管理</h1>
 <?php
 $paginator = $this->Paginator;
     echo "<table>";
@@ -22,26 +22,21 @@ $paginator = $this->Paginator;
 			echo '<td>'.$user["User"]["username"].'</td>';
 			echo '<td>'.$user["User"]["fullname"].'</td>';
 			echo '<td>'.$user["User"]["role"].'</td>';
-			echo '<td>';
-			echo $this->Html->link('詳細', 
-				array('controller'=>'manages','action' => 'detail', $user["User"]["id"]));
-			echo '</td>';			
+			
+            echo '<td>';
+            echo $this->Html->link('詳細', 
+                array('controller'=>'manages','action' => 'detail', $user["User"]["id"]));
+            echo '</td>';           			    
 	    echo '<td>';
-       echo $this->Form->postLink('削除 | ', 
+         if (in_array($user["User"]["id"], $online) ) {
+            # code...
+            echo "online";
+        }
+        else{
+        echo $this->Form->postLink('削除', 
 				array('controller'=>'users','action' => 'delete', $user["User"]["id"]),
 				array('confirm'=>'本気？'));
-
-		
-		echo $this->Html->link('ロック | ', 
-				array('controller'=>'users','action' => 'lock', $user["User"]["id"]));
-			
-		
-		echo $this->Html->link('Pリセット', 
-				array('controller'=>'users','action' => 'reset', $user["User"]["id"]));
-
-		if($user["User"]["role"]=="teacher")
-			echo $this->Html->link(' | Vリセット', 
-				array('controller'=>'users','action' => 'resetVerifyCode', $user["User"]["id"]));
+            }
 			
 		echo "</td>";    
 

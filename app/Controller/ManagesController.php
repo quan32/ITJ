@@ -26,7 +26,7 @@ class ManagesController extends AppController{
 	}
 
 	public function index(){ // quan ly' User
-    $this->set('menu_type','manager_menu');
+     $this->set('menu_type','manager_menu');
 		 $this->loadModel('User');
       if (!empty($this->request->data)) 
       {         
@@ -35,14 +35,83 @@ class ManagesController extends AppController{
       }
       } 
        
-        $sql = array("conditions"=> array("role != 'manager' "));
-        $data = $this->User->find("all",$sql);
-		    $this->set("users",$data);
-        // var_dump($data); die();
+        $sql["conditions"] = array("role = 'student' AND state !='deleted' AND state !='locked' ");
+        $sql["limit"] = 6;
+       
+        $this->paginate = $sql;
+        $data = $this->paginate('User');
+
+        //$data = $this->User->find("all",$sql);
+	       $this->set("users",$data);
+         
 
 	  }
+  
+  public function teacher(){ // quan ly' User
+    $this->set('menu_type','manager_menu');
 
+     $this->loadModel('User');
+      if (!empty($this->request->data)) 
+      {         
+      if ($this->User->save($this->request->data)) {
+      $this->Session->setFlash(__('アカウントは今から使用できる'));
+      }
+      } 
+       
+        $sql["conditions"] = array("role = 'teacher' AND state !='deleted' AND state !='locked' ");
+        $sql["limit"] = 6;
+       
+        $this->paginate = $sql;
+        $data = $this->paginate('User');
 
+        //$data = $this->User->find("all",$sql);
+         $this->set("users",$data);
+        // var_dump($data); die();
+
+    }
+ public function manager(){ // quan ly' User
+    $this->set('menu_type','manager_menu');
+     $this->loadModel('User');
+      if (!empty($this->request->data)) 
+      {         
+      if ($this->User->save($this->request->data)) {
+      $this->Session->setFlash(__('アカウントは今から使用できる'));
+      }
+      } 
+        $user_id = $this->Auth->user('id');
+        $sql["conditions"] = array("role = 'manager' AND state !='deleted' AND state !='locked' AND id !=".$user_id);
+       // var_dump($sql);die();
+        $sql["limit"] = 6;
+       
+        $this->paginate = $sql;
+        $data = $this->paginate('User');
+
+        //$data = $this->User->find("all",$sql);
+        $this->set("users",$data);
+        $this->loadModel('CustomSession');
+        $listLoggedInAdmin = $this->CustomSession->getLoggedInUsersInner();    
+        $this->set("online",$listLoggedInAdmin); 
+        // var_dump($data); die();
+
+    }
+
+  public function viewinfo(){
+    $this->set('menu_type','student_menu');
+    $user_id = $this->Auth->user('id');
+    $this->loadModel('User');
+    $info = $this->User->findById($user_id);
+    $this->set("info",$info);
+    $this->set("user_id", $user_id);
+  }
+  public function detail($id){
+    $this->set('menu_type','student_menu');
+    $user_id = $id;
+    $this->loadModel('User');
+    $info = $this->User->findById($user_id);
+    $this->set("info",$info);
+    $this->set("user_id", $user_id);
+  }
+   
   public function accept(){ // quan ly' User
   $this->set('menu_type','manager_menu');
      $this->loadModel('User');
@@ -230,8 +299,11 @@ class ManagesController extends AppController{
 );
     $options['fields'] = array('User1.username','User1.state', 'Lecture.*');
 
-    $data=$this->Lecture->find('all', $options);
+   // $data=$this->Lecture->find('all', $options);
+    $options['limit'] = 9;
 
+    $this->paginate = $options;
+    $data = $this->paginate('Lecture');
     // debug($data);die();
     $this->set("lectures",$data);
   }
@@ -317,5 +389,11 @@ class ManagesController extends AppController{
         }
 
   }
+
+
+
+
+
+
 }
 ?>
