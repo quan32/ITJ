@@ -12,19 +12,11 @@ class SearchesController extends  AppController{
 			return true;
 		return false;
 	}
-    /**
-     * Searching and Paging 
-     * Url = http://mrphp.com.au/code/search-forms-cakephp
-     * Complex Find Conditions : http://book.cakephp.org/view/1030/Complex-Find-Conditions
-     */ 
     //Search 
     function search() {
     	$this->set('menu_type','menu');
 		// the page we will redirect to
 		$url['action'] = 'result';
-		// build a URL will all the search elements in it
-		// the resulting URL will be 
-		// example.com/cake/posts/index/Search.keywords:mykeyword/Search.tag_id:3
 		foreach ($this->data as $k=>$v){ 
 			foreach ($v as $kk=>$vv){ 
 				$url[$k.'.'.$kk]=$vv; 
@@ -41,7 +33,7 @@ class SearchesController extends  AppController{
             $this->set('menu_type','student_menu');}
         elseif($this->Auth->user('role')=='teacher'){
             $this->set('menu_type','teacher_menu');
-			$this->set('view_regis',1);
+			$this->set('view_regis',2);
 			
 		} else { $this->set('view_regis',0);}
         $this->set('teacher_id',$this->Auth->user('id'));
@@ -75,7 +67,7 @@ class SearchesController extends  AppController{
             }
             //Limit and Order By
             $this->paginate= array(
-                'limit' => 4,
+                'limit' => 5,
                 'order' => array('id' => 'asc'),
             );
             

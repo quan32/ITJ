@@ -181,7 +181,8 @@ class UsersController extends AppController{
 					}else{//Xu ly dang nhap cho manager
 						$count=0;
 
-						// debug($user);die;
+						//debug($user);die;
+						//debug($IP); die;
 						foreach ($user['Ip'] as $ip) {
 							if($ip['ip']==$IP)
 								$count++;
@@ -219,6 +220,8 @@ class UsersController extends AppController{
 					if($user['User']['failedNo'] == $max){
 						$this->Session->setFlash(__('失敗したログインの回数は3回になってしまった。
 						アカウントは一時にブロックされることになっている。あとで戻ってください。'));
+						$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 失敗したログインの回数は3回になってしまった。アカウントは一時にブロックされることになっている';
+						$this->Log->writeLog('login.txt',$log);
 
 						$this->User->id=$user['User']['id'];
 						$this->User->saveField('state','blocked');
@@ -241,7 +244,7 @@ class UsersController extends AppController{
 	}
 
 	public function verify1($id =null){
-		// $this->set('menu_type','menu');
+		$this->set('menu_type','empty');
 		if($this->request->is('post')){
 			$user= $this->User->findById($id);
 			$passwordHasher = new SimplePasswordHasher();
@@ -263,9 +266,6 @@ class UsersController extends AppController{
 		if($this->request->is('post')){
 			$user= $this->User->findById($id);
 			$passwordHasher = new SimplePasswordHasher();
-			echo ($passwordHasher->hash($this->request->data['User']['verify']));
-			echo ('<br/>');
-			echo ($user['User']['verify']);
 			if($user['User']['verify']==$passwordHasher->hash($this->request->data['User']['verify'])){
 
 				$this->Session->setFlash(__('確認するコードは正しい'));
@@ -331,19 +331,19 @@ class UsersController extends AppController{
 					}
 					else{
 						$this->Session->setFlash(__('パスワードが変更されるのが失敗だ'));
-						$log = '"FAIL", "'.(string)date('Y-m-d H:i:s').'", "'.(string)$userId.'", "Can not save"';
+						$log = '"FAIL", "'.(string)date('Y-m-d H:i:s').'", "'.(string)$userId.'", "パスワードが変更されるのが失敗だ"';
 						$this->Log->writeLog('change_password.txt',$log);
 					}					
 				}
 				else{
 					$this->Session->setFlash(__('確認パスワードが間違い'));
-					$log = '"FAIL", "'.(string)date('Y-m-d H:i:s').'", "'.(string)$userId.'", "Confirm password fail"';
+					$log = '"FAIL", "'.(string)date('Y-m-d H:i:s').'", "'.(string)$userId.'", "確認パスワードが間違い"';
 					$this->Log->writeLog('change_password.txt',$log);	
 				}				
 			}
 			else{
 				$this->Session->setFlash(__('現在パスワードが間違い'));
-				$log = '"FAIL", "'.(string)date('Y-m-d H:i:s').'", "'.(string)$userId.'", "Current password fail"';
+				$log = '"FAIL", "'.(string)date('Y-m-d H:i:s').'", "'.(string)$userId.'", "現在パスワードが間違い"';
 				$this->Log->writeLog('change_password.txt',$log);	
 			}			
 		}else{
@@ -366,25 +366,15 @@ class UsersController extends AppController{
 		$user= $this->User->findById($id);
 		$password=$user['User']['first_password'];
 		$sql = "UPDATE users SET password='$password' WHERE id='$id'";
-		if($this->User->query($sql)){
-			$this->Session->setFlash(__('初期パスワードにリセットした'));
-			return $this->redirect(array('controller'=>'manages','action'=>'index'));
-		}
-	}
-
-	public function resetVerifyCode($id){
-		$user= $this->User->findById($id);
-		$verify=$user['User']['first_verify'];
-		$sql = "UPDATE users SET verify='$verify' WHERE id='$id'";
-		if($this->User->query($sql)){
-			$this->Session->setFlash(__('初期VerifyCodeにリセットした'));
-			return $this->redirect(array('controller'=>'manages','action'=>'index'));
-		}
+		$this->User->query($sql);
+		$this->Session->setFlash(__('初期パスワードにリセットした'));
+		return $this->redirect(array('controller'=>'manages','action'=>'index'));
+		
 	}
 
 	
 	public function logout(){	
-		$this->Session->setFlash('またね！');
+		//$this->Session->setFlash('またね！');
 		//Xuan
 		$this->Session->delete('monthxu');
 		$this->Session->delete('yearxu');

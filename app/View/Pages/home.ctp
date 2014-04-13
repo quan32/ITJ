@@ -14,7 +14,7 @@
 				<h1><span>e</span>ラーニングシステム</h1>
 				<h2>より簡単、より速い、より安価</h2>
 				<div id="divLogin">';
-				echo "<a href='users/login'>".$this->Html->image('login.png')."</a>";
+				echo "<a href='users/login'>".$this->Html->image('login.gif')."</a>";
 			echo '
 				</div>
 			</div>
@@ -27,11 +27,17 @@
 					
 					<div class="box-left">
 						<h1>ようこそ</h1>
-						Tận dụng nguồn sức mạnh đó, xuất phát từ tình yêu đối với thành phố Hà Nội và sự đam mê yêu thích du lịch, em muốn chia sẻ tình yêu đó, lòng đam mê đó với tất cả mọi người có sự quan tâm đến các danh lam thắng cảnh, địa điểm văn hóa, lịch sử, ẩm thực
+						
 					</div>
 					
 					<div class="box-right">
-						Tận dụng nguồn sức mạnh đó, xuất phát từ tình yêu đối với thành phố Hà Nội và sự đam mê yêu thích du lịch, em muốn chia sẻ tình yêu đó, lòng đam mê đó với tất cả mọi người có sự quan tâm đến các danh lam thắng cảnh, địa điểm văn hóa, lịch sử, ẩm thựcTận dụng nguồn sức mạnh đó, xuất phát từ tình yêu đối với thành phố Hà Nội và sự đam mê yêu thích du lịch, em muốn chia sẻ tình yêu đó, lòng đam mê đó với tất cả mọi người có sự quan tâm đến các danh lam thắng cảnh, địa điểm văn hóa, lịch sử, ẩm thực
+						eラーニングシステムへようこそ！</br ></br >
+						インターネットの発展により塾などへ行かず、</br >
+						自宅で勉強することが出きるようになりました。</br >
+						知識を持っている人（先生）と知識を学びたい人（学生）の距離を減らす目的としてeラーニング</br >
+						システムを開発しました。このシステムは生活や</br >
+						科学などの色んな知識を提供しているものです。</br >
+						私たちはシステム内の講義の内容と著作権について責任を持っています。</br >興味がある講義を選んで、勉強しましょう！
 					</div>
 
 				</div>
@@ -39,11 +45,13 @@
 				<div class="content-box">
 					
 					<div class="box-left">
-						Tận dụng nguồn sức mạnh đó, xuất phát từ tình yêu đối với thành phố Hà Nội và sự đam mê yêu thích du lịch, em muốn chia sẻ tình yêu đó, lòng đam mê đó với tất cả mọi người có sự quan tâm đến các danh lam thắng cảnh, địa điểm văn hóa, lịch sử, ẩm thực
+						<h1>ミッション</h1>
 					</div>
 					
 					<div class="box-right">
-						Tận dụng nguồn sức mạnh đó, xuất phát từ tình yêu đối với thành phố Hà Nội và sự đam mê yêu thích du lịch, em muốn chia sẻ tình yêu đó, lòng đam mê đó với tất cả mọi người có sự quan tâm đến các danh lam thắng cảnh, địa điểm văn hóa, lịch sử, ẩm thựcTận dụng nguồn sức mạnh đó, xuất phát từ tình yêu đối với thành phố Hà Nội và sự đam mê yêu thích du lịch, em muốn chia sẻ tình yêu đó, lòng đam mê đó với tất cả mọi người có sự quan tâm đến các danh lam thắng cảnh, địa điểm văn hóa, lịch sử, ẩm thực
+						システムのミッションは先生方と学生方のブリッジとして、
+						距離問題を除き、学びたい人に知識を持ってくるのです。</br >
+						貴方の学習の進歩は私たちの責任です。
 					</div>
 
 				</div>	

@@ -25,6 +25,19 @@ class ManagesController extends AppController{
 		
 	}
 
+  public function resetVerifyCode($id){
+    $this->loadModel('User');
+    
+    $this->User->id=$id;
+    $user= $this->User->findById($id);
+    $verify=$user['User']['first_verify'];
+    $sql = "UPDATE users SET verify='$verify' WHERE id='$id'";
+    $this->User->query($sql);
+    $this->Session->setFlash(__('初期VerifyCodeにリセットした'));
+    return $this->redirect(array('controller'=>'manages','action'=>'index'));
+  }
+
+
 	public function index(){ // quan ly' User
      $this->set('menu_type','manager_menu');
 		 $this->loadModel('User');

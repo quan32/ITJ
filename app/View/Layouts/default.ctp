@@ -43,6 +43,23 @@
         font-size: 110%;
         
       }
+      .search_box select {
+        text-transform: none;
+        height: 35px;
+        width: 55px;
+        }
+
+      .tag{
+        margin: 2px;
+        text-decoration: none!important;
+        border: 1px solid #000;
+        border-radius: 3px;
+        padding: 3px
+      }
+      .tag:hover{
+        background-color: #000;
+        color:#fff;
+      }
       
     </style>
     <?php

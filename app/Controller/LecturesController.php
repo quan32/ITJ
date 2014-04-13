@@ -30,15 +30,55 @@ class LecturesController extends AppController{
 		$this->set('menu_type','teacher_menu');
 		if ($this->request->is('post')) {
 			if($this->request->data['Lecture']['NQ']==1){
-				$this->request->data['Lecture']['user_id']=$this->Auth->user('id');
-				$this->Lecture->create();
 
-				// attempt to save
-				if ($this->Lecture->save($this->request->data)) {
-					$lecture = $this->Lecture->find('first', array('order'=>array('Lecture.id'=>'desc')));
-					$id=$lecture['Lecture']['id'];
-					$this->redirect(array('controller'=>'sources','action' => 'add1',$id));
-				} 
+				$exist = $this->Lecture->findByName($this->request->data['Lecture']['name']);
+				if($exist){
+					$this->Session->setFlash(__('この講義のタイトルは使用されているから、他のタイトルを選んでください。'));
+				}else{
+
+					$this->request->data['Lecture']['user_id']=$this->Auth->user('id');
+					$this->Lecture->create();
+					$tags = $this->request->data['Lecture']['tag'];
+					$this->loadModel('Tag');
+					$this->loadModel('Vovan');
+					
+					// attempt to save
+					if ($this->Lecture->save($this->request->data)) {
+						$lecture = $this->Lecture->find('first', array('order'=>array('Lecture.id'=>'desc')));
+						$id=$lecture['Lecture']['id'];
+						
+						// Su ly tag
+						$tags = explode(",", $tags);
+						//var_dump($tags);die;
+						for($i=0; $i<count($tags); $i++) {
+							$tag = $tags[$i];
+							$tag = trim($tag);
+							// echo $tag;
+
+							$result = $this->Tag->findByContent($tag);
+							if($result){
+								$tag_id = $result['Tag']['id'];
+								$vovan['Vovan']['lecture_id']=$id;
+								$vovan['Vovan']['tag_id']=$tag_id;
+								$this->Vovan->create();
+								if(!$this->Vovan->save($vovan)){
+									$this->Session->setFlash(__('Vovanテーブルにデータを保存することは失敗！'));
+								}
+							}else{
+								$new_tag['Tag']['content']=$tag;
+								$this->Tag->create();
+								if(!$this->Tag->save($new_tag)){
+									$this->Session->setFlash(__('Tagテーブルにデータを保存することは失敗！'));
+								}
+								$i--;
+							}
+
+						}
+
+						$this->redirect(array('controller'=>'sources','action' => 'add1',$id));
+					} 
+				}
+				
 			}else{
 				$this->Session->setFlash(__('この資料の著作権はまだ証明されていない'));
 			}
@@ -50,13 +90,52 @@ class LecturesController extends AppController{
 		$this->set('menu_type','teacher_menu');
 		$this->Lecture->id =$id;
 		if(!$this->Lecture->exists()){
-			throw new NotFoundException(__('Invalid Lecture'));
+			throw new NotFoundException(__('不当な講義'));
 		}
 
 		if ($this->request->is('post') || $this->request->is('put')) { 
 			if ($this->Lecture->save($this->request->data)) {
-		            $this->Session->setFlash(__('講義はシステムに保存していた'));
-					$this->redirect(array('controller'=>'sources','action' => 'edit',$id));
+				$this->loadModel('Tag');
+				$this->loadModel('Vovan');
+
+				//Edit tag
+					//Xoa het cac tag cua lecture
+				if(!$this->Vovan->deleteAll(array('lecture_id'=>$id))){
+					$this->Session->setFlash(__('Vovaテーブルからデータを削除することは失敗！'));
+
+				}else{
+					//Them moi lai tat ca cac tag
+					$tags = $this->request->data['Lecture']['tag'];
+					$tags = explode(",", $tags);
+					for($i=0; $i<count($tags); $i++) {
+						$tag = $tags[$i];
+						$tag = trim($tag);
+						// echo $tag;
+
+						$result = $this->Tag->findByContent($tag);
+						if($result){
+							$tag_id = $result['Tag']['id'];
+							$vovan['Vovan']['lecture_id']=$id;
+							$vovan['Vovan']['tag_id']=$tag_id;
+							$this->Vovan->create();
+							if(!$this->Vovan->save($vovan)){
+								$this->Session->setFlash(__('Vovanテーブルにデータを保存することは失敗！'));
+							}
+						}else{
+							$new_tag['Tag']['content']=$tag;
+							$this->Tag->create();
+							if(!$this->Tag->save($new_tag)){
+								$this->Session->setFlash(__('Tagテーブルにデータを保存することは失敗！'));
+							}
+							$i--;
+						}
+
+					}
+
+				}	
+
+	            $this->Session->setFlash(__('講義はシステムに保存していた'));
+				$this->redirect(array('controller'=>'sources','action' => 'edit',$id));
 				}
 		        $this->Session->setFlash(
 		            __('講義はシステムに保存していない。もう一度してみてください'));
@@ -70,6 +149,7 @@ class LecturesController extends AppController{
 		if ($this->request->is(array('post','get'))){
 			$this->Lecture->id = $id;
 			$this->loadModel('Source');
+			$this->loadModel('Vovan');
 
 			//Delete sources in hard disk
 			$sources = $this->Source->findAllByLectureId($id);
@@ -89,6 +169,8 @@ class LecturesController extends AppController{
 			}
 			//Delete sources in database
 			$this->Source->deleteAll(array('lecture_id'=>$id));
+			//Delete tag of lectures
+			$this->Vovan->deleteAll(array('lecture_id'=>$id));
 			
 
 			if(!$this->Lecture->exists())
@@ -114,6 +196,8 @@ class LecturesController extends AppController{
 
 	public function preview($id =null){
 		$this->set('menu_type','teacher_menu');
+
+
 		$lecture = $this->Lecture->read(null, $id);
 		$sources = $lecture['Source'];
 		foreach ($sources as $source) {
@@ -137,7 +221,12 @@ class LecturesController extends AppController{
 			$this->set('menu_type','manager_menu');
 
 
+
 		$lecture = $this->Lecture->read(null, $id);
+		if(!$lecture){
+			$this->redirect(array('controller'=>'pages','action'=>'display', 'error'));
+		}
+		
 		if($this->Auth->user('role')=='student'){
 			$count=0;
 			foreach ($lecture['Register'] as $register) {
@@ -146,7 +235,7 @@ class LecturesController extends AppController{
 			}
 			if($count==0){
 				$this->Session->setFlash(__('貴方はこの講義を登録していない!'));
-				return $this->redirect(array('controller'=>'students','action' => 'lectures_statistics'));
+				$this->redirect(array('controller'=>'pages','action'=>'display', 'error'));
 			}
 		}
 		
@@ -166,6 +255,20 @@ class LecturesController extends AppController{
 		$isLiked = count($this->Lecture->Favorite->findAllByLectureIdAndUserId($id,$this->Auth->user('id')))!=0 ? 1: 0;
 		$this->set('isLiked', $isLiked);
 		$this->set('current_user_id', $this->Auth->user('id'));
+
+		//Hien thi tag
+		$this->loadModel('Vovan');
+		$this->loadModel('Tag');
+		$i=0;
+		$tags = $this->Vovan->findAllByLectureId($id);
+		if($tags){
+			foreach ($tags as $tag) {
+			$t[$i] = $this->Tag->findById($tag['Vovan']['tag_id']);
+			$i++;
+			}
+			$this->set('tags',$t);
+		
+		}
 		
 		
 	}
@@ -248,6 +351,134 @@ class LecturesController extends AppController{
 	}
 	//___________--
 
+/*
+*
+* 10.04
+* Author Xuan
+* Thong ke cac thong so cua mot bai giang : so like, so tham khao, hoc sinh nao tham gia...
+*/
+public function statisticsOfALecture($lecture_id = null,$backLink = null)
+{
+	$this->set('menu_type','teacher_menu');
+
+	if($lecture_id == null ) 
+	{
+		$this->Session->setFlash(_('システムエラー, 見つけない'));
+		$this->redirect(array('action' => 'index'));
+	}
+	$this->loadModel('Lecture');
+	$this->Lecture->recursive = -1;
+	$lecture = $this->Lecture->findById($lecture_id);
+	if($lecture == null)
+	{
+		$this->Session->setFlash(_('システムエラー, 見つけない'));
+		$this->redirect(array('action' => 'index'));
+	}
+	//backLink
+	$this->set('backLink',$backLink);
+	$this->set('lectureName',$lecture['Lecture']['name']);
+//Tinh so like bai giang nay:
+	$numLike = $this->countLikeByLecture($lecture_id);
+	$this->set('numLike' , $numLike);
+
+// So lan tham khao
+	$referenceTimes = $this->countReferenceTimesByLecture($lecture_id);
+	$this->set('referenceTimes',$referenceTimes);
+// So lan hoc sinh dang ki bai giang nay
+	$numRegister = $this->countRegisterByLecture($lecture_id);
+	$this->set('numRegister',$numRegister);
+// So lan dang ky bai hoc trong thang nay
+	$numRegisterThisMonth = $this->countRegisterByLectureAndMonth($lecture_id);
+// Thong ke hoc sinh nao da mua bai giang nay (ko phai la da hoc, vi co nhung thang dang ki ma ko hoc)
+	$this->loadModel('Register');
+
+
+	$user_id = $this->Auth->User('id');
+	$options['joins'] = array(
+					    array('table' => 'lectures',
+					        'alias' => 'Lecture',
+					        'type' => 'inner',
+					        'conditions' => array('Lecture.id = Register.lecture_id' )),
+
+					    array('table' => 'users',
+					    	'alias' => 'User',
+					    	'type' => 'inner',
+					    	'conditions' => array('User.id = Register.user_id')
+					    	)
+					       );
+	$options['conditions'] = array('Register.lecture_id' => $lecture_id	);
+	$options['fields'] =array('Lecture.id','Lecture.name','User.id','User.username','User.fullname','User.mail','User.role','User.mobile_No','count(Register.user_id) as registerTimes');
+	$options['limit'] = 5;
+	$options['group'] = 'Register.user_id';
+	$this->loadModel('Register');
+	$this->Register->recursive = -1;
+
+	$this->paginate = $options;
+
+	$data = $this->paginate('Register');
+	
+	$this->set('users',$data);
+
+
+
+}
+/* -------------
+*	caculate number like of the lecture
+* 	07.04 
+*	Author : xuan
+*/
+public function countLikeByLecture($lecture_id = null)
+{
+
+	if($lecture_id == null) return 0;
+	$this->loadModel('Favorite');
+	$numLike = $this->Favorite->find('count', array(
+    'conditions' => array('Favorite.lecture_id' => $lecture_id)));
+    return $numLike;
+}
+
+/*
+*	caculate number of times which this lecture is registed (not number of student, because student can two time register a lectures)
+* 07.04
+* Author Xuan
+*/
+
+public function countRegisterByLecture($lecture_id = null){
+
+		if($lecture_id == null ) return 0;
+		$this->loadModel('Register');
+		$numRegister = $this->Register->find('count', array(
+			'conditions' => array('Register.lecture_id' => $lecture_id)
+			));
+		return $numRegister;
+	}
+
+/*
+*	caculate number of times  this lecture is registed in the month which (not number of student, because student can two time register a lectures)
+* 07.04
+* Author Xuan
+*/
+public function countRegisterByLectureAndMonth($lecture_id = null, $month = null){
+
+//debug(date('n')); die;
+	if($lecture_id == null ) return 0;
+	$this->loadModel('Register');
+	$numRegisterInMonth = $this->Register->find('count', array(
+		'conditions' => array('Register.lecture_id' => $lecture_id,
+		'MONTH(Register.created)' => $month
+			)
+		));
+	return $numRegisterInMonth;
+
+}
+	
+public function countReferenceTimesByLecture($lecture_id = null){
+	if($lecture_id == null ) return 0;
+	$this->loadModel('Lecture');
+	$numReference = $this->Lecture->find('count',
+		array('conditions' => array('Lecture.id' => $lecture_id)));
+	return $numReference;
+	}
 }
 
 ?>

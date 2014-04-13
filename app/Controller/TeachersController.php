@@ -248,6 +248,65 @@ class TeachersController extends AppController{
 		    }
 	}
 
+	public function changeVerify(){
+
+		$this->set('menu_type','teacher_menu');
+		$this->pageTitle = "確認するコード";
+		$this->loadModel('User');
+
+		$userId = $this->Auth->user('id');
+		$this->User->id = $userId;
+		// current user
+		$currUser = $this->User->findById($userId);
+		// var_dump($currUser);die;
+
+		if(!$this->User->exists()){
+			throw new NotFoundException(__('ユーザが無効だ'));
+		}
+
+		if($this->request->is(array('post','put'))){
+			// hash default sha1
+			$passwordHasher = new SimplePasswordHasher();
+			$arrPass = $this->request->data;
+			// check current password
+			if($passwordHasher->check($arrPass['User']['currVerify'],$currUser['User']['verify'])){
+				// check new password and confirm password
+				if($arrPass['User']['newVerify'] == $arrPass['User']['confVerify']){
+					// assign new password to password
+					$currUser['User']['verify'] = $arrPass['User']['newVerify'];
+					// save user, run function beforeSave() to hash new password
+					// $this->User->id = $userId;
+					if($this->User->saveField('verify',$arrPass['User']['newVerify'])){
+						// write success log to log file 7: change_password.txt
+						$log = '"SUCCESS", "'.(string)date('Y-m-d H:i:s').'", "'.(string)$userId.'"';
+						$this->Log->writeLog('change_verify.txt',$log);
+						$this->Session->setFlash(__('確認するコードが更新された'));
+						
+						return $this->redirect(array('controller'=>'teachers','action'=>'info'));
+						
+					}
+					else{
+						$this->Session->setFlash(__('確認するコードが変更されるのが失敗だ'));
+						$log = '"FAIL", "'.(string)date('Y-m-d H:i:s').'", "'.(string)$userId.'", "確認するコードが変更されるのが失敗"';
+						$this->Log->writeLog('change_verify.txt',$log);
+					}					
+				}
+				else{
+					$this->Session->setFlash(__('確認するコードが間違い'));
+					$log = '"FAIL", "'.(string)date('Y-m-d H:i:s').'", "'.(string)$userId.'", "確認するコードが間違い"';
+					$this->Log->writeLog('change_password.txt',$log);	
+				}				
+			}
+			else{
+				$this->Session->setFlash(__('現在確認するコードが間違い'));
+				$log = '"FAIL", "'.(string)date('Y-m-d H:i:s').'", "'.(string)$userId.'", "現在確認するコードが間違い"';
+				$this->Log->writeLog('change_verify.txt',$log);	
+			}			
+		}else{
+			$this->request->data = $this->User->read(null, $userId);
+		}
+	}
+
 
 	/**
 	* function view result of student who do current teacher's test
@@ -321,5 +380,75 @@ class TeachersController extends AppController{
 		$this->set('lectures',$lectures);
 		$this->set('countRegister',$countRegister);
 	}
+
+	public function moneyStatistics()
+	{
+		//set menu
+	    $this->set('menu_type','teacher_menu');
+	    // Lay hang he thong
+	    $COST = 20000;
+	    $this->set('COST',$COST);
+	    $user_id = $this->Auth->user('id');
+
+	    if($this->request->is('post')) {
+	    $month=$this->request->data['Money']['mos'];
+	    $year=$this->request->data['Money']['yos'];
+	     }
+	    else
+	    {
+	  
+	    	$month = date('n');
+		 	$year = date('Y');
+		 	$this->set('mos',$month);
+	   		$this->set('yos',$year);
+	    	
+	    }
+	        //Tinh tien thang da chon
+
+	    $moneyOfTheMonth = $this->calcMoney($month,$year);
+	    $this->set('moneyOfTheMonth',$moneyOfTheMonth);
+	}
+
+	public function calcMoney($month = null,$year =null)
+	{
+		//load hang so he thong
+		$COST = 20000;
+		$user_id = $this->Auth->user('id');
+		$this->loadModel('Lecture');
+		$options = array(
+					'joins' => array(
+									    array('table' => 'users',
+									        'alias' => 'User',
+									        'type' => 'inner',
+									        'conditions' => array('Lecture.user_id = User.id')
+									    ),
+									    array(
+									    	'table' => 'registers',
+									    	'alias' => 'Register',
+									    	'type'  => 'inner',
+									    	'conditions' => array('Lecture.id = Register.lecture_id')
+									    	)
+				            
+										),
+					'conditions' => array(
+						'MONTH(Register.created)' => $month,
+						'YEAR(Register.created)' => $year,
+						'User.id' => $user_id
+					),
+					'fields' => array( 'count(Register.id) as registerTimes')
+					
+
+			);
+		$this->Lecture->recursive = -1;
+		$data = $this->Lecture->find('all',$options);
+		$money = $data[0][0]['registerTimes'] * $COST;
+		return $money;
+		
+
+
+	}
+
 }
+
+
 ?>

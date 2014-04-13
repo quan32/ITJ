@@ -14,7 +14,7 @@
 		<!-- Article 1 start -->
         
         <article id="article1"> <!-- The new article tag. The id is supplied so it can be scrolled into view. -->
-		<h2 id="lecture-title"><?=$lecture['Lecture']['name']?></h2>
+		<h3 id="lecture-title"><?=$lecture['Lecture']['name']?></h3>
             
             <div class="line"></div>
             
@@ -99,8 +99,30 @@
         </article>
         
 		<!-- Article 3 end -->
-		
+
 		<!-- Article 4 start -->
+        
+        <article id="article2">
+            <h2>タグ一覧</h2>
+            
+            <div class="line"></div>
+            
+            <div class="articleBody clear">
+                
+				<?php
+					if(isset($tags)){
+						foreach ($tags as $tag) {
+						 echo "<a class='tag' href='/ITJ/tags/view/".$tag['Tag']['id']."'>".$tag['Tag']['content']."</a>";
+						}
+					}
+					
+				?>
+            </div>
+        </article>
+        
+		<!-- Article 4 end -->
+		
+		<!-- Article 5 start -->
         
         <article id="article2">
             <h2>コメント</h2>

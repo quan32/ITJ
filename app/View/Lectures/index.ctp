@@ -7,6 +7,7 @@
 	<th>作成時</th>
 	<th>テスト</th>
 	<th>表現</th>
+	<th>統計</th>
 	<th>管理</th>
 </tr>
 <?php
@@ -26,6 +27,11 @@
 			echo '<td>';
 			echo $this->Html->link('表現', 
 				array('controller'=>'lectures','action' => 'view',$lecture['Lecture']["id"]));
+			echo '</td>';
+
+			echo '<td>';
+			echo $this->Html->link('見る', 
+				array('action' => 'statisticsOfALecture',$lecture['Lecture']["id"],'index'));
 			echo '</td>';
 
 			echo '<td>';

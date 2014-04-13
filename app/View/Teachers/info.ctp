@@ -36,6 +36,7 @@ else{
 
     echo "<button class = ".'"link_buttonx"'.">".$this->Html->link('編集', array('controller'=>'teachers','action'=>'edit',$user_id))."</button>";
     echo "<button class = ".'"link_buttonx"'.">".$this->Html->link('パスワード変化', array('controller'=>'users','action'=>'changePassword'))."</button>";
+    echo "<button class = ".'"link_buttonx"'.">".$this->Html->link('確認するコード変更', array('controller'=>'teachers','action'=>'changeVerify'))."</button>";
     echo "<button class = ".'"link_buttonx"'." >".$this->Form->postLink('アカウント削除', array('controller'=>'users','action'=>'delete',$user_id),
         array('confirm'=>'本気？'))."</button>";
     echo "</div>";
