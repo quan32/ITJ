@@ -16,17 +16,20 @@ class Test extends AppModel{
 			$line_first_char = substr($line, 0, 1);
 			if($line_first_char == '#') continue; //bo qua comments
 			if($line_first_char == 'Q'){
-				$i = substr($line,2,1);
-				$type_first_char = substr($line,5,1);
+				//check i la 1 chu so hay 2 chu so luu vao $index =0 | 1 => moi vi tri + them voi index
+				$extra_index = (substr($line,3,1) == ')') ? 0 : 1;
+				//$extra_index = 0;
+				$i = substr($line,2,$extra_index + 1);
+				$type_first_char = substr($line,$extra_index + 5,1);
 				if($type_first_char == 'Q'){
-					$tests[$i]['qs'] = mb_convert_encoding(substr($line,8), "UTF-8", "Shift-JIS");
+					$tests[$i]['qs'] = mb_convert_encoding(substr($line,$extra_index + 8), "UTF-8", "Shift-JIS");
 				}
 				if($type_first_char == 'S'){
-					$tests[$i]['s'][] = mb_convert_encoding(substr($line,10), "UTF-8", "Shift-JIS");
+					$tests[$i]['s'][] = mb_convert_encoding(substr($line,$extra_index + 10), "UTF-8", "Shift-JIS");
 				}
 				if($type_first_char == 'K'){
-					$tests[$i]['ks'] = substr($line,10,1) -1;
-					$tests[$i]['point'] = substr($line,13,2);
+					$tests[$i]['ks'] = substr($line,$extra_index + 10,1) -1;
+					$tests[$i]['point'] = substr($line,$extra_index + 13,2);
 				}
 			}
 		}

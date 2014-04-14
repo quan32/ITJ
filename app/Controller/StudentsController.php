@@ -185,7 +185,7 @@ class StudentsController extends AppController{
 			 		'fields' => array('Lecture.id', 'Lecture.name','User.id','User.fullname','count(Favorite.lecture_id) as iine'),
 			 		'order' => 'iine DESC',
 			 		'conditions' => array('Favorite.created >' => date('Y-m-d H:i:s',strtotime("-3 month"))),
-			 		'limit' => 10
+			 		'limit' => 5
 
 				);
 
@@ -369,7 +369,7 @@ class StudentsController extends AppController{
 						),
 			
 			'order' => array('Lecture.created' => 'ASC'),
-			'limit' => 10,
+			'limit' => 5,
 			//'conditions' =>array('Lecture.category_id' => "$catagory"),
 			'fields' => array('Lecture.id','User.fullname','Lecture.name','User.id')
 		);
@@ -782,7 +782,7 @@ public function moneyStatistics(){
 			);
 
 		$options['fields'] =array('Lecture.id as id','Lecture.name as title','User.fullname as fullname','Register.created as time');
-		$options['limit'] = 10;
+		$options['limit'] = 5;
 		$this->Register->recursive = -1;
 
 		$this->paginate = $options;
