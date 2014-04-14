@@ -79,6 +79,8 @@ if(isset($users))
 	        }
 
 	        echo $paginator->last("後");
+	        echo $this->Paginator->counter('ページ {:page} の {:pages}');
+
 	    
 	    echo "</div>";
 
