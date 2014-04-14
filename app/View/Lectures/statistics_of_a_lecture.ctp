@@ -95,7 +95,7 @@ if(isset($users))
 if(isset($backLink))
 {
 	if($backLink!=null)
-		echo $this->Html->link('戻る',array('controller' => 'lectures', 'action' => $backLink),array('class'=>'link_buttonx'));
+		echo "<br>".$this->Html->link('戻る',array('controller' => 'lectures', 'action' => $backLink),array('class'=>'link_buttonx'));
 }
 
 ?>
