@@ -49,12 +49,22 @@ class UsersController extends AppController{
 			$this->User->id = $id;
 			if(!$this->User->exists())
 				throw new NotFoundException(__('このアカウントは存在していない'));
-
+            $user=$this->User->findById($id);
+			//var_dump($user);die();
 			if($this->User->saveField('state','deleted')){
 				$this->Session->setFlash(__('アカウントは削除した'));
-				if($this->Auth->user('role')!='manager')
+				if($this->Auth->user('role')!='manager') // tu dong out khi tu xoa
 					return $this->redirect($this->Auth->logout());
-				return $this->redirect(array('controller'=>'manages','action'=>'index'));
+                if ($user["User"]["role"]=='teacher') {
+                 	return $this->redirect(array('controller'=>'manages','action'=>'teacher'));
+                 } 
+                 if ($user["User"]["role"]=='student') {
+                 	return $this->redirect(array('controller'=>'manages','action'=>'index'));
+                 } 
+                  if ($user["User"]["role"]=='manager') {
+                 	return $this->redirect(array('controller'=>'manages','action'=>'manager'));
+                 }
+				
 			}
 			$this->Session->setFlash(__('アカウントはまだ削除されていなかった'));
 				if($this->Auth->user('role')=='teacher')
@@ -62,7 +72,18 @@ class UsersController extends AppController{
 				elseif($this->Auth->user('role')=='student')
 					return $this->redirect(array('controller'=>'students','action'=>'index'));
 				elseif($this->Auth->user('role')=='manager')
-					return $this->redirect(array('controller'=>'manages','action'=>'index'));
+					{
+                 if ($user["User"]["role"]=='teacher') {
+                 	return $this->redirect(array('controller'=>'manages','action'=>'teacher'));
+                 } 
+                 if ($user["User"]["role"]=='student') {
+                 	return $this->redirect(array('controller'=>'manages','action'=>'index'));
+                 } 
+                  if ($user["User"]["role"]=='manager') {
+                 	return $this->redirect(array('controller'=>'manages','action'=>'manager'));
+                 }
+
+					}
 
 			// }
 	}

@@ -35,7 +35,7 @@ $paginator = $this->Paginator;
 
 			echo '<td>';
 			echo $this->Form->postLink('削除', 
-				array('controller'=>'lectures','action' => 'delete', $lecture["Lecture"]["id"]),
+				array('controller'=>'manages','action' => 'delete_lec', $lecture["Lecture"]["id"]),
 				array('confirm'=>'本気？'));
 			
 			

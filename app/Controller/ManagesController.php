@@ -416,7 +416,57 @@ class ManagesController extends AppController{
 
   }
 
+  public function delete_lec($id =null){
+    if ($this->request->is(array('post','get'))){
+      $this->loadModel('Lecture');
+      $this->Lecture->id = $id;
+      $this->loadModel('Source');
+      $this->loadModel('Vovan');
 
+      //Delete sources in hard disk
+      $sources = $this->Source->findAllByLectureId($id);
+      foreach($sources as $source){
+        $target=$source['Source']['filename'];
+        $target='uploads/'. $target;
+
+        if (file_exists($target)) {
+            unlink($target); // Delete now
+          } 
+        // See if it exists again to be sure it was removed
+        if (file_exists($target)) {
+            echo "Problem deleting " . $target;
+          } else {
+            echo "Successfully deleted " . $target;
+          }
+      }
+      //Delete sources in database
+      $this->Source->deleteAll(array('lecture_id'=>$id));
+      //Delete tag of lectures
+      $this->Vovan->deleteAll(array('lecture_id'=>$id));
+      
+
+      if(!$this->Lecture->exists())
+        throw new NotFoundException(__('Invalid lecture'));
+
+      if($this->Lecture->delete()){
+        $this->Session->setFlash(__('講義は削除した'));
+        return $this->redirect(array('controller'=>'manages','action'=>'lecture'));
+        // if($this->Auth->user('role')=='teacher')
+        //  return $this->redirect(array('controller'=>'teachers','action'=>'index'));
+        // else if($this->Auth->user('role')=='manager')
+        //  return $this->redirect(array('controller'=>'manages','action'=>'lecture'));
+
+      }
+      $this->Session->setFlash(__('講義の削除するのは失敗した'));
+        return $this->redirect(array('action' => 'lecture'));
+    }else{
+      $this->Session->setFlash(__('間違った操作'));
+        return $this->redirect(array('controller'=>'manages','action' => 'lecture'));
+    }
+    
+  }
+
+  
 
 
 
