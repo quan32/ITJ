@@ -1,4 +1,9 @@
 <?php
+    App::import("Model", "User");
+    $UserModel = new User();
+?>
+<?php echo $this->Html->css('lecture_view');?>
+<?php
 if(!isset($lecture)){
     echo "<h2>すみません,見つけられない!</h2>";
     if(isset($backLink))
@@ -53,7 +58,11 @@ else{
             echo "<td>".$lecture[0]['User']['username']."</td>";
             echo "</tr>";
 
- 
+            echo "<tr>";
+            echo "<td>「いいね！」した人数</td>";
+            echo "<td>".$num_liked."</td>";
+            echo "</tr>";
+
             echo "</table>";
 
             if($lecture[0]['Block'] == 1)
@@ -101,8 +110,36 @@ else{
 
 }
 }
-    ?>
-
+?>
+<hr>
+<ul class="nested-comments-complex">
+    <?php foreach ($comments as $value): ?>
+        <li>
+            <div class="comment">
+                <p><a href="#" class="author"><?= $UserModel->username($value['Comment']['user_id']); ?></a></p>
+                <p><?= $value['Comment']['content']; ?></p>
+                <em><?= $value['Comment']['created']; ?></em>
+            </div>
+            <ul>
+                <?php foreach ($value['Reply'] as $reply): ?>
+                    <li>
+                        <div class="comment">
+                            <p><a href="#" class="author"><?= $UserModel->username($reply['user_id']); ?></a></p>
+                            <p><?= $reply['content']; ?></p>
+                            <em><?= $reply['created']; ?></em>
+                        </div>
+                    </li>
+                <?php endforeach; ?>
+                <li id="reply<?= $value['Comment']['id']; ?>" style="display:none;">                    
+                    <div class="comment">
+                        <p><a href="" class="author">あなた</a></p>
+                        <textarea class="reply_text" id="<?= $value['Comment']['id']; ?>">コメントを投稿する...</textarea>
+                    </div>
+                </li>
+            </ul>
+        </li>
+    <?php endforeach; ?>
+</ul>
 <style type="text/css">
     body{
         color:red;

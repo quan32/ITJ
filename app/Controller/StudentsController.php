@@ -669,11 +669,12 @@ public function registedLectureThisWeek(){
 		else
 		{
 		$this->loadModel('Lecture');
-		
+		$this->set('comments', $this->Lecture->Comment->findAllByLectureId($id));
 		// Tang so lan tham khao bai giang :
 		//khi sua thi xoa het di
 		//$this->Lecture->recursive = -1;
 		$data = $this->Lecture->findById($id);
+		$this->set('num_liked',count($data['Favorite']));
 		if($data != null )
 		{
 
