@@ -22,6 +22,10 @@
             	<h4>作者: <?= $UserModel->username($lecture['Lecture']['user_id']); ?></h4>
                 <p><?=$lecture['Lecture']['description']?></p>
             </div>
+           		<?= $user_role == 'student' ? 
+           			$this->Html->link(' テストリスト',array('controller' => 'Students','action' => 'viewListTest',$register_item ))
+           			: $this->Html->link(' テストリスト',array('controller' => 'Tests','action' => 'index',$lecture['Lecture']['id'] )); 
+       			?>
         </article>
         
 		<!-- Article 1 end -->
@@ -214,6 +218,15 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
+	//prevent print screen
+	$(document).keyup(function(e){
+		if(e.keyCode == 44) {
+			$("body").hide();
+			window.clipboardData.setData('text','');
+		}
+	});
+
+	//
 	var lecture_id = <?=$lecture['Lecture']['id']?>;
     var l = window.location;
 	var base_url = l.protocol + "//" + l.host + "/" + l.pathname.split('/')[1];

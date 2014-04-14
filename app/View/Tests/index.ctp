@@ -6,7 +6,9 @@
 	<th>テスト時間</th>
 	<th>講義の ID</th>
 	<th>作った時間</th>
-	<th>管理</th>
+	<?php if($user_role=="teacher"): ?>
+		<th>管理</th>
+	<? endif; ?>
 </tr>
 <?php
 	foreach ($tests as $test) {
@@ -20,18 +22,23 @@
 			echo '<td>'.$value["time"].'</td>';
 			echo '<td>'.$value["lecture_id"].'</td>';			
 			echo '<td>'.$value["created"].'</td>';
-			echo '<td>'.$this->Html->link('編集　', 
-				array('action' => 'edit', $value["id"]));
-			echo " ";
-			echo $this->Form->postLink('　削除', 
-				array('action' => 'delete', $value["id"]),
-				array('confirm' => '本気？'));
-			echo '</td>';
+			if($user_role=="teacher"){
+				echo '<td>'.$this->Html->link('編集　', 
+					array('action' => 'edit', $value["id"]));
+				echo " ";
+				echo $this->Form->postLink('　削除', 
+					array('action' => 'delete', $value["id"]),
+					array('confirm' => '本気？'));
+				echo '</td>';
+			}
 		//}
 		echo '</tr>';
 	}
 ?>
 </table>
 <br /><br />
-<?=	$this->Html->link('新しいテストを作成',
-				array('controller' => 'tests','action' => 'add',$lecture_id)); ?>
+<?	
+	if($user_role=="teacher")
+		echo $this->Html->link('新しいテストを作成',
+					array('controller' => 'tests','action' => 'add',$lecture_id)); 
+?>

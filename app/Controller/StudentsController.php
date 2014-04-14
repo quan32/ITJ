@@ -816,9 +816,12 @@ public function moneyStatistics(){
 
 public function viewListTest($register_id = null)
 {
-// set menu
-	$this->set('menu_type', 'student_menu');
-	//hang so he thong
+		if($this->Auth->user('role')=='student')
+			$this->set('menu_type','student_menu');
+		elseif($this->Auth->user('role')=='teacher')
+			$this->set('menu_type','teacher_menu');
+		else
+			$this->set('menu_type','manager_menu');
 
 
 	//check block

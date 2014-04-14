@@ -7,6 +7,7 @@ class LecturesController extends AppController{
 		if($this->Auth->isAuthorized()==false){
 			$this->redirect(array('controller'=>'pages','action'=>'display', 'error'));
 		}
+		$this->set('user_role', $this->Auth->user('role'));
 	}
 
 	public function isAuthorized($user){
@@ -216,15 +217,13 @@ class LecturesController extends AppController{
 
 	}
 
-	public function view($id = null){// TODO hien thi bai giang, file , 
+	public function view($id = null){// TODO hien thi bai giang, file ,
 		if($this->Auth->user('role')=='student')
 			$this->set('menu_type','student_menu');
 		elseif($this->Auth->user('role')=='teacher')
 			$this->set('menu_type','teacher_menu');
 		else
 			$this->set('menu_type','manager_menu');
-
-
 
 		$lecture = $this->Lecture->read(null, $id);
 		if(!$lecture){
@@ -234,8 +233,10 @@ class LecturesController extends AppController{
 		if($this->Auth->user('role')=='student'){
 			$count=0;
 			foreach ($lecture['Register'] as $register) {
-				if($register['user_id']==$this->Auth->user('id'))
+				if($register['user_id']==$this->Auth->user('id')){
 					$count++;
+					$this->set('register_item', $register['id']);
+				}
 			}
 			if($count==0){
 				$this->Session->setFlash(__('貴方はこの講義を登録していない!'));
