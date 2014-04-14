@@ -700,11 +700,12 @@ public function recentRegistedLecture(){
 		else
 		{
 		$this->loadModel('Lecture');
-		
+		$this->set('comments', $this->Lecture->Comment->findAllByLectureId($id));
 		// Tang so lan tham khao bai giang :
 		//khi sua thi xoa het di
 		//$this->Lecture->recursive = -1;
 		$data = $this->Lecture->findById($id);
+		$this->set('num_liked',count($data['Favorite']));
 		if($data != null )
 		{
 
@@ -937,7 +938,7 @@ public function viewListTest($register_id = null)
 				foreach ($data as $test) {
 					//Neu da tung test bai nay thi lay ket qua moi nhat
 					$options = array(
-						'conditions' => array('Result.test_id' => $data[$i]['Test']['id']),
+						'conditions' => array('Result.test_id' => $data[$i]['Test']['id'], 'Result.user_id'=>$this->Auth->user('id')),
 						'order' => array('Result.created' => 'DESC'),
 						'limit' => 1
 							

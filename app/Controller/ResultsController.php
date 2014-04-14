@@ -8,6 +8,13 @@ class ResultsController extends AppController{
 	public function isAuthorized($user){
 		return true;
 	}
+	
+	public function index($test_id = null){
+		$this->set('menu_type','teacher_menu');
+		$results = $this->Result->findAllByTestId($test_id);
+		$this->set('results', $results);
+		$this->set('test_id', $test_id);
+	}
 
 	public function view($id = null){
 		if($this->Auth->user('role')=='student')

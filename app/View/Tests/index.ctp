@@ -23,12 +23,15 @@
 			echo '<td>'.$value["lecture_id"].'</td>';			
 			echo '<td>'.$value["created"].'</td>';
 			if($user_role=="teacher"){
-				echo '<td>'.$this->Html->link('編集　', 
+				echo '<td>'.$this->Html->link('編集', 
 					array('action' => 'edit', $value["id"]));
-				echo " ";
-				echo $this->Form->postLink('　削除', 
+				echo " | ";
+				echo $this->Form->postLink('削除', 
 					array('action' => 'delete', $value["id"]),
 					array('confirm' => '本気？'));
+				echo " | ";
+				echo $this->Html->link('結果', 
+					array('controller'=>'results','action' => 'index', $value["id"]));
 				echo '</td>';
 			}
 		//}
