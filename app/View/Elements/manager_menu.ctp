@@ -10,6 +10,10 @@
 	echo $this->Html->link('パスワード変更', 
 		array('controller' => 'users', 'action' => 'changePassword'));
 	?></li>
+	<li><?php 
+	echo $this->Html->link('Ip', 
+		array('controller' => 'manages', 'action' => 'change'));
+	?></li>
   </ul>
 </li>
 
