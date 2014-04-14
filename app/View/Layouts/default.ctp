@@ -26,6 +26,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $title_for_layout; ?></title>
+    <style type="text/css" media="print">
+        * { display: none; }
+    </style>
     <style type="text/css">
       .link_buttonx{
         margin:10px;
