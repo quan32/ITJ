@@ -1,17 +1,23 @@
-<h1>講義管理</h1><br />
 
-<table>
-<tr>
-	<th>ID</th>
-	<th>タイトル</th>
-	<th>作成時</th>
-	<th>テスト</th>
-	<th>表現</th>
-	<th>統計</th>
-	<th>管理</th>
-</tr>
 <?php
 	// debug($lectures);die;
+if($lectures != null)
+{
+	$paginator = $this->Paginator;
+	echo'<h1>講義管理</h1><br />
+		<table>
+		<tr>';
+	
+		    echo "<th>" . $paginator->sort('Lecture.id', 'ID') . "</th>";
+            echo "<th>" . $paginator->sort('Lecture.name', 'タイトル') . "</th>";
+            echo "<th>" . $paginator->sort('Lecture.created', '作成時') . "</th>";
+           
+            echo '
+			<th>テスト</th>
+			<th>表現</th>
+			<th>統計</th>
+			<th>管理</th>
+		</tr>';
 	foreach ($lectures as $lecture) {
 		echo '<tr>';
 			echo '<td>'.$lecture['Lecture']["id"].'</td>';
@@ -44,5 +50,28 @@
 			echo '</td>';
 		echo '</tr>';
 	}
+	echo '</table> ';
+
+	 echo "<div class='paging'>";
+
+        echo $paginator->first("初");
+
+        if($paginator->hasPrev()){
+            echo $paginator->prev("前");
+        }
+
+        echo $paginator->numbers(array('modulus' => 2));
+
+        if($paginator->hasNext()){
+            echo $paginator->next("次");
+        }
+
+        echo $paginator->last("後");
+    
+    echo "</div>";
+}
+else
+{
+	echo '<h1>空きデータ</h1>';
+}
 ?>
-</table> 

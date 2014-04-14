@@ -20,9 +20,13 @@ class LecturesController extends AppController{
 
 	public function index(){
 		$this->set('menu_type','teacher_menu');
-
 		$user_id = $this->Auth->user('id');
-		$lectures = $this->Lecture->findAllByUserId($user_id);
+		$options = array('conditions' => array('user_id' => $user_id),
+						'limit' => 5
+			);
+		$this->paginate = $options;
+		$this->Lecture->recursive = -1;
+		$lectures = $this->paginate('Lecture');
 		$this->set("lectures",$lectures);
 	}
 
