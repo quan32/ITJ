@@ -14,14 +14,28 @@
 	td{
 		text-align: right;
 	}
+
+	 .question-box{
+	 	background-color: #e9eaed;
+	 	border-radius: 10px;
+	 }
+	 legend{
+	 	font-weight: bold;
+		border-bottom: 1px solid black;
+	 }
+	 label{
+	 	font-weight: normal;
+	 }
 </style>
 <h1>あなたの選択</h1>
+<form>
 <?php
 	//Hien thi form with answered choice
 	$count = 1;
 	foreach ($tests as $question) {
-		echo "<br>";
-		echo $count.". ".$question['qs']."<br>";
+		echo "<div class='question-box'>";
+		echo "<legend>";
+		echo $count.". ".$question['qs']."</legend>";
 		//hidden field
 		echo $this->Form->input($count.'.ks', array('value'=>$question['ks'] ,'type'=>'hidden') );
 		$attributes = array(
@@ -33,9 +47,11 @@
 		);
 		echo $this->Form->radio($count.'.answer', $question['s'], $attributes);
 		$count++;
+		echo "</div>";
 	}
 	echo $this->Form->input('num_row', array('value'=>$count ,'type'=>'hidden') );
 ?>
+</form>
 <hr>
 <h1>テストの結果</h1>
 <?php
@@ -52,8 +68,8 @@
 		$count++;
 		$tongdiem+=$question['point'];
 	}
-echo "正しい答え: ".$caudung."/".($count-1)."<br>";
-echo "点数: ".$diem."/".$tongdiem." ~ ".round($diem/$tongdiem*100,0)."<br>";
+echo "<legend>正しい答え: ".$caudung."/".($count-1)."</legend>";
+echo "<legend>点数: ".$diem."/".$tongdiem." ~ ".round($diem/$tongdiem*100,0)."</legend>";
 ?>
 <table>
 <tr>
