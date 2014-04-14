@@ -89,7 +89,7 @@
 					foreach ($sources as $source) {
 						if(in_array($source['type'], array('image/gif','image/png','image/jpg','image/jpeg'))){
 								?>
-									<img src="http://localhost/ITJ/app/webroot/uploads/<?echo $source['filename'];?>">
+									<img src="http://localhost/ITJ/app/webroot/uploads/<?php echo $source['filename'];?>">
 									<br>
 								<?php
 							}
