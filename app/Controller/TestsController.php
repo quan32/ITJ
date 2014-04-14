@@ -159,5 +159,4 @@ class TestsController extends AppController {
 		return $this->redirect(array('action' => 'index'));
 	}
 
-
 }

@@ -905,7 +905,7 @@ public function viewListTest($register_id = null)
 				foreach ($data as $test) {
 					//Neu da tung test bai nay thi lay ket qua moi nhat
 					$options = array(
-						'conditions' => array('Result.test_id' => $data[$i]['Test']['id']),
+						'conditions' => array('Result.test_id' => $data[$i]['Test']['id'], 'Result.user_id'=>$this->Auth->user('id')),
 						'order' => array('Result.created' => 'DESC'),
 						'limit' => 1
 							
