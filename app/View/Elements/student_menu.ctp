@@ -1,3 +1,8 @@
+    <li><?php 
+  echo $this->Html->link('ホーム', 
+    array('controller' => 'students', 'action' => 'index'));
+  ?></li>
+
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-caret-square-o-down"></i> プロファイル管理 <b class="caret"></b></a>
   <ul class="dropdown-menu">
@@ -29,11 +34,11 @@ echo $this->Html->link('お気に入りの講義リスト',
 </li>
 
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-caret-square-o-down"></i> 受けた講義 <b class="caret"></b></a>
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-caret-square-o-down"></i> 買った講義 <b class="caret"></b></a>
   <ul class="dropdown-menu">
 <li><?php 
-echo $this->Html->link('一週間以内', 
-	array('controller' => 'students', 'action' => 'registedLectureThisWeek'));
+echo $this->Html->link('最近', 
+	array('controller' => 'students', 'action' => 'recentRegistedLecture'));
 ?></li>
 
 <li><?php 

@@ -1,8 +1,10 @@
-<h1>１週間以内、買った講義の一覧を表示します。</h1>
+
 <?php
+if(isset($expireTime))
+    echo '<h1>'.$expireTime.'日以内,買った講義の一覧を表示します。</h1>';
 $paginator = $this->Paginator;
 
-if($registedLectureThisWeek){
+if($recentRegistedLecture){
 
     echo "<table>";
 
@@ -18,14 +20,14 @@ if($registedLectureThisWeek){
             echo "</tr>";
         
 
-        foreach( $registedLectureThisWeek as $item ){
+        foreach( $recentRegistedLecture as $item ){
 
                 echo "<tr>";
                 echo "<td>".$item['Lecture']['id']."</td>";
                 echo "<td>".$item['Lecture']['name']."</td>";
                 echo "<td>".$item['Register']['created']."</td>";
                 echo "<td>".$COST."VND</td>";
-                echo "<td>".$this->Html->link('詳しく',array('controller' => 'Students','action' => 'detailLecture',$item['Lecture']['id'], 'registedLectureThisWeek'));
+                echo "<td>".$this->Html->link('詳しく',array('controller' => 'Students','action' => 'detailLecture',$item['Lecture']['id'], 'recentRegistedLecture'));
        
 
             if($item['Block'] == 1)

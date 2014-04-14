@@ -5,7 +5,7 @@ if($fiveNewestLecture!=NULL){
 
 
     echo "<table>
-    <h2> 一週間の中、最新の買った講義 : </h2>
+    <h2> 最新の買った講義 : </h2>
 
           <tr>
             <th>Id</th>
@@ -44,7 +44,7 @@ if($fiveNewestLecture!=NULL){
         echo "</tr>";
     }
     echo "</table>";
-    echo $this->Html->link('全て', array('controller'=>'Students', 'action'=>'registedLectureThisWeek'));
+    echo $this->Html->link('全て', array('controller'=>'Students', 'action'=>'recentRegistedLecture'));
 }
 
 //bang 2 : 5 bai hot nhat he thong

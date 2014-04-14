@@ -55,8 +55,16 @@ class StudentsController extends AppController{
 //set menu
 		$this->set('menu_type','student_menu');
 //lay hang so he thong
-		$COST = 20000;
+		$this->loadModel('Constant');
+		$constantCost = $this->Constant->findByName('cost');
+		$COST = $constantCost['Constant']['value'];
 		$this->set('COST',$COST);
+
+
+		$constantExpireTime = $this->Constant->findByName('expire_time');
+		$expireTime = $constantExpireTime['Constant']['value'];
+		$stringExpireTime = "-".$expireTime." days";
+
 	//lay 5 bai giang moi nhat trong he thong ma user nay dang ki trong vong 1 tuan
 		$user_id = $this->Auth->user('id');
 		$this->loadModel('Register');
@@ -79,7 +87,7 @@ class StudentsController extends AppController{
 			            
 									),
 					'conditions' => array('Register.user_id' => $user_id,
-							 'Register.created >=' => date('Y-m-d H:i:s', strtotime("-1 weeks"))),
+							 'Register.created >=' => date('Y-m-d H:i:s', strtotime($stringExpireTime))),
 											
 					
 			 		'fields' => array('Lecture.id', 'Lecture.name','User.fullname','Register.created','Register.created','User.id','Register.status'),
@@ -162,7 +170,9 @@ class StudentsController extends AppController{
 		// tinh do hot dua vao so lan like trong 3 thang tro lai day
 		$this->set('menu_type','student_menu');
 		// load hang so he thong
-		$COST = 20000;
+		$this->loadModel('Constant');
+		$constantCost = $this->Constant->findByName('cost');
+		$COST = $constantCost['Constant']['value'];
 		$this->set('COST',$COST);
 		$user_id = $this->Auth->user('id');
 		$options = 	array(
@@ -229,8 +239,11 @@ class StudentsController extends AppController{
 		// set menu
 		$this->set('menu_type', 'student_menu');
 		//hang so he thong
-		$COST = 20000;
+		$this->loadModel('Constant');
+		$constantCost = $this->Constant->findByName('cost');
+		$COST = $constantCost['Constant']['value'];
 		$this->set('COST',$COST);
+
 		$user_id = $this->Auth->User('id');
 		$options['joins'] = array(
 						    array('table' => 'lectures',
@@ -344,7 +357,9 @@ class StudentsController extends AppController{
 	//set menu
 		$this->set('menu_type','student_menu');
 	//lay hang so he thong
-		$COST = 20000;
+		$this->loadModel('Constant');
+		$constantCost = $this->Constant->findByName('cost');
+		$COST = $constantCost['Constant']['value'];
 		$this->set('COST',$COST);
 
 		$catagory = "0";
@@ -459,6 +474,11 @@ class StudentsController extends AppController{
 	public function calcMoney($month , $year )
 	{
 		//Tinh tien tu dau thang den ngay hien tai
+		//load hang so he thong
+		$this->loadModel('Constant');
+		$constantCost = $this->Constant->findByName('cost');
+		$COST = $constantCost['Constant']['value'];
+
 		$user_id = $this->Auth->user('id');
 		$this->loadModel('Register');
 		$options = array(
@@ -472,7 +492,7 @@ class StudentsController extends AppController{
 
 			);
 		$data = $this->Register->find('all',$options);
-		$money = $data[0][0]['money'] * 20000;
+		$money = $data[0][0]['money'] * $COST;
 		
 		return $money;
 		
@@ -586,12 +606,20 @@ $this->set('data', $data);
 
 }
 
-public function registedLectureThisWeek(){
+public function recentRegistedLecture(){
 	// set menu
 	$this->set('menu_type', 'student_menu');
 	//hang so he thong
-	$COST = 20000;
+	$this->loadModel('Constant');
+	$constantCost = $this->Constant->findByName('cost');
+	$COST = $constantCost['Constant']['value'];
 	$this->set('COST',$COST);
+
+	$constantExpireTime = $this->Constant->findByName('expire_time');
+	$expireTime = $constantExpireTime['Constant']['value'];
+	$stringExpireTime = "-".$expireTime." days";
+	$this->set('expireTime',$expireTime);
+	
 
 	$user_id = $this->Auth->User('id');
 	$options['joins'] = array(
@@ -607,7 +635,7 @@ public function registedLectureThisWeek(){
 					    	)
 					       );
 	$options['conditions'] = array('Register.user_id' => $user_id,
-			'Register.created >=' => date('Y-m-d H:i:s',strtotime("-1 weeks"))
+			'Register.created >=' => date('Y-m-d H:i:s',strtotime($stringExpireTime))
 
 			);
 		$options['order'] = array(
@@ -636,7 +664,7 @@ public function registedLectureThisWeek(){
 						}
 
 
-	$this->set('registedLectureThisWeek',$data);
+	$this->set('recentRegistedLecture',$data);
 	
 
 
@@ -650,8 +678,11 @@ public function registedLectureThisWeek(){
 		// set menu
 		$this->set('menu_type','student_menu');
 		//lay hang he thong
-		$COST = 20000;
+		$this->loadModel('Constant');
+		$constantCost = $this->Constant->findByName('cost');
+		$COST = $constantCost['Constant']['value'];
 		$this->set('COST',$COST);
+
 		if($id == null) 
 		{
 			if($currentLocation != null)
@@ -726,8 +757,11 @@ public function moneyStatistics(){
 	//set menu
     $this->set('menu_type','student_menu');
     // Lay hang he thong
-    $COST = 20000;
-    $this->set('COST',$COST);
+	$this->loadModel('Constant');
+	$constantCost = $this->Constant->findByName('cost');
+	$COST = $constantCost['Constant']['value'];
+	$this->set('COST',$COST);
+
     $user_id = $this->Auth->user('id');
 
     if($this->request->is('post')) {
@@ -791,8 +825,7 @@ public function moneyStatistics(){
 		if($data != null) 	$this->set('lecturesOfTheMonth',$data);
 		$this->set('moneyOfTheMonth',$moneyOfTheMonth);
 		//Lay gia tien mot bai hoc tu hang so he thong
-		$this->set('cost','20.000 VND');
-
+		
 
 
 	if(($montharr = $this->Session->read('monthxu')) && ($yeararr = $this->Session->read('yearxu')))
@@ -1034,13 +1067,17 @@ return 1;
 }
 public function checkPermissionLecture($register_id = null ){
 
-//Nguoi dung hien tai co dang ki bai nay trong 1 tuan ko?
+//Nguoi dung hien tai co dang ki bai nay trong thoi gian cho phep ko ( 1 tuan)?
+	$constantExpireTime = $this->Constant->findByName('expire_time');
+	$expireTime = $constantExpireTime['Constant']['value'];
+	$stringExpireTime = "-".$expireTime." days";
+
 	$user_id = $this->Auth->user('id');
 	$this->loadModel('Register');
 	$this->Register->recursive = -1;
 	$options = array(
 		'conditions' => array('Register.id' => $register_id,
-			'Register.created >=' => date('Y-m-d H:i:s', strtotime("-1 weeks")),
+			'Register.created >=' => date('Y-m-d H:i:s', strtotime($stringExpireTime)),
 			'Register.user_id' => $user_id
 
 			)
@@ -1059,7 +1096,12 @@ public function getStatusLecture($lecture_id = null){
 		- chua hoc return 1
 		- da hoc return 2
 
-*/	if($lecture_id == null ) 
+*/	
+	$constantExpireTime = $this->Constant->findByName('expire_time');
+	$expireTime = $constantExpireTime['Constant']['value'];
+	$stringExpireTime = "-".$expireTime." days";	
+	
+		if($lecture_id == null ) 
 		{
 				$this->Session->setFlash(_('システムエラー.見つけない'));
 				$this->redirect(array('action' => 'index'));
@@ -1068,7 +1110,7 @@ public function getStatusLecture($lecture_id = null){
 	$options = array(
 	 	'conditions' => array('Register.lecture_id' => $lecture_id,
 	 	'Register.user_id' => $user_id,
-		'Register.created >=' => date('Y-m-d H:i:s', strtotime("-1 weeks"))
+		'Register.created >=' => date('Y-m-d H:i:s', strtotime($stringExpireTime))
 	 		)
 	 	);
 

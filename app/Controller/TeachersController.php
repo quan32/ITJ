@@ -22,6 +22,14 @@ class TeachersController extends AppController{
 	public function index (){
 	
 		$this->set('menu_type','teacher_menu');
+		//lay hang so he thong
+		$this->loadModel('Constant');
+		$constantCost = $this->Constant->findByName('cost');
+		$COST = $constantCost['Constant']['value'];
+
+		$constantRate = $this->Constant->findByName('rate');
+		$RATE = $constantRate['Constant']['value'];
+
 		$user_id = $this->Auth->user('id');
 		// var_dump($user_id);
 		$this->loadModel('User');
@@ -386,7 +394,12 @@ class TeachersController extends AppController{
 		//set menu
 	    $this->set('menu_type','teacher_menu');
 	    // Lay hang he thong
-	    $COST = 20000;
+	    $this->loadModel('Constant');
+		$constantCost = $this->Constant->findByName('cost');
+		$COST = $constantCost['Constant']['value'];
+
+		$constantRate = $this->Constant->findByName('rate');
+		$RATE = $constantRate['Constant']['value'];
 	    $this->set('COST',$COST);
 	    $user_id = $this->Auth->user('id');
 
@@ -412,7 +425,13 @@ class TeachersController extends AppController{
 	public function calcMoney($month = null,$year =null)
 	{
 		//load hang so he thong
-		$COST = 20000;
+		$this->loadModel('Constant');
+		$constantCost = $this->Constant->findByName('cost');
+		$COST = $constantCost['Constant']['value'];
+
+		$constantRate = $this->Constant->findByName('rate');
+		$RATE = $constantRate['Constant']['value'];
+
 		$user_id = $this->Auth->user('id');
 		$this->loadModel('Lecture');
 		$options = array(
@@ -441,7 +460,7 @@ class TeachersController extends AppController{
 			);
 		$this->Lecture->recursive = -1;
 		$data = $this->Lecture->find('all',$options);
-		$money = $data[0][0]['registerTimes'] * $COST;
+		$money = $data[0][0]['registerTimes'] * $COST*(float) ($RATE/100);
 		return $money;
 		
 
