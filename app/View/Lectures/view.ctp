@@ -103,6 +103,31 @@
 		<!-- Article 3 start -->
         
         <article id="article2">
+            <h2>MP3</h2>
+            
+            <div class="line"></div>
+            
+            <div class="articleBody clear">
+                
+				<?php
+					foreach ($sources as $source) {
+							if($source['type']=='audio/mpeg'){
+								$name = $source['filename'];
+								?>
+									<audio controls>
+									  <source src="http://localhost/ITJ/app/webroot/uploads/<?echo $source['filename'];?>" type="audio/mpeg">
+									  Your browser does not support this audio format.
+									</audio>
+									<br><br>
+								<?php
+							}
+						}
+				?>
+            </div>
+        </article>
+
+
+        <article id="article2">
             <h2>メディアファイル</h2>
             
             <div class="line"></div>
@@ -111,9 +136,14 @@
                 
 				<?php
 					foreach ($sources as $source) {
-							if($source['type']=='video/x-flv'){
+							if($source['type']=='video/mp4'){
 								$name = $source['filename'];
 								?>
+									<video width="320" height="240" controls>
+									  <source src="http://localhost/ITJ/app/webroot/uploads/<?echo $source['filename'];?>" type="video/mp4">
+									  Your browser does not support the video tag.
+									</video>
+									<!--
 									<object classid="" codebase=" " width="560" height="315" align="middle">
 								    <param name="FlashVars" value="">
 								    <param name="movie" value="">
@@ -121,14 +151,14 @@
 								    <param name="allowScriptAccess" value="always"><param name="wmode" value="transparent"><param name="base" value="http://d.violet.vn/plugins/flash/">
 								    <embed src="http://localhost/ITJ/app/webroot/files/flvPlayer.swf" quality="high" width="560" height="315"align="middle" type="application/x-shockwave-flash" allowscriptaccess="always" wmode="transparent" base=""  flashvars="file=http://localhost/ITJ/app/webroot/uploads/<?echo $source['filename'];?>">
 									</object>
+								-->
 									<br><br>
 								<?php
 							}
 						}
 				?>
             </div>
-        </article>
-        
+        </article>        
 		<!-- Article 3 end -->
 
 		<!-- Article 3 start -->
