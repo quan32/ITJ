@@ -34,7 +34,7 @@ class ManagesController extends AppController{
     $sql = "UPDATE users SET verify='$verify' WHERE id='$id'";
     $this->User->query($sql);
     $this->Session->setFlash(__('初期VerifyCodeにリセットした'));
-    return $this->redirect(array('controller'=>'manages','action'=>'index'));
+    return $this->redirect(array('controller'=>'manages','action'=>'teacher'));
   }
 
 

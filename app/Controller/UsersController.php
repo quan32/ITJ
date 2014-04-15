@@ -389,7 +389,11 @@ class UsersController extends AppController{
 		$sql = "UPDATE users SET password='$password' WHERE id='$id'";
 		$this->User->query($sql);
 		$this->Session->setFlash(__('初期パスワードにリセットした'));
-		return $this->redirect(array('controller'=>'manages','action'=>'index'));
+		if($user['User']['role']=="student")
+			return $this->redirect(array('controller'=>'manages','action'=>'index'));
+		else if($user['User']['role']=="teacher")
+			return $this->redirect(array('controller'=>'manages','action'=>'teacher'));
+		
 		
 	}
 
@@ -406,10 +410,14 @@ class UsersController extends AppController{
 	}
 
 	public function lock($id=null){
+		$user= $this->User->findById($id);
 		$this->User->id =$id;
 		if ($this->User->saveField('state','locked')) {
             $this->Session->setFlash(__('アカウントはロックされた'));
-			return $this->redirect(array('controller'=>'manages','action' => 'index')); 
+            if($user['User']['role']=="student")
+				return $this->redirect(array('controller'=>'manages','action' => 'index')); 
+			else if($user['User']['role']=="teacher")
+				return $this->redirect(array('controller'=>'manages','action' => 'teacher')); 
 		}
 	}	
 
