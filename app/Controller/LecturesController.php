@@ -289,6 +289,8 @@ class LecturesController extends AppController{
 			if(in_array($source['type'], array('application/pdf'))){
 				$src=$this->Common->view_pdf($source['filename']);
 				$this->set('src',$src);
+				$this->set('pdf_id', $source['id']);
+				$this->set('pdf_state',$source['state']);
 			}
 		}
 		$this->set('sources', $sources);
@@ -300,6 +302,7 @@ class LecturesController extends AppController{
 		$isLiked = count($this->Lecture->Favorite->findAllByLectureIdAndUserId($id,$this->Auth->user('id')))!=0 ? 1: 0;
 		$this->set('isLiked', $isLiked);
 		$this->set('current_user_id', $this->Auth->user('id'));
+		$this->set('role',$this->Auth->user('role'));
 
 		//Hien thi tag
 		$this->loadModel('Vovan');

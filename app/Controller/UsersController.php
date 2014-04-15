@@ -129,6 +129,11 @@ class UsersController extends AppController{
 							$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 管理者の同意を取ってないアカウントでログインした';
 							$this->Log->writeLog('login.txt',$log);
 							return $this->redirect(array('action'=>'login'));
+						}elseif($user['User']['state']=='rejected'){//Trang thai moi dang nhap dang cho xac nhan
+							$this->Session->setFlash(__('管理者に登録する要求を拒否させられてしまった。'));
+							$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 管理者に登録する要求を拒否させられてしまったアカウントでログインした';
+							$this->Log->writeLog('login.txt',$log);
+							return $this->redirect(array('action'=>'login'));
 						}elseif ($user['User']['state']=='blocked') {//Trang thai bi khoa tam thoi do qua 3 lan dang nhap that bai
 							$time_now = intval(strtotime(date('H:i:s d-m-Y')));
   							$temp_time = intval(strtotime($user['User']['modified']));
@@ -170,6 +175,11 @@ class UsersController extends AppController{
 							$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 管理者の同意を取ってないアカウントでログインした';
 							$this->Log->writeLog('login.txt',$log);
 							return $this->redirect(array('action'=>'login'));
+						}elseif($user['User']['state']=='rejected'){//Trang thai moi dang nhap dang cho xac nhan
+							$this->Session->setFlash(__('管理者に登録する要求を拒否させられてしまった。'));
+							$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 管理者に登録する要求を拒否させられてしまったアカウントでログインした';
+							$this->Log->writeLog('login.txt',$log);
+							return $this->redirect(array('action'=>'login'));
 						}elseif ($user['User']['state']=='blocked') {//Trang thai bi khoa tam thoi do qua 3 lan dang nhap that bai
 							$time_now = intval(strtotime(date('H:i:s d-m-Y')));
   							$temp_time = intval(strtotime($user['User']['modified']));
@@ -200,6 +210,13 @@ class UsersController extends AppController{
 							return $this->redirect(array('action'=>'login'));
 						}
 					}else{//Xu ly dang nhap cho manager
+						if($user['User']['state']=='deleted'){//Tai khoan da bi khoa
+							$this->Session->setFlash(__('アカウントは削除されたから、貴方は管理権が失ってしまった。'));
+							$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 削除したアカウントでログインした';
+							$this->Log->writeLog('login.txt',$log);
+							return $this->redirect(array('action'=>'login'));
+						}
+
 						$count=0;
 
 						//debug($user);die;
@@ -238,7 +255,8 @@ class UsersController extends AppController{
 					$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 第'.($user['User']['failedNo']+1).'回：ユーザ名又はパスワードが間違ってしまった';
 					$this->Log->writeLog('login.txt',$log);
 
-					if($user['User']['failedNo'] == $max){
+					if($user['User']['role']!='manager'){
+						if($user['User']['failedNo'] == $max){
 						$this->Session->setFlash(__('失敗したログインの回数は3回になってしまった。
 						アカウントは一時にブロックされることになっている。あとで戻ってください。'));
 						$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 失敗したログインの回数は3回になってしまった。アカウントは一時にブロックされることになっている';
@@ -253,6 +271,8 @@ class UsersController extends AppController{
 							$this->User->saveField('failedNo', $failedNo);
 						}
 					}
+					
+				}
 					
 
 					

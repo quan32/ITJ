@@ -10,9 +10,8 @@ class CommentsController extends AppController{
 
 	public function isAuthorized($user){
 		// Only teacher can use teacher's function
-		if($user['role']=='teacher' || $user['role']=='student')
-			return true;
-		return false;
+		
+		return true;
 	}
 
 	public function add(){

@@ -88,14 +88,20 @@ if(isset($users))
 
 	else
 	{
-		echo 'この講義は誰にも受講しません。';
+		echo '<span id="vovan">この講義は誰にも受講しません。</span>';
 	}
 }
 }
 if(isset($backLink))
 {
 	if($backLink!=null)
-		echo "<br>".$this->Html->link('戻る',array('controller' => 'lectures', 'action' => $backLink),array('class'=>'link_buttonx'));
+		echo "<br><br>".$this->Html->link('戻る',array('controller' => 'lectures', 'action' => $backLink),array('class'=>'link_buttonx'));
 }
 
 ?>
+
+<style type="text/css">
+	span#vovan{
+		color:red;
+	}
+</style>
