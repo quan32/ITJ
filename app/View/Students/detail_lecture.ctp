@@ -5,7 +5,7 @@
 <?php echo $this->Html->css('lecture_view');?>
 <?php
 if(!isset($lecture)){
-    echo "<h2>すみません,見つけられない!</h2>";
+    echo "<h2 class='detail_lecture_error'>すみません,見つけられない!</h2>";
     if(isset($backLink))
     {
        
@@ -15,7 +15,7 @@ if(!isset($lecture)){
 else{
     if($lecture == null)
     {
-        echo "<h2>すみません,見つけられない!</h2>";
+        echo "<h2 class='detail_lecture_error'>すみません,見つけられない!</h2>";
         if(isset($backLink))
         {
            
@@ -67,7 +67,7 @@ else{
 
             if($lecture[0]['Block'] == 1)
             {
-                echo "<span color='red!important'>あなたは今、この先生にブロックられています。</span><br><br>"; 
+                echo "<span class='detail_lecture_error'>あなたは今、この先生にブロックられています。</span><br><br>"; 
                 if(isset($backLink)){
                         echo $this->Html->link('戻る',array('controller' => 'Students', 'action' => $backLink),array('class'=>'link_buttonx'));
                     } 
@@ -141,7 +141,7 @@ else{
     <?php endforeach; ?>
 </ul>
 <style type="text/css">
-    body{
+    .detail_lecture_error{
         color:red;
     }
     table{

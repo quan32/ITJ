@@ -5,9 +5,9 @@ class SourcesController extends AppController{
 	}
 	public function isAuthorized($user){
 		// Only teacher can use teacher's function
-		if($user['role']=='teacher')
-			return true;
-		return false;
+		if($user['role']=='student')
+			return false;
+		return true;
 	}
 
 	public function add1($id =null) {
@@ -125,6 +125,62 @@ class SourcesController extends AppController{
 		}
 
 	}
+
+	public function block($id =null){
+	    $source = $this->Source->findById($id);
+	    $lecture_id = $source['Source']['lecture_id'];
+
+	    $this->Source->id=$id;
+	    if($this->Source->saveField('state','blocked')){
+	    	return $this->redirect(array('controller'=>'lectures','action'=>'view', $lecture_id));
+
+	    }else{
+	    	$this->Session->setFlash(__('ブロックできない'));
+	    	return $this->redirect(array('controller'=>'lectures','action'=>'view', $lecture_id));
+	    }
+	}
+	public function unblock($id =null){
+	    $source = $this->Source->findById($id);
+	    $lecture_id = $source['Source']['lecture_id'];
+
+	    $this->Source->id=$id;
+	    if($this->Source->saveField('state','normal')){
+	    	return $this->redirect(array('controller'=>'lectures','action'=>'view', $lecture_id));
+
+	    }else{
+	    	$this->Session->setFlash(__('ブロックできない'));
+	    	return $this->redirect(array('controller'=>'lectures','action'=>'view', $lecture_id));
+	    }
+	}
+
+	public function managerDelete($id =null){
+	    $source = $this->Source->findById($id);
+	    $lecture_id = $source['Source']['lecture_id'];
+
+	    //Delete source in hard disk
+	    $target=$source['Source']['filename'];
+			$target='uploads/'. $target;
+
+			if (file_exists($target)) {
+			    unlink($target); // Delete now
+				} 
+			// See if it exists again to be sure it was removed
+			if (file_exists($target)) {
+			    echo "Problem deleting " . $target;
+				} else {
+			    echo "Successfully deleted " . $target;
+				}
+
+	    $this->Source->id=$id;
+	    if($this->Source->delete()){
+	    	return $this->redirect(array('controller'=>'lectures','action'=>'view', $lecture_id));
+
+	    }else{
+	    	$this->Session->setFlash(__('削除できない'));
+	    	return $this->redirect(array('controller'=>'lectures','action'=>'view', $lecture_id));
+	    }
+	}
+
 
 	public function delete($id){
 
