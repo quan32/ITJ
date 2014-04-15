@@ -111,7 +111,7 @@
                 
 				<?php
 					foreach ($sources as $source) {
-							if($source['type']=='audio/mpeg'){
+							if($source['type']=='audio/mpeg' || $source['type']=='audio/mp3' || $source['type']=='audio/wav'){
 								$name = $source['filename'];
 								?>
 									<audio controls>
@@ -143,15 +143,6 @@
 									  <source src="http://localhost/ITJ/app/webroot/uploads/<?echo $source['filename'];?>" type="video/mp4">
 									  Your browser does not support the video tag.
 									</video>
-									<!--
-									<object classid="" codebase=" " width="560" height="315" align="middle">
-								    <param name="FlashVars" value="">
-								    <param name="movie" value="">
-								    <param name="quality" value="high">
-								    <param name="allowScriptAccess" value="always"><param name="wmode" value="transparent"><param name="base" value="http://d.violet.vn/plugins/flash/">
-								    <embed src="http://localhost/ITJ/app/webroot/files/flvPlayer.swf" quality="high" width="560" height="315"align="middle" type="application/x-shockwave-flash" allowscriptaccess="always" wmode="transparent" base=""  flashvars="file=http://localhost/ITJ/app/webroot/uploads/<?echo $source['filename'];?>">
-									</object>
-								-->
 									<br><br>
 								<?php
 							}
