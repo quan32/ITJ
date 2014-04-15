@@ -64,7 +64,8 @@ else{
             echo "</tr>";
 
             echo "</table>";
-
+			echo $this->Html->link('レポート',array('controller' => 'Reports','action' => 'index',$lecture[0]['Lecture']['id'], $lecture[0]['Lecture']['name'],$lecture[0]['User']['fullname']),array('class'=>'link_buttonx'));
+			echo "<br>";
             if($lecture[0]['Block'] == 1)
             {
                 echo "<span color='red!important'>あなたは今、この先生にブロックられています。</span><br><br>"; 
@@ -72,7 +73,6 @@ else{
                         echo $this->Html->link('戻る',array('controller' => 'Students', 'action' => $backLink),array('class'=>'link_buttonx'));
                     } 
             }                    
-
             else
             {
 

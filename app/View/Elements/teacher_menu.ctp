@@ -44,7 +44,9 @@
 	?></li>
   </ul>
 </li>
-
+<li><?php
+	echo $this->Html->link('メッセージ',array('controller'=>'messages','action'=>'viewall'),array('escape'=>false));
+	?></li>
 <!-- <li><?php 
 echo $this->Html->link('統計', 
 	array('controller' => 'teachers', 'action' => 'statistic'));

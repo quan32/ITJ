@@ -15,7 +15,12 @@ class ReportsController extends AppController{
 
 	}
 	public function index($lec_id = null,$lec_title = null,$teacher_name = null) {
-		$this->set('menu_type','teacher_menu');
+		if($this->Auth->user('role')=='student') {
+            $this->set('menu_type','student_menu');}
+        elseif($this->Auth->user('role')=='teacher'){
+            $this->set('menu_type','teacher_menu');
+		} else { 
+			$this->set('menu_type','manager_menu');}
 		$this->set('lec_id',$lec_id);
 		$this->set('lec_name',$lec_title);
 		$this->set('author',$teacher_name);
@@ -23,7 +28,12 @@ class ReportsController extends AppController{
 		} else {$this->set('reported',1);}
 	}
 	public function report($lec_id = null) {
-		$this->set('menu_type','teacher_menu');
+		if($this->Auth->user('role')=='student') {
+            $this->set('menu_type','student_menu');}
+        elseif($this->Auth->user('role')=='teacher'){
+            $this->set('menu_type','teacher_menu');
+		} else { 
+			$this->set('menu_type','manager_menu');}
 		$this->set('lec_id',$lec_id);
 		if($this->checkReported($lec_id) == 0)
 		{
@@ -61,7 +71,12 @@ class ReportsController extends AppController{
 	$this->set('reportsdata',$data);
 		}
 	public function detail($rep_id = null, $lec_id = null, $user_id = null, $rep_status = null) {
-		$this->set('menu_type','manager_menu');
+		if($this->Auth->user('role')=='student') {
+            $this->set('menu_type','student_menu');}
+        elseif($this->Auth->user('role')=='teacher'){
+            $this->set('menu_type','teacher_menu');
+		} else { 
+			$this->set('menu_type','manager_menu');}
 		$this->loadModel('User');
 		$this->loadModel('Lecture');
 		//$this->loadModel('Report');
@@ -71,6 +86,7 @@ class ReportsController extends AppController{
 		$this->set('reporter',$user['User']['fullname']);
 		$this->set('lecture',$lecture['Lecture']);
 		$this->set('lecture_author',$lecture['User']['fullname']);
+		$this->set('author_id',$lecture['User']['id']);
 		//$this->set('rep_time',$rep_time);
 		$this->set('rep_id',$rep_id);
 		$this->set('rep_status',$rep_status);
