@@ -215,22 +215,22 @@
  * the cake shell command: cake schema create Sessions
  *
  */
-	/*
+	
 	Configure::write('Session', array(
 		'defaults' => 'php',
 		'timeout' => 30,            // auto logout after 30 minutes
     	'cookieTimeout' => 1440,    // session cookie 24 hours
     	'autoRegenerate' => true    // regenerate session
 	));
-    */
-Configure::write('Session', array(
-    'defaults' => 'database',
-    'cookieTimeout' => 0,
-    'checkAgent' => false,
-    'timeout' => 60, //1 hr
-    'handler' => array(
-        'model' => 'CustomSession')
-));
+    
+// Configure::write('Session', array(
+//     'defaults' => 'database',
+//     'cookieTimeout' => 0,
+//     'checkAgent' => false,
+//     'timeout' => 60, //1 hr
+//     'handler' => array(
+//         'model' => 'CustomSession')
+// ));
 
 
 
