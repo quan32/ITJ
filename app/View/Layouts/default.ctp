@@ -131,6 +131,8 @@
                       ?>
                     </li>
                 <li class="divider"></li>
+				
+				<li class="divider"></li>
                 <li><?php 
                   echo $this->Html->link('<i class="fa fa-power-off"></i> ログアウト ', 
                     array('controller' => 'users', 'action' => 'logout'),array('escape'=>false));

@@ -3,7 +3,9 @@
 <?php
 if($reported != 0) {
 	echo "<h3>あなたは前にこの講義をレポートしました。</h3><br>";
-	echo "<td>".$this->Html->link('ホームページ',array('controller' => 'Teachers','action' => 'index'));
+	if($menu_type == 'teacher_menu'){
+		echo "<td>".$this->Html->link('ホームページ',array('controller' => 'Teachers','action' => 'index'),array('class'=>'link_buttonx'));
+		}else {echo "<td>".$this->Html->link('ホームページ',array('controller' => 'Students','action' => 'index'),array('class'=>'link_buttonx'));}
 	}else {
 	echo "<h3>レポート機能は各講義に著作権侵害の問題がある場合のためです。あなたはこの講義をほんとにレポートしたいですか？　<br></h3>";
 	
@@ -19,8 +21,9 @@ if($reported != 0) {
 	echo "<th>".$author."</th>";
 	echo "</tr>";
 	echo "</table>";
-
-			echo "<td>".$this->Html->link('キャンセル |',array('controller' => 'Teachers','action' => 'index'));
-			echo "<td>".$this->Html->link(' レポート',array('controller' => 'Reports','action' => 'report',$lec_id));
+	if($menu_type == 'teacher_menu') {
+			echo "<td>".$this->Html->link('キャンセル |',array('controller' => 'Teachers','action' => 'index'),array('class'=>'link_buttonx'));
+			}else {echo "<td>".$this->Html->link('キャンセル',array('controller' => 'Students','action' => 'index'),array('class'=>'link_buttonx'));}
+			echo "<td>".$this->Html->link(' レポート',array('controller' => 'Reports','action' => 'report',$lec_id),array('class'=>'link_buttonx'));
 	}
 ?>			
