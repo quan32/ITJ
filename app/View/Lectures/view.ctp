@@ -35,16 +35,67 @@
         
         <article id="article2">
             <h2>講義内容</h2>
+            <?php
+            	if(!isset($pdf_id)){
+            		echo "<span class='pdf_error'>講義内容は削除させられてしまった。</span>";
+            	}else{
+
+            		if($pdf_state == "normal"){
+            			?>
+
+							<div class="line"></div>
+				            
+				            <div class="articleBody clear">
+				                <?php
+								if(isset($src)){
+								?>
+									<iframe width="100%" height="600" src="<?php echo $src;?>"></iframe>
+								<?php }?>
+				            </div>
+
+
+
+            			<?php
+
+						if($role=='manager'){
+	            			echo "<div class='source_block'>";
+	            			echo $this->Html->link('ブロック  ', array('controller'=>'sources', 'action'=>'block', $pdf_id));
+	            			echo $this->Html->link('削除', array('controller'=>'sources', 'action'=>'managerDelete', $pdf_id));
+	            			echo "</div>";
+            			}
+
+
+
+
+            		}elseif($pdf_state == "blocked"){
+            			if($role=='manager'){
+            				?>
+	            				<div class="line"></div>
+					            
+					            <div class="articleBody clear">
+					                <?php
+									if(isset($src)){
+									?>
+										<iframe width="100%" height="600" src="<?php echo $src;?>"></iframe>
+									<?php }?>
+					            </div>
+
+            				<?php
+            				echo "<div class='source_block'>";
+	            			echo $this->Html->link('アンチブロック  ', array('controller'=>'sources', 'action'=>'unblock', $pdf_id));
+	            			echo $this->Html->link('削除', array('controller'=>'sources', 'action'=>'managerDelete', $pdf_id));
+	            			echo "</div>";
+            			}elseif($role=='teacher'){
+            				echo "<span class='pdf_error'>このファイルは管理者によってブロックさせられた。</span>";
+            			}else{
+            				echo "<span class='pdf_error'>このファイルは管理者によってブロックさせられた。</span>";
+            			}
+
+            		}
+	            	
+            	}
+            ?>
             
-            <div class="line"></div>
-            
-            <div class="articleBody clear">
-                <?php
-				if(isset($src)){
-				?>
-					<iframe width="100%" height="600" src="<?php echo $src;?>"></iframe>
-				<?php }?>
-            </div>
         </article>
         
 		<!-- Article 2 end -->
@@ -84,7 +135,11 @@
         
         <article id="article2">
             <h2>イメージ</h2>
-            
+            <?php
+           		 if($sources==null){
+            		echo "<span class='pdf_error'>イメージがない</span><br><br>";
+            	}
+            ?>
             <div class="line"></div>
             
             <div class="articleBody clear">
@@ -92,10 +147,50 @@
 				<?php
 					foreach ($sources as $source) {
 						if(in_array($source['type'], array('image/gif','image/png','image/jpg','image/jpeg'))){
-								?>
+								
+
+							if($source['state'] == "normal"){
+		            			?>
+
 									<img src="http://localhost/ITJ/app/webroot/uploads/<?php echo $source['filename'];?>">
 									<br>
-								<?php
+
+
+
+		            			<?php
+
+								if($role=='manager'){
+			            			echo "<div class='source_block'>";
+			            			echo $this->Html->link('ブロック  ', array('controller'=>'sources', 'action'=>'block', $source['id']));
+			            			echo $this->Html->link('削除', array('controller'=>'sources', 'action'=>'managerDelete', $source['id']));
+			            			echo "</div>";
+		            			}
+
+
+
+
+		            		}elseif($source['state'] == "blocked"){
+		            			if($role=='manager'){
+		            				?>
+			            				<img src="http://localhost/ITJ/app/webroot/uploads/<?php echo $source['filename'];?>">
+										<br>
+
+		            				<?php
+		            				echo "<div class='source_block'>";
+			            			echo $this->Html->link('アンチブロック  ', array('controller'=>'sources', 'action'=>'unblock', $source['id']));
+			            			echo $this->Html->link('削除', array('controller'=>'sources', 'action'=>'managerDelete', $source['id']));
+			            			echo "</div>";
+		            			}elseif($role=='teacher'){
+		            				echo "<span class='pdf_error'>このファイルは管理者によってブロックさせられた。</span><br><br>";
+		            			}else{
+		            				echo "<span class='pdf_error'>このファイルは管理者によってブロックさせられた。</span><br><br>";
+		            			}
+
+		            		}
+
+
+
+
 							}
 						}
 				?>
@@ -357,5 +452,11 @@ document.onclick=reEnable
 <style type="text/css">
 	button.link_buttonx{
 		height:37px;
+	}
+	.source_block{
+		text-align: right;
+	}
+	span.pdf_error{
+		color:red;
 	}
 </style>
