@@ -27,6 +27,59 @@ class TestsController extends AppController {
 	}
 
 	public function view($id = null){
+		//check hoc sinh co the view
+		if($this->Auth->user('role')=='student')
+		{
+		$test = $this->Test->findById($id);
+		if($test == null)
+			$this->redirect(array('controller'=>'pages','action'=>'display', 'error'));
+		else
+		{
+			$isBlock = $this->checkBlockByLectureID($test['Test']['lecture_id']);
+
+			if($isBlock == 1) $this->redirect(array('controller'=>'pages','action'=>'display', 'error'));
+
+			if(($this->getStatusLecture($test['Test']['lecture_id'])) == 0) 
+				$this->redirect(array('controller'=>'pages','action'=>'display', 'error'));
+			
+			//check giao vien nay bi delete , lock ko?
+			$this->loadModel('Lecture');
+			$this->Lecture->recursive = 1;
+			$lecture = $this->Lecture->findById($test['Test']['lecture_id']);
+			if($lecture == null) $this->redirect(array('controller'=>'pages','action'=>'display', 'error'));
+			else
+			{
+				
+				if(($lecture['User']['state'] == 'locked')||($lecture['User']['state'] == 'deleted'))
+					$this->redirect(array('controller'=>'pages','action'=>'display', 'error'));
+			}
+			$this->Lecture->recursive = 1;
+		}
+		}
+		// ko cho giao vien khac xem
+		if($this->Auth->user('role') == 'teacher')
+		{
+			$test = $this->Test->findById($id);	
+			if($test == null) $this->redirect(array('controller'=>'pages','action'=>'display', 'error'));
+			else
+			{
+			$this->loadModel('Lecture');
+			$this->Lecture->recursive = 1;
+			$lecture = $this->Lecture->findById($test['Test']['lecture_id']);
+			if($lecture == null) $this->redirect(array('controller'=>'pages','action'=>'display', 'error'));
+			else
+			{
+				
+				if($lecture['Lecture']['user_id'] != $this->Auth->user('id'))
+					$this->redirect(array('controller'=>'pages','action'=>'display', 'error'));
+			}
+				
+				
+			}
+		}
+		
+
+		//-----end check by xuan--------------
 		if($this->Auth->user('role')=='student')
 			$this->set('menu_type','student_menu');
 		elseif($this->Auth->user('role')=='teacher')
@@ -168,5 +221,95 @@ class TestsController extends AppController {
 		$this->Session->setFlash(__('テストはまだ削除していない'));
 		return $this->redirect(array('action' => 'index'));
 	}
+
+
+// mot so ham check
+public function isBlock($teacher_id = null){
+// 0 la ko block
+// 1 la block
+	if($teacher_id == null ) 
+			{
+					$this->Session->setFlash(_('システムエラー。見つけられません。'));
+					$this->redirect(array('action' => 'index'));
+			}
+
+	$student_id = $this->Auth->user('id');
+	$this->loadModel('Block');
+
+
+	$options = array(
+						'conditions' => array(
+							'Block.student_id' => $student_id,
+							'Block.teacher_id' => $teacher_id
+							
+						),
+											
+
+				);
+			$this->Block->recursive = -1;
+			$data = $this->Block->find('all',$options);
+			if($data == null) return 0;
+			else return 1;
+}
+
+public function checkBlockByLectureID($lecture_id = null)
+{
+	if($lecture_id == null) {
+		$this->redirect(array('action' => 'index'));
+	}
+	else
+	{
+		$this->loadModel('Lecture');
+		$this->Lecture->recursive = -1;
+		$data = $this->Lecture->findById($lecture_id);
+		if($data == null)
+		{
+			return 3;
+		}
+		else
+			return ($this->isBlock($data['Lecture']['user_id']));
+	}
+
+}
+public function getStatusLecture($lecture_id = null){
+/* 
+- Chua dang ki return 0
+- Da dang ki trong vong mot tuan
+		- chua hoc return 1
+		- da hoc return 2
+
+*/	
+	$constantExpireTime = $this->Constant->findByName('expire_time');
+	$expireTime = $constantExpireTime['Constant']['value'];
+	$stringExpireTime = "-".$expireTime." days";	
+	
+		if($lecture_id == null ) 
+		{
+				$this->Session->setFlash(_('システムエラー。見つけられません。'));
+				$this->redirect(array('action' => 'index'));
+		}
+	$user_id = $this->Auth->user('id');
+	$options = array(
+	 	'conditions' => array('Register.lecture_id' => $lecture_id,
+	 	'Register.user_id' => $user_id,
+		'Register.created >=' => date('Y-m-d H:i:s', strtotime($stringExpireTime))
+	 		)
+	 	);
+
+	 $this->loadModel('Register');
+	 $this->Register->recursive = -1;
+	 $data = $this->Register->find('all', $options);
+	 if($data == null) return 0;
+
+	 else
+	 {
+	 	if($data[0]['Register']['status'] == 0 )
+	 		return 1;
+	 	else
+	 		return 2;
+	 }
+	
+
+	}	
 
 }

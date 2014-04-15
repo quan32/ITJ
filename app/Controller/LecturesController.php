@@ -246,6 +246,7 @@ class LecturesController extends AppController{
 		// ko cho giao vien khac xem
 		if($this->Auth->user('role') == 'teacher')
 		{
+			$this->Lecture->recursive = 1;
 			$data = $this->Lecture->findById($id);	
 			if($data == null) $this->redirect(array('controller'=>'pages','action'=>'display', 'error'));
 			else
@@ -254,7 +255,7 @@ class LecturesController extends AppController{
 					$this->redirect(array('controller'=>'pages','action'=>'display', 'error'));
 			}
 		}
-		$this->Lecture->recursive = 1;
+		
 		//------------------------------------
 		if($this->Auth->user('role')=='student')
 			$this->set('menu_type','student_menu');
