@@ -6,7 +6,7 @@
         <legend><?php __('検索');?></legend>
      <table class="search_box">
             <tr>
-                <td class="td1"><?php echo $this->Form->input('keyword',array('label'=>'')); ?></td>
+                <td class="td1"><?php echo $this->Form->input('keyword',array('label'=>'','value'=>$key)); ?></td>
                 <td class="td2"><?php echo $this->Form->input('catagory', array('label'=>'','options'=>array('0'=>'全部','1'=>'数学','2'=>'文学','3'=>'外国語','4'=>'体育','5'=>'普通科学','6'=>'IT','7'=>'食品','8'=>'社会','9'=>'心理','10'=>'芸術'))); ?></td>
                 <td class="td3"><?php echo $this->Form->submit('検索'); ?></td>
             </tr>
@@ -40,6 +40,7 @@
 
 </style>
 <?php
+//debug($posts); die;
 if(!empty($posts)){
     echo "<table>";
     echo "<tr>";
@@ -47,8 +48,9 @@ if(!empty($posts)){
     echo "<th>".$this->Paginator->sort("name","タイトル");
     echo "<th>".$this->Paginator->sort("description","紹介する情報");
     echo "<th>".$this->Paginator->sort("fullname","作成した先生");
-    echo "<th>".$this->Paginator->sort("count","登録した学生の数"); //TODO
-    if($view_regis == 1) echo "<th>すぐ登録";
+    echo "<th>登録した数 "; //TODO
+	if($view_regis ==0 ) echo "<th> | 状態 </th>";
+    if($view_regis == 1) { echo "<th>| すぐ登録";}else{ echo "<th>| 操作</th>";}
     echo "</tr>";
     
     foreach($posts as $item){
@@ -57,7 +59,14 @@ if(!empty($posts)){
         echo "<td>".$item['Search']['name']."</td>";
         echo "<td>".$item['Search']['description']."</td>";
         echo "<td>".$item['User']['fullname']."</td>";
-        echo "<td>".count($item['Register'])."</td>";
+        echo "<td align = right>".count($item['Register'])."</td>";
+		if($view_regis ==0 ) {
+			echo "<td>";
+			if($item['Search']['reported'] == 1) {
+				echo "レポートさせた</td>";
+			}else {
+					echo "         </td>";}
+					}
         if($view_regis ==1) echo "<td>".$this->Html->link('詳しく',array('controller' => 'Students','action' => 'detailLecture',$item['Search']['id'], 'index'));
 		if($view_regis  == 2 && $item['User']['id'] != $teacher_id) echo "<td>".$this->Html->link('レポート',array('controller' => 'Reports','action' => 'index',$item['Search']['id'], $item['Search']['name'],$item['User']['fullname']));
 		if($item['User']['id'] == $teacher_id && $menu_type == "teacher_menu") echo "<td>".$this->Html->link('編集　',array('controller'=>'lectures','action' => 'edit',$item['Search']["id"]));

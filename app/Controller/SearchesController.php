@@ -46,36 +46,63 @@ class SearchesController extends  AppController{
             if(isset($this->passedArgs['Search.keyword'])) {
     			$keywords = $this->passedArgs['Search.keyword'];
 				$catagory = $this->passedArgs['Search.catagory'];
-				if($catagory == "0")
-				{
-					$conditions[] = array(
-						"AND" => array( 'Search.reported'=> "0",
+				if($this->Auth->user('role')!='manager') {
+					if($catagory == "0")
+					{
+						$conditions[] = array(
+							"AND" => array( 'Search.reported'=> "0",
+												"OR" => array(
+															'Search.name LIKE' => "%$keywords%",
+															'Search.description LIKE' => "%$keywords%",
+															'User.fullname LIKE' => "%$keywords%" ))
+						);
+					}else
+					{
+						$conditions[] = array (
+							"AND" => array('Search.category_id' => "$catagory",
+											'Search.reported' => "0",
 											"OR" => array(
-														'Search.name LIKE' => "%$keywords%",
-														'Search.description LIKE' => "%$keywords%",
-														'User.fullname LIKE' => "%$keywords%" ))
-					);
-				}else
-				{
-					$conditions[] = array (
-						"AND" => array('Search.category_id' => "$catagory",
-										'Search.reported' => "0",
-										"OR" => array(
-												'Search.name LIKE' => "%$keywords%",
-												'Search.description LIKE' => "%$keywords%",
-												'User.fullname LIKE' => "%$keywords%"))
-					);
+													'Search.name LIKE' => "%$keywords%",
+													'Search.description LIKE' => "%$keywords%",
+													'User.fullname LIKE' => "%$keywords%"))
+						);
+						}
+				}else {
+					if($catagory == "0")
+					{
+						$conditions[] = array(
+												"OR" => array(
+															'Search.name LIKE' => "%$keywords%",
+															'Search.description LIKE' => "%$keywords%",
+															'User.fullname LIKE' => "%$keywords%" )
+						);
+					}else
+					{
+						$conditions[] = array (
+							"AND" => array('Search.category_id' => "$catagory",
+											"OR" => array(
+													'Search.name LIKE' => "%$keywords%",
+													'Search.description LIKE' => "%$keywords%",
+													'User.fullname LIKE' => "%$keywords%"))
+						);
+						}
 					}
 					//echo $conditions;
                 $data['Search']['description'] = $keywords; 
             }
+			$this->loadModel('Constant');
+			$constantCost = $this->Constant->findByName('paging');
+			$paging = $constantCost['Constant']['value'];
             //Limit and Order By
             $this->paginate= array(
-                'limit' => 5,
+                'limit' => $paging,
                 'order' => array('id' => 'asc'),
             );
             
             $this->data = $data;
+			//if($keywords!= '') {
+			$this->set('key',$keywords);
+			//}
             $this->set("posts",$this->paginate("Search",$conditions));
         }
     }
