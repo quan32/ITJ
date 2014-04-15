@@ -31,6 +31,8 @@ class TestsController extends AppController {
 			$this->set('menu_type','student_menu');
 		elseif($this->Auth->user('role')=='teacher')
 			$this->set('menu_type','teacher_menu');
+		elseif($this->Auth->user('role')=='manager')
+			$this->set('menu_type','manager_menu');
 
 		$this->Test->id = $id;
 		if(!$this->Test->exists())
@@ -51,6 +53,8 @@ class TestsController extends AppController {
 			$this->set('menu_type','student_menu');
 		elseif($this->Auth->user('role')=='teacher')
 			$this->set('menu_type','teacher_menu');
+		elseif($this->Auth->user('role')=='manager')
+			$this->set('menu_type','manager_menu');
 		
 		//don't use layout
 		$this->layout = false;
