@@ -50,7 +50,6 @@ class StudentsController extends AppController{
 	}
 
 	public function index(){
-
 		$date = date('Y-m-d H:i:s');
 //set menu
 		$this->set('menu_type','student_menu');
