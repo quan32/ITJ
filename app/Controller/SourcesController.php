@@ -60,7 +60,7 @@ class SourcesController extends AppController{
 				$this->redirect(array('action' => 'add', $id));
 			}
 			// debug($this->request->data['Source']['filename']['type']);die;
-			if(!in_array($this->request->data['Source']['filename']['type'], array('image/gif','image/png','image/jpg','image/jpeg','text/tab-separated-values','video/x-flv','audio/mp4', 'audio/mpeg3','audio/mp3','audio/mpeg', 'audio/x-mpeg-3', 'video/mpeg', 'video/x-mpeg'))){
+			if(!in_array($this->request->data['Source']['filename']['type'], array('image/gif','image/png','image/jpg','image/jpeg','video/mp4','audio/mp3','audio/wav', 'audio/x-wav', 'audio/mpeg', 'audio/x-mpeg-3'))){
 
 				$this->Session->setFlash('ファイルフォーマットが間違ってしまった。ビデオと音声とイメージでけできる');
 				$this->redirect(array('action' => 'add', $id));

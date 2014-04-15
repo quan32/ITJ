@@ -1,4 +1,3 @@
-<h1><?php echo __('先生のホームページ'); ?></h1>
 <?php
 echo $this->element('search');
 // 5 bai giang moi tao nhat

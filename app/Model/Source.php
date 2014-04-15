@@ -18,8 +18,7 @@ class Source extends AppModel{
 			),
 			// http://book.cakephp.org/2.0/en/models/data-validation.html#Validation::mimeType
 			'mimeType' => array(
-				'rule' => array('mimeType', array('image/gif','image/png','image/jpg','image/jpeg',
-					'text/tab-separated-values','video/x-flv','audio/mp4', 'audio/mpeg3','audio/mp3','audio/mpeg', 'audio/x-mpeg-3', 'video/mpeg', 'video/x-mpeg')),
+				'rule' => array('mimeType', array('application/pdf','image/gif','image/jpeg','image/png','image/jpg','text/tab-separated-values','video/mp4','audio/mp3','audio/wav', 'audio/x-wav', 'audio/mpeg', 'audio/x-mpeg-3')),
 				'message' => '不当なファイル',
 				'required' => FALSE,
 				'allowEmpty' => TRUE,
