@@ -13,8 +13,8 @@ echo $this->Form->end(array('label'=>'表現'));
 
 <table>
 <tr>
-	<th>ID</th>
-	<th>タイトル</th>
+	<th>ユーザID</th>
+	<th>ユーザ名</th>
 	<th>お金</th>
 	<th>アドレス</th>
 	<th>携帯電話</th>

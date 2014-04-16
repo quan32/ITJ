@@ -43,8 +43,17 @@ else
             echo "</tr>";
             
             echo "<tr>";
+            if($info['User']['role']=='student')
+            {
             echo "<td>クレジットカード</td>";
             echo "<td>".$info['User']['credit_card_No']."</td>";
+            }
+            else
+            {
+            echo "<td>銀行口座</td>";
+            echo "<td>".$info['User']['bank_acc']."</td>";
+            }
+
             echo "</tr></table>";
 
             echo "<br />";
