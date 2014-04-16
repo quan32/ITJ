@@ -101,9 +101,7 @@ class ManagesController extends AppController{
 
         //$data = $this->User->find("all",$sql);
         $this->set("users",$data);
-        $this->loadModel('CustomSession');
-        $listLoggedInAdmin = $this->CustomSession->getLoggedInUsersInner();    
-        $this->set("online",$listLoggedInAdmin); 
+       
         // var_dump($data); die();
 
     }
@@ -126,13 +124,21 @@ class ManagesController extends AppController{
     $this->set("user_id", $user_id);
   }
    
+
+
   public function accept(){ // quan ly' User
   $this->set('menu_type','manager_menu');
      $this->loadModel('User');
       if (!empty($this->request->data)) 
       {         
       if ($this->User->save($this->request->data)) {
+      
+      if ($this->request->data["User"]["state"]=="normal") {
       $this->Session->setFlash(__('アカウントは今から使用できる'));
+      }
+      else
+      $this->Session->setFlash(__('アカウントは断られた'));
+        
       }
       } 
        
@@ -195,23 +201,35 @@ class ManagesController extends AppController{
      
      $sql['fields']=array('Lecture.user_id','COUNT(Register.id) AS total');
      //debug($sql);
-     $alls=$this->Register->find('all',$sql);
+     $ok=$this->Register->find('all',$sql);
      $i=0;
-     foreach ($alls as $all ) {
+     foreach ($ok as $all ) {
      //
      $x=$all[0]["total"]*$cost["Constant"]["value"];
      //var_dump($x); die();
-     $alls[$i][0]["total"]=$x;
+     $ok[$i][0]["total"]=$x;
      $i++;
      }
 
-    // var_dump($alls); die();
-     //debug($alls);
-    foreach ($alls as $all ) {
+    //
+     //var_dump($ok);
+    
+    $i=0;
+    foreach ($ok as $all ) {
      $id=$all["Lecture"]["user_id"];
      $data=$this->User->findAllById($id);
-     $users[$id]=$data[0];
+     if($data !=null )
+     {
+      if($data[0]["User"]["state"] != "deleted") {
+       $users[$id]=$data[0];
+       $alls[$i]=$all;
+       $i++;
+      }
+      
+     }
     }
+
+   // var_dump($alls); die();
      
  
    if ($this->request->data['Manage']['print']==true) {
@@ -225,7 +243,11 @@ class ManagesController extends AppController{
    $dir=new Folder('oder');
    $files=$dir->find($file);
 
-   if (empty($files)) {
+   if (!empty($files)) 
+   {
+    $file_delete = new File($dir->pwd() . DS . $file);
+    $file_delete->delete();
+   }
    $log = 'ELS-UBT-GWK54M78,'.$year.','.$month.','.date('Y').','.date('m').','.date('d').','.date('H').','.date('i').','.date('s').','.$admin_id.','.$admin_name;  
    $this->Log->writeOder($file,$log);
     
@@ -239,11 +261,11 @@ class ManagesController extends AppController{
    
    $log="END___END___END";
    $this->Log->writeOder($file,$log);
-   }
+   
 
    
    $this->Session->setFlash(__('データはファイルに書き込んだ'));
-   return $this->redirect(array('action'=>'oder'));
+   //return $this->redirect(array('action'=>'oder'));
    }
    
 
@@ -262,20 +284,26 @@ class ManagesController extends AppController{
    //var_dump( $this->request->data['Manage']['month']);die;
       
       $this->loadModel('Register');
-      $sql = array("conditions"=> array('MONTH(Register.created)' =>$this->request->data['Manage']['month']));
+      $sql["conditions"] = array('MONTH(Register.created) = '.$this->request->data['Manage']['month']);
       $alls=$this->Register->find('all',$sql);
       
      
     
-      $moneyTemp=0;
-     foreach ($alls as $all) {
-    //var_dump($all['Lecture']['cost']);die();
+     $moneyTemp=0;
+     $this->loadModel('Constant');
+     $this->loadModel('User');
+     $cost=$this->Constant->findByName("cost");
 
-      
-    $moneyTemp = $moneyTemp +  $all['Lecture']['cost'];
+     foreach ($alls as $all) {
+    //var_dump($all);
+    
+    $user=$this->User->findById($all['Lecture']['user_id']);
+    if ($user["User"]["state"] != "deleted") {
+    $moneyTemp = $moneyTemp +  $cost["Constant"]["value"];
+    }
           
      }
-
+    
     $moneyThisMonth = $moneyTemp * 0.4;
  
     }
@@ -464,6 +492,72 @@ class ManagesController extends AppController{
         return $this->redirect(array('controller'=>'manages','action' => 'lecture'));
     }
     
+  }
+
+  public function editinfo($id = null){
+    $this->set('menu_type','manager_menu');
+     $this->loadModel('User');
+
+    if ($this->request->is('post') || $this->request->is('put')) { 
+      $data = $this->request->data['User'] ;
+      //var_dump($data);die();
+      $user_id = $data['id'];
+     
+      $this->User->id =$user_id;
+
+       if(!$this->User->exists()){
+      throw new NotFoundException(__('不当なユーザ'));
+       }
+
+    $data['date_of_birth'] = $data['date_of_birth']['month'].'-'.$data['date_of_birth']['day'].'-'.$data['date_of_birth']['year'];
+
+    
+      if ($this->User->save($this->request->data)) {
+                $this->Session->setFlash(__('情報は更新されていた'));
+
+               // ghi log
+               $data = $this->User->find('all',array(
+                'conditions' => array('id' => $user_id),
+               'recursive' => -1)
+                );
+                
+                $date = date('Y-m-d H:i:s');
+                $file = "user_change_info.txt";
+              //"順番", “SUCCESS”, "時間", "ユーザーID", "ユーザー名", "tuoi", “sdt”, “email”, “dia chi”
+                $content =  "\"SUCCESS\","."\"".$date."\","."\"".$data[0]['User']['id']."\","."\"".$data[0]['User']['username']."\",\"基本情報変更\"";
+                
+                $this->Log->writeLog($file,$content);
+
+        //  return $this->redirect(array('action' => 'index')); 
+                //var_dump($this->request->data); die();
+                if ($this->request->data["User"]["role"]=="manager")
+                return $this->redirect(array('action' => 'detail',$user_id));
+                else  return $this->redirect(array('action' => 'accept'));
+        }
+        //log loi 
+        // ghi log
+               $data = $this->User->find('all',array(
+                'conditions' => array('id' => $user_id),
+               'recursive' => -1)
+                );
+                
+                $date = date('Y-m-d H:i:s');
+                $file = "user_change_info.txt";
+              //"順番", “SUCCESS”, "時間", "ユーザーID", "ユーザー名", "tuoi", “sdt”, “email”, “dia chi”
+                $content =  "\"FAIL\","."\"".$date."\","."\"".$data[0]['User']['id']."\","."\"".$data[0]['User']['username']."\",\"基本情報変更\"";
+                
+                $this->Log->writeLog($file,$content);
+            $this->Session->setFlash(
+                __('エラーが起きてしまった。してみてください'));
+    } else {
+       $this->User->id =$id;
+
+       if(!$this->User->exists()){
+      throw new NotFoundException(__('不当なユーザ'));
+       }
+        $this->request->data = $this->User->read(null, $id);
+          //  unset($this->request->data['User']['password']);
+        }
   }
 
   

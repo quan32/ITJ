@@ -363,7 +363,7 @@ class UsersController extends AppController{
 						$this->Log->writeLog('change_password.txt',$log);
 						$this->Session->setFlash(__('パスワードが更新された'));
 						if($this->Auth->user('role')=='manager')
-							return $this->redirect(array('controller'=>'manages','action'=>'info'));
+							return $this->redirect(array('controller'=>'manages','action'=>'viewinfo'));
 						elseif($this->Auth->user('role')=='teacher')
 							return $this->redirect(array('controller'=>'teachers','action'=>'info'));
 						else

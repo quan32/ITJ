@@ -25,7 +25,7 @@ class User extends AppModel{
 		'fullname' => array(
         	'rule' => array('minLength', 10),
 			// 'required' => true,
-			'message' => '空きフィールドをしないでください'),	
+			'message' => '最低の長さは10桁'),	
 
 		'mobile_No' => array(
         	 'alphaNumeric' => array(
