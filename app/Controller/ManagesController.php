@@ -227,15 +227,26 @@ class ManagesController extends AppController{
 
             //Su ly voi hang so thoi diem tu dong backup
             if($id==9){
-              $myFile = "./quan";
-              $fh = fopen($myFile, 'w') or die("can't open file");
-              $stringData = $this->request->data['Constant']['value']." sh /var/www/backup.sh";
-              fwrite($fh, $stringData);
-              fclose($fh);
+              // $myFile = "./quan";
+              // $myFile = "/var/spool/cron/crontabs/quan";
+              // $fh = fopen($myFile, 'w') or die("can't open file");
+              // $stringData = $this->request->data['Constant']['value']." sh /var/www/backup.sh";
+              // fwrite($fh, $stringData);
+              // fclose($fh);
 
-              $result = shell_exec('/var/www/copy.sh');
-              //$result = shell_exec('sudo cp /var/www/ITJ/app/webroot/quan /var/spool/cron/crontabs/');
-              echo $result;
+              // $output = shell_exec('crontab -l');
+              // echo $output;
+              file_put_contents('/tmp/crontab.txt', "");
+              $stringData = $this->request->data['Constant']['value']." sh /var/www/backup.sh";
+              file_put_contents('/tmp/crontab.txt', $stringData.PHP_EOL);
+              //$output = shell_exec('crontab -l');
+              echo exec('crontab /tmp/crontab.txt');
+              echo exec('/etc/init.d/cron restart');
+              // die;
+
+              // $result = shell_exec('/var/www/copy.sh');
+              // //$result = shell_exec('sudo cp /var/www/ITJ/app/webroot/quan /var/spool/cron/crontabs/');
+              // echo $result;
             }
             
               $this->Session->setFlash(__('定数アドレスは保存されていた'));
