@@ -2,7 +2,7 @@
 
 <table>
 <tr>
-	
+	<th>ユーザ名</th>
 	<th>氏名</th>
 	<th>役割</th>
 	<th>生年月日</th>
@@ -17,6 +17,7 @@
 	
 	foreach ($users as $user) {
 		echo '<tr>';
+			echo '<td>'.$user["User"]["username"].'</td>';
 			echo '<td>'.$user["User"]["fullname"].'</td>';
 			echo '<td>'.$user["User"]["role"].'</td>';
 			echo '<td>'.$user["User"]["date_of_birth"].'</td>';

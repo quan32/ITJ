@@ -9,7 +9,7 @@
 		echo $this->Form->input('description',array('label' => '紹介する情報'));
 		echo $this->Form->input('tag',array('label' => 'タグ'));	
 		echo $this->Form->checkbox('NQ', array('checked' => false));
-		echo $this->Form->label('私は著作権の問題と関係する責任をする！');
+		echo $this->Form->label('私はこの講義とこの講義を作成するファイルの著作権について責任をする！');
 		echo $this->Form->end('次へ');
 	?>
 </fieldset>

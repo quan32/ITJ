@@ -12,7 +12,8 @@
 					<?php echo $this->Form->input('username', array('label'=>'ユーザ名'));?>
 					<?php echo $this->Form->input('password', array('label'=>'パスワード'));?>
 					<?php echo $this->Form->input('mail', array('label'=>'メール'));?>
-					<?php echo $this->Form->input('verify', array('label'=>'Verifyコード'));?>
+					<?php echo $this->Form->input('question', array('label'=>'確認する質問', 'options'=>$questions));?>
+					<?php echo $this->Form->input('verify', array('label'=>'答え'));?>
 				</fieldset>
 			</div>
 			<div id="profileInfor">
@@ -44,3 +45,12 @@
 			echo $this->Form->end(array('label'=>'新規登録'));
 		?>
 </div>
+
+<style type="text/css">
+	.input.select label{
+		margin-right:15px;
+	}
+	.input.date label{
+		margin-right: 15px;
+	}
+</style>
