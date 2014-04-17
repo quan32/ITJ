@@ -269,7 +269,7 @@ class StudentsController extends AppController{
 							 'NOT' => array('User.state' => array('locked','deleted')),
 			);
 		$options['order'] = array(
-					'Register.created ' => 'DESC' 
+					'Register.created' => 'DESC' 
 					);
 		$options['fields'] =array('Lecture.id','Lecture.name','Register.created','Register.id','Register.status','User.id');
 		$options['limit'] = 5;
@@ -661,7 +661,7 @@ public function recentRegistedLecture(){
 
 			);
 		$options['order'] = array(
-					'Register.created ' => 'DESC' 
+					'Register.created' => 'DESC' 
 					);
 		$options['fields'] =array('Lecture.id','Lecture.name','Register.created','Register.id','Register.status','User.id');
 		$options['limit'] = 5;

@@ -541,6 +541,84 @@ public function listStudents(){
  }
 
 }
+
+public function statisticsStudent($student_id = null)
+{
+	$this->set('menu_type', 'teacher_menu');
+		//hang so he thong
+		$this->loadModel('Constant');
+		$constantCost = $this->Constant->findByName('cost');
+		$COST = $constantCost['Constant']['value'];
+		$this->set('COST',$COST);
+
+		$teacher_id = $this->Auth->User('id');
+		$options['joins'] = array(
+						    array('table' => 'lectures',
+						        'alias' => 'Lecture',
+						        'type' => 'inner',
+						        'conditions' => array('Lecture.id = Register.lecture_id' )),
+
+						    array('table' => 'users',
+						    	'alias' => 'User',
+						    	'type' => 'inner',
+						    	'conditions' => array('User.id = Register.user_id')
+						    	)
+						       );
+		$options['conditions'] = array('Register.user_id' => $student_id,
+							 'NOT' => array('User.state' => array('locked','deleted')),
+							 'User.role' => 'student',
+							 'Lecture.user_id' => $teacher_id
+			);
+		$options['order'] = array(
+					'Register.created' => 'DESC' 
+					);
+		$options['fields'] =array('Lecture.user_id','Lecture.id','Lecture.name','Register.created','Register.id','Register.status','User.id','User.username','User.fullname','User.role','User.state','User.mail','User.mobile_No','User.address');
+		$options['limit'] = 5;
+		$this->loadModel('Register');
+		$this->Register->recursive = -1;
+
+		$this->paginate = $options;
+
+		$data = $this->paginate('Register');
+		$currentMonth = date('n');
+		$currentYear = date('Y');
+		
+		if($data != null)
+			{
+				$payedNum = 0;
+				$notPayedNum = 0;
+				$i = 0;
+				foreach ($data as $item) {
+					$registerDate = strtotime($item['Register']['created']);
+					$registerMonth = date('n',$registerDate);
+					$registerYear = date('Y',$registerDate);
+					if(($currentYear == $registerYear) && ($currentMonth == $registerMonth))
+						{
+							$notPayed = 1;
+							$notPayedNum ++;
+
+						}
+					else
+					{
+						$notPayed = 0;
+						$payedNum ++;
+					}
+					$data[$i]['notPayed'] = $notPayed;
+
+					$i++;
+
+				}
+			}
+		// debug($data);die;
+	$this->set('registedLectures',$data);
+	// $this->set('payedMoney',$payedNum*$COST);
+	// $this->set('notPayedMoney',$notPayedNum*$COST);
+	
+
+
+}
+
+
 public function isBlockStudent($student_id = null){
 // 0 la ko block
 // 1 la block
