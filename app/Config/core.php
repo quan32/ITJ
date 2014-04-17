@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This is core configuration file.
  *
@@ -31,6 +32,24 @@
  * In production mode, flash messages redirect after a time interval.
  * In development mode, you need to click the flash message to continue.
  */
+	
+require_once('database.php');
+$dbConfig = new DATABASE_CONFIG();
+$dblink = mysqli_connect($dbConfig->default['host'], $dbConfig->default['login'], $dbConfig->default['password'], $dbConfig->default['database']);
+if (mysqli_connect_errno())
+  {
+  echo "Failed to connect to MySQL: " . mysqli_connect_error();
+  }
+$result = mysqli_query($dblink,"SELECT * FROM constants");
+while($row = mysqli_fetch_array($result))
+  {
+ 
+   if ($row['name'] == 'sessiontime') {
+   	$sessiontime=$row['value'];
+   }
+  }
+
+
 	Configure::write('debug', 2);
 
 /**
@@ -216,9 +235,12 @@
  *
  */
 	
+
+
+
 	Configure::write('Session', array(
 		'defaults' => 'php',
-		'timeout' => 30,            // auto logout after 30 minutes
+		'timeout' => $sessiontime,            // auto logout after 30 minutes
     	'cookieTimeout' => 1440,    // session cookie 24 hours
     	'autoRegenerate' => true    // regenerate session
 	));
