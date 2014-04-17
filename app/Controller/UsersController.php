@@ -286,8 +286,12 @@ class UsersController extends AppController{
 
 	public function verify1($id =null){
 		$this->set('menu_type','empty');
+		$user= $this->User->findById($id);
+		$this->loadModel('Question');
+		$question = $this->Question->findById($user['User']['question']);
+		$this->set('question',strrev($question['Question']['content']));
+
 		if($this->request->is('post')){
-			$user= $this->User->findById($id);
 			$passwordHasher = new SimplePasswordHasher();
 			if($user['User']['verify']==$passwordHasher->hash($this->request->data['User']['verify'])){
 

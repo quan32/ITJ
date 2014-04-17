@@ -55,17 +55,17 @@ class User extends AppModel{
 			// 'required' => true,
 			'message' => '確認するパスワードを入力してください'),
 		'currVerify' => array(
-			'rule' => array('minLength', 8),
+			'rule' => 'notEmpty',
 			// 'required' => true,
 			'message' => '現在確認するコードを入力してください'),
 
 		'newVerify' => array(
-			'rule' => array('minLength', 8),
+			'rule' => 'notEmpty',
 			// 'required' => true,
 			'message' => '８桁以上の新確認するコードを入力してください'),
 
 		'confVerify' => array(
-			'rule' => array('minLength', 8),
+			'rule' => 'notEmpty',
 			// 'required' => true,
 			'message' => 'もう一度確認するコードを入力してください'),
 
@@ -84,7 +84,7 @@ class User extends AppModel{
 			'message' => 'クレジットカードを入力してください'),
 
 		'verify' => array(
-			'rule' => 'alphaNumeric',
+			'rule' => 'notEmpty',
 			// 'required' => true,
 			'message'  => '確認するコードを入力してください')					
 		);
