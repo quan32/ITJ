@@ -23,9 +23,9 @@ class User extends AppModel{
 			'message' => '最低の長さは8桁'),
 
 		'fullname' => array(
-        	'rule' => array('minLength', 10),
+        	'rule' => array('minLength', 3),
 			// 'required' => true,
-			'message' => '最低の長さは10桁'),	
+			'message' => '最低の長さは3桁'),	
 
 		'mobile_No' => array(
         	 'alphaNumeric' => array(
@@ -40,32 +40,32 @@ class User extends AppModel{
 			'rule'=>'email',
 			'message'=>'メールフォーマットで入力してください'),
 
-		'currpassword' => array(
+		'currPassword' => array(
 			'rule' => array('minLength', 8),
 			// 'required' => true,
-			'message' => '現在パスワードを入力してください'),
+			'message' => '現在パスワードを８桁以上入力してください'),
 
-		'newpassword' => array(
+		'newPassword' => array(
 			'rule' => array('minLength', 8),
 			// 'required' => true,
-			'message' => '８桁以上の新パスワードを入力してください'),
+			'message' => '８桁以上の新パスワードを８桁以上入力してください'),
 
-		'confpassword' => array(
+		'confPassword' => array(
 			'rule' => array('minLength', 8),
 			// 'required' => true,
-			'message' => '確認するパスワードを入力してください'),
+			'message' => '確認するパスワードを8桁以上入力してください'),
 		'currVerify' => array(
-			'rule' => array('minLength', 8),
+			'rule' => 'notEmpty',
 			// 'required' => true,
-			'message' => '現在確認するコードを入力してください'),
+			'message' => '現在確認するコードを8桁以上入力してください'),
 
 		'newVerify' => array(
-			'rule' => array('minLength', 8),
+			'rule' => 'notEmpty',
 			// 'required' => true,
 			'message' => '８桁以上の新確認するコードを入力してください'),
 
 		'confVerify' => array(
-			'rule' => array('minLength', 8),
+			'rule' => 'notEmpty',
 			// 'required' => true,
 			'message' => 'もう一度確認するコードを入力してください'),
 
@@ -84,7 +84,7 @@ class User extends AppModel{
 			'message' => 'クレジットカードを入力してください'),
 
 		'verify' => array(
-			'rule' => 'alphaNumeric',
+			'rule' => 'notEmpty',
 			// 'required' => true,
 			'message'  => '確認するコードを入力してください')					
 		);

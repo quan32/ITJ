@@ -1,4 +1,9 @@
 <?php
+App::uses('ConnectionManager', 'Model');
+App::uses('Folder', 'Utility');
+App::uses('File', 'Utility');
+define ('BACKUP_FOLDER', realpath(dirname(__FILE__).DS.'..'.DS.'Backup'.DS));
+define ('UPLOAD_FOLDER', realpath(dirname(__FILE__).DS.'..'.DS.'webroot'.DS.'uploads'));
 class ManagesController extends AppController{
 	public function beforeFilter(){
 		parent::beforeFilter();
@@ -9,6 +14,54 @@ class ManagesController extends AppController{
     }
 	}
 
+  public function backup(){
+    $db_config = ConnectionManager::getDataSource('default')->config;
+    //var_dump($db_config);die;
+    $this->set('menu_type','manager_menu'); 
+    if($this->request->is('post')){   
+      //backup db
+      date_default_timezone_set("Asia/Ho_Chi_Minh");
+      $foldername= BACKUP_FOLDER.DS.date('Y_m_d__h_i_s');
+      new Folder($foldername, true, 0777);
+      $filename = $foldername.DS.'database.sql';
+      $output = array();
+      $sql = 'mysqldump -u'.$db_config['login'].' -p'.$db_config['password'].' '.$db_config['database'].' > "'.$filename.'"';
+      exec($sql,$output);  
+
+      //backup file
+      $upload_folder = new Folder(UPLOAD_FOLDER);
+      $upload_folder->copy($foldername.DS.'uploads');  
+    }
+
+    //display
+    $backups = scandir(BACKUP_FOLDER);
+    $this->set("backups",$backups);
+
+  }
+
+  public function restore($backup_time){
+    $db_config = ConnectionManager::getDataSource('default')->config;
+    //if($this->request->is('post')){
+
+    //restore database
+    $output = array();
+    $foldername = BACKUP_FOLDER.DS.$backup_time;
+    $filename= $foldername.DS.'database.sql';
+    $sql = 'mysql -u'.$db_config['login'].' -p'.$db_config['password'].' '.$db_config['database'].' < "'.$filename.'"';
+    exec($sql,$output);
+
+    //restore file
+    $backup_upload_folder = new Folder($foldername.DS.'uploads');
+    $backup_upload_folder->copy(UPLOAD_FOLDER);
+
+    return $this->redirect(array('action'=>'backup'));
+  }
+
+  public function delete_backup($backup_time){
+    $foldername = new Folder(BACKUP_FOLDER.DS.$backup_time);
+    $foldername->delete();
+    return $this->redirect(array('action'=>'backup'));
+  }
 	public function isAuthorized($user){
 		// Only manager can use these function
 		if($user['role']=='manager')
@@ -328,9 +381,18 @@ class ManagesController extends AppController{
      // var_dump($data);die();
        $this->User->create();
        $this->Ip->create();
-
+		
       if($user=$this->User->save($this->request->data)){
-      
+		 $precode = $this->User->find('count', array(
+        'conditions' => array('User.role' => 'manager')));
+		//$precode = $precode+1;
+      	if($precode<10) {
+						$code = "M00".$precode;
+					}else {
+						if($precode) { $code = "M0".$precode;
+							}else {$code = "M".$precode;}
+						}
+					$this->User->saveField('code',$code);
         $data['Ip']['user_id']=$user["User"]["id"];
         $this->Ip->save($data);
         $this->Session->setFlash(__('アカウントは保存されていた。'));

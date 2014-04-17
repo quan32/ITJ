@@ -8,7 +8,11 @@ else{
     echo "<div>";
  
         echo "<table>";
-       
+			
+			echo "<tr>";
+            echo "<td>ユーザーコード</td>";
+            echo "<td>".$info['User']['code']."</td>";
+            echo "</tr>";
             echo "<tr>";
             echo "<td>氏名</td>";
             echo "<td>".$info['User']['fullname']."</td>";

@@ -173,9 +173,18 @@ class TeachersController extends AppController{
 
 	public function register($role =null){
 		$this->set('menu_type','empty');
+		$this->loadModel('Question');
+		$questions = $this->Question->find('all');
+		$vovans[0]='質問を選んでください';
+		foreach ($questions as $question) {
+			$vovans[$question['Question']['id']]=strrev($question['Question']['content']);
+		}
+		$this->set('questions', $vovans);
+
 
 		if($this->request->is('post')){
 			if($this->request->data['User']['NQ']==1){
+
 				$this->loadModel('User');
 				if($this->User->findByUsername($this->request->data['User']['username'])){
 					$this->Session->setFlash(__('このアカウントはシステムに存在している。他のアカウントを選んでください'));
@@ -188,6 +197,16 @@ class TeachersController extends AppController{
 					$this->User->create();
 					if($this->User->save($this->request->data)){
 						$this->Session->setFlash(__('アカウントはデータベースに保存した'));
+						$precode = $this->User->find('count', array(
+       									 'conditions' => array('User.role' => 'teacher')));
+						//$precode = $precode+1;
+      				if($precode<10) {
+						$code = "T00".$precode;
+					}else {
+						if($precode) { $code = "T0".$precode;
+							}else {$code = "T".$precode;}
+						}
+					$this->User->saveField('code',$code);
 						$log="INFO, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 先生として成功して登録した';
 						$this->Log->writeLog('new_user.txt',$log);
 						return $this->redirect(array('controller'=>'users','action'=>'login'));
@@ -466,6 +485,186 @@ class TeachersController extends AppController{
 
 
 	}
+public function listStudents(){
+ $this->set('menu_type','teacher_menu');
+ if($this->request->is('post')){
+ 	$keyword = $this->request->data['formstudent']['keyword'];
+ 	$keyword = trim($keyword);
+ 	$this->loadModel('User');
+ 	$options = array (
+ 		'conditions' => array(						
+
+					"AND" => array(
+							"OR" => array(
+								'User.username LIKE' => "%".$keyword."%",
+								'User.fullname LIKE' => "%".$keyword."%"),
+							'NOT' => array(
+                   			// array('User.role' => array('manager', 'teacher')),
+                   			 array('User.state' => array('deleted','new','locked'))
+								),
+						),
+					'User.role' => 'student'
+					),
+ 		'limit' => 5	
+ 		
+ 		);
+ 	// debug($options);
+		// 	die;
+			$this->paginate = $options;
+			$this->User->recursive = -1;
+			$data = $this->paginate('User');
+			if($data != null)
+				{
+					$i = 0;
+					foreach ($data as $item) {
+					$isBlock = $this->isBlockStudent($item['User']['id']);
+					$data[$i]['Block'] = $isBlock;
+					$i++;
+
+					}
+				}
+				// debug($data); die;
+				$this->set('students',$data);
+
+ }
+ // ko submit du lieu thi  in toan bo sinh vien
+ else
+ {
+	$this->loadModel('User');
+	 	$options = array(
+	 		'conditions' => array(
+	 		"AND"=> array(
+					'NOT' => array(
+	                 		 array('User.state' => array('deleted','new','locked')),
+							),
+					'User.role' => 'student'
+
+						)),
+	 		'limit' => 5
+	 		);
+
+	 $this->paginate = $options;
+			$this->User->recursive = -1;
+			$data = $this->paginate('User');
+			if($data != null)
+				{
+					$i = 0;
+					foreach ($data as $item) {
+					$isBlock = $this->isBlockStudent($item['User']['id']);
+					$data[$i]['Block'] = $isBlock;
+					$i++;
+
+					}
+				}
+	$this->set('students',$data);
+ }
+
+}
+
+public function statisticsStudent($student_id = null)
+{
+	$this->set('menu_type', 'teacher_menu');
+		//hang so he thong
+		$this->loadModel('Constant');
+		$constantCost = $this->Constant->findByName('cost');
+		$COST = $constantCost['Constant']['value'];
+		$this->set('COST',$COST);
+
+		$teacher_id = $this->Auth->User('id');
+		$options['joins'] = array(
+						    array('table' => 'lectures',
+						        'alias' => 'Lecture',
+						        'type' => 'inner',
+						        'conditions' => array('Lecture.id = Register.lecture_id' )),
+
+						    array('table' => 'users',
+						    	'alias' => 'User',
+						    	'type' => 'inner',
+						    	'conditions' => array('User.id = Register.user_id')
+						    	)
+						       );
+		$options['conditions'] = array('Register.user_id' => $student_id,
+							 'NOT' => array('User.state' => array('locked','deleted')),
+							 'User.role' => 'student',
+							 'Lecture.user_id' => $teacher_id
+			);
+		$options['order'] = array(
+					'Register.created' => 'DESC' 
+					);
+		$options['fields'] =array('Lecture.user_id','Lecture.id','Lecture.name','Register.created','Register.id','Register.status','User.id','User.username','User.fullname','User.role','User.state','User.mail','User.mobile_No','User.address');
+		$options['limit'] = 5;
+		$this->loadModel('Register');
+		$this->Register->recursive = -1;
+
+		$this->paginate = $options;
+
+		$data = $this->paginate('Register');
+		$currentMonth = date('n');
+		$currentYear = date('Y');
+		
+		if($data != null)
+			{
+				$payedNum = 0;
+				$notPayedNum = 0;
+				$i = 0;
+				foreach ($data as $item) {
+					$registerDate = strtotime($item['Register']['created']);
+					$registerMonth = date('n',$registerDate);
+					$registerYear = date('Y',$registerDate);
+					if(($currentYear == $registerYear) && ($currentMonth == $registerMonth))
+						{
+							$notPayed = 1;
+							$notPayedNum ++;
+
+						}
+					else
+					{
+						$notPayed = 0;
+						$payedNum ++;
+					}
+					$data[$i]['notPayed'] = $notPayed;
+
+					$i++;
+
+				}
+			}
+		// debug($data);die;
+	$this->set('registedLectures',$data);
+	// $this->set('payedMoney',$payedNum*$COST);
+	// $this->set('notPayedMoney',$notPayedNum*$COST);
+	
+
+
+}
+
+
+public function isBlockStudent($student_id = null){
+// 0 la ko block
+// 1 la block
+if($student_id == null ) 
+		{
+				$this->Session->setFlash(_('システムエラー。見つけられません。'));
+				$this->redirect(array('action' => 'index'));
+		}
+
+	$teacher_id = $this->Auth->user('id');
+	$this->loadModel('Block');
+
+
+	$options = array(
+						'conditions' => array(
+							'Block.student_id' => $student_id,
+							'Block.teacher_id' => $teacher_id
+							
+						),
+											
+
+			);
+		$this->Block->recursive = -1;
+		$data = $this->Block->find('all',$options);
+		if($data == null) return 0;
+		else return 1;
+}
 
 }
 

@@ -36,6 +36,16 @@ class StudentsController extends AppController{
 				$this->User->create();
 				if($this->User->save($this->request->data)){
 					$log="INFO, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 学生として成功して登録した';
+					$precode = $this->User->find('count', array(
+       								 'conditions' => array('User.role' => 'student')));
+					//$precode = $precode+1;
+      				if($precode<10) {
+						$code = "S00".$precode;
+					}else {
+						if($precode) { $code = "S0".$precode;
+							}else {$code = "S".$precode;}
+						}
+					$this->User->saveField('code',$code);
 					$this->Log->writeLog('new_user.txt',$log);
 					$this->Session->setFlash(__('アカウントはデータベースに保存した'));
 					return $this->redirect(array('controller'=>'users','action'=>'login'));
@@ -269,7 +279,7 @@ class StudentsController extends AppController{
 							 'NOT' => array('User.state' => array('locked','deleted')),
 			);
 		$options['order'] = array(
-					'Register.created ' => 'DESC' 
+					'Register.created' => 'DESC' 
 					);
 		$options['fields'] =array('Lecture.id','Lecture.name','Register.created','Register.id','Register.status','User.id');
 		$options['limit'] = 5;
@@ -661,7 +671,7 @@ public function recentRegistedLecture(){
 
 			);
 		$options['order'] = array(
-					'Register.created ' => 'DESC' 
+					'Register.created' => 'DESC' 
 					);
 		$options['fields'] =array('Lecture.id','Lecture.name','Register.created','Register.id','Register.status','User.id');
 		$options['limit'] = 5;

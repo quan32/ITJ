@@ -111,15 +111,57 @@
                 
 				<?php
 					foreach ($sources as $source) {
-							if($source['type']=='audio/mpeg' || $source['type']=='audio/mp3' || $source['type']=='audio/wav'){
+						if($source['type']=='audio/mpeg' || $source['type']=='audio/mp3' || $source['type']=='audio/wav'){
 								$name = $source['filename'];
-								?>
+
+							if($source['state'] == "normal"){
+		            			?>
+
 									<audio controls>
 									  <source src="http://localhost/ITJ/app/webroot/uploads/<?echo $source['filename'];?>" type="audio/mpeg">
 									  Your browser does not support this audio format.
 									</audio>
-									<br><br>
-								<?php
+									
+
+
+
+		            			<?php
+
+								if($role=='manager'){
+			            			echo "<div class='source_block'>";
+			            			echo $this->Html->link('ブロック  ', array('controller'=>'sources', 'action'=>'block', $source['id']));
+			            			echo $this->Html->link('削除', array('controller'=>'sources', 'action'=>'managerDelete', $source['id']));
+			            			echo "</div>";
+		            			}
+
+
+
+
+		            		}elseif($source['state'] == "blocked"){
+		            			if($role=='manager'){
+		            				?>
+				            			<audio controls>
+									  <source src="http://localhost/ITJ/app/webroot/uploads/<?echo $source['filename'];?>" type="audio/mpeg">
+									  Your browser does not support this audio format.
+									</audio>
+									
+
+		            				<?php
+		            				echo "<div class='source_block'>";
+			            			echo $this->Html->link('アンチブロック  ', array('controller'=>'sources', 'action'=>'unblock', $source['id']));
+			            			echo $this->Html->link('削除', array('controller'=>'sources', 'action'=>'managerDelete', $source['id']));
+			            			echo "</div>";
+		            			}elseif($role=='teacher'){
+		            				echo "<span class='pdf_error'>このファイルは管理者によってブロックさせられた。</span><br><br>";
+		            			}else{
+		            				echo "<span class='pdf_error'>このファイルは管理者によってブロックさせられた。</span><br><br>";
+		            			}
+
+		            		}
+
+
+
+
 							}
 						}
 				?>
@@ -136,15 +178,57 @@
                 
 				<?php
 					foreach ($sources as $source) {
-							if($source['type']=='video/mp4'){
-								$name = $source['filename'];
-								?>
+						if($source['type']=='video/mp4'){
+							$name = $source['filename'];
+
+							if($source['state'] == "normal"){
+		            			?>
+
 									<video width="320" height="240" controls>
 									  <source src="http://localhost/ITJ/app/webroot/uploads/<?echo $source['filename'];?>" type="video/mp4">
 									  Your browser does not support the video tag.
 									</video>
 									<br><br>
-								<?php
+
+
+
+		            			<?php
+
+								if($role=='manager'){
+			            			echo "<div class='source_block'>";
+			            			echo $this->Html->link('ブロック  ', array('controller'=>'sources', 'action'=>'block', $source['id']));
+			            			echo $this->Html->link('削除', array('controller'=>'sources', 'action'=>'managerDelete', $source['id']));
+			            			echo "</div>";
+		            			}
+
+
+
+
+		            		}elseif($source['state'] == "blocked"){
+		            			if($role=='manager'){
+		            				?>
+				            			<video width="320" height="240" controls>
+										  <source src="http://localhost/ITJ/app/webroot/uploads/<?echo $source['filename'];?>" type="video/mp4">
+										  Your browser does not support the video tag.
+										</video>
+										<br><br>
+
+		            				<?php
+		            				echo "<div class='source_block'>";
+			            			echo $this->Html->link('アンチブロック  ', array('controller'=>'sources', 'action'=>'unblock', $source['id']));
+			            			echo $this->Html->link('削除', array('controller'=>'sources', 'action'=>'managerDelete', $source['id']));
+			            			echo "</div>";
+		            			}elseif($role=='teacher'){
+		            				echo "<span class='pdf_error'>このファイルは管理者によってブロックさせられた。</span><br><br>";
+		            			}else{
+		            				echo "<span class='pdf_error'>このファイルは管理者によってブロックさせられた。</span><br><br>";
+		            			}
+
+		            		}
+
+
+
+
 							}
 						}
 				?>
@@ -156,11 +240,6 @@
         
         <article id="article2">
             <h2>イメージ</h2>
-            <?php
-           		 if($sources==null){
-            		echo "<span class='pdf_error'>イメージがない</span><br><br>";
-            	}
-            ?>
             <div class="line"></div>
             
             <div class="articleBody clear">
