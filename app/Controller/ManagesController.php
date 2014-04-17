@@ -154,6 +154,8 @@ class ManagesController extends AppController{
       $this->set('menu_type','manager_menu');
       // debug($this->constants);die;
       $this->set("cons",$this->constants);
+      //Configure::write('Session.timeout',40);
+      //var_dump(Configure::read('Session.timeout'));die();
     }
 
     public function editdata($id)
@@ -170,7 +172,7 @@ class ManagesController extends AppController{
 
           if ($this->Constant->save($this->request->data)) {
 
-              $this->Session->setFlash(__('IPアドレスは保存されていた'));
+              $this->Session->setFlash(__('定数アドレスは保存されていた'));
               return $this->redirect(array('action' => 'masterdata')); 
             }
                 $this->Session->setFlash(
@@ -401,6 +403,36 @@ class ManagesController extends AppController{
     $this->set("datas",$data);
 
   }
+  public function adminip($id){ // doi pass va edit IP
+    $this->set('menu_type','manager_menu');
+
+    $this->loadModel('Ip');
+
+     
+
+
+    $options['joins'] = array(
+    array('table' => 'users',
+          'alias' => 'User',
+          'type' => 'LEFT',
+          'conditions' => array(
+            'User.id = Ip.user_id',
+        )
+    )
+  );
+    $options['fields'] = array('User.username', 'Ip.*');
+    $options["conditions"] = array('user_id' =>$id);
+    
+   // $sql = array("conditions"=> array('user_id' =>$this->Auth->user("id")));
+    
+
+
+
+    $data=$this->Ip->find('all',$options);
+    //var_dump($data); die();
+    $this->set("datas",$data);
+
+  }
 
   public function deleteip($id)
   {
@@ -425,15 +457,22 @@ class ManagesController extends AppController{
     $this->set('menu_type','manager_menu');
     $this->loadModel('Ip'); 
     $this->Ip->id =$id;
+    $this->set("current_user",$this->Auth->user("id"));
     if(!$this->Ip->exists()){
       throw new NotFoundException(__('不当なIPアドレス'));
     }
+    
 
     if ($this->request->is('post') || $this->request->is('put')) { 
       if ($this->Ip->save($this->request->data)) {
 
           $this->Session->setFlash(__('IPアドレスは保存されていた'));
-          return $this->redirect(array('action' => 'change')); 
+          $user=$this->Ip->findById($id);
+          if($user["Ip"]["user_id"] == $this->Auth->user("id"))
+          return $this->redirect(array('action' => 'change'));
+          else
+          return $this->redirect(array('action' => 'adminip',$user["Ip"]["user_id"]));
+           
         }
             $this->Session->setFlash(
                 __('IPアドレスはまだ保存されていない。してみてください'));
@@ -441,6 +480,7 @@ class ManagesController extends AppController{
     //$this->request->data = $this->User->read(null, $id);
       //      unset($this->request->data['User']['password']);
         }
+         $this->request->data = $this->Ip->read(null, $id);
 
   }
 

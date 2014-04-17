@@ -9,7 +9,8 @@ $paginator = $this->Paginator;
             echo "<th>" . $paginator->sort('User.username', '氏名') . "</th>";
             echo "<th>" . $paginator->sort('User.role', '資格') . "</th>";
             echo "<th>詳細</th>";
-            echo "<th>変更</th>";
+            echo "<th>情報変更</th>";
+            echo "<th>Ip変更</th>";
             echo "<th>管理</th>";
 
         echo "</tr>";
@@ -31,6 +32,10 @@ $paginator = $this->Paginator;
             echo '<td>';
             echo $this->Html->link('変更', 
                 array('controller'=>'manages','action' => 'editinfo', $user["User"]["id"]));
+            echo '</td>'; 
+             echo '<td>';
+            echo $this->Html->link('Ip変更', 
+                array('controller'=>'manages','action' => 'adminip', $user["User"]["id"]));
             echo '</td>';           			    
 	    echo '<td>';
        
