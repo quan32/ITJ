@@ -156,5 +156,13 @@
     <!-- JavaScript -->
     <?php echo $this->Html->script('jquery-1.10.2.min');?>
     <?php echo $this->Html->script('bootstrap');?>
+<input type="hidden" id="refreshed" value="no">
   </body>
 </html>
+<script type="text/javascript">
+onload=function(){
+var e=document.getElementById("refreshed");
+if(e.value=="no")e.value="yes";
+else{e.value="no";location.reload();}
+}
+</script>
