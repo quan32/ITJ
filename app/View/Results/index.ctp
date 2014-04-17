@@ -13,6 +13,7 @@
 </tr>
 <?php
 	foreach ($results as $result) {
+		if($result['Result']["user_id"] == $current_user_id) continue;
 		echo '<tr>';
 		//foreach ($test['Test'] as $value) {
 			//var_dump($test);die;

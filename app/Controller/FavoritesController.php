@@ -10,7 +10,7 @@ class FavoritesController extends AppController{
 
 	public function isAuthorized($user){
 		// Only student can use this function
-		if($user['role']=='student')
+		if($user['role']=='student' || $user['role']=='teacher')
 			return true;
 		return false;
 	}
