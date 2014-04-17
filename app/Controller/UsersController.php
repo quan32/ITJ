@@ -5,7 +5,7 @@ class UsersController extends AppController{
 
 	public function beforeFilter(){
 		parent::beforeFilter();
-		$this->Auth->allow('login', 'role', 'verify1','verify2');
+		$this->Auth->allow('login', 'role', 'verify1','verify2','manager_login');
 	}
 	public function isAuthorized($user){
 		// Everyone can access
@@ -87,7 +87,90 @@ class UsersController extends AppController{
 
 			// }
 	}
+	public function manager_login() {
+		//$this->layout = false;
+		$this->set('menu_type','empty');
+		// Check session
+		if($this->Auth->loggedIN() && $this->Auth->user('state')=="normal"){
+			if($this->Auth->user('role')=='manager')
+					return $this->redirect(array('controller'=>'manages','action'=>'index'));
+				elseif($this->Auth->user('role')=='teacher')
+					return $this->redirect(array('controller'=>'teachers','action'=>'index'));
+				elseif($this->Auth->user('role')=='student')
+					return $this->redirect(array('controller'=>'students','action'=>'index'));
+			}
+		if($this->request->is('post')){
 
+			$IP = $this->request->clientIp();
+			//var_dump($IP);die;
+
+			if($user=$this->User->findByUsername($this->request->data['User']['username'])){
+				$passwordHasher = new SimplePasswordHasher();
+				$password = $passwordHasher->hash($this->request->data['User']['password']);
+				
+				//Check user's state
+				if($password == $user['User']['password']){
+					if($user['User']['role']=='teacher'){
+						$this->Session->setFlash(__('あなたは管理者ではない。他のログイン画面を使ってください'));
+						return $this->redirect(array('action'=>'manager_login'));
+					}elseif ($user['User']['role']=='student') {
+						$this->Session->setFlash(__('あなたは管理者ではない。他のログイン画面を使ってください'));
+						return $this->redirect(array('action'=>'manager_login'));
+					}else{//Xu ly dang nhap cho manager
+						if($user['User']['state']=='deleted'){//Tai khoan da bi khoa
+							$this->Session->setFlash(__('アカウントは削除されたから、貴方は管理権が失ってしまった。'));
+							$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 削除したアカウントでログインした';
+							$this->Log->writeLog('login.txt',$log);
+							return $this->redirect(array('action'=>'login'));
+						}
+
+						$count=0;
+
+						//debug($user);die;
+						//debug($IP); die;
+						foreach ($user['Ip'] as $ip) {
+							if($ip['ip']==$IP)
+								$count++;
+						}
+						//$count=1;
+						if($count==0){
+							$this->Session->setFlash(__('間違ったIPアドレス'));
+							$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', このIPアドレスはIPアドレスリストにない';
+							$this->Log->writeLog('login.txt',$log);
+							return $this->redirect(array('action'=>'login'));
+						}
+					}
+					
+				}
+
+				if($this->Auth->login()){
+					$log="INFO, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', ログインした成功して登録した';
+					$this->Log->writeLog('login.txt',$log);
+					$this->Session->setFlash('ログインした');
+					$this->User->id=$user['User']['id'];
+					$this->User->saveField('failedNo',0);
+					
+					if($this->Auth->user('role')=='manager')
+						return $this->redirect(array('controller'=>'manages','action'=>'index'));
+					elseif($this->Auth->user('role')=='teacher')
+						return $this->redirect(array('controller'=>'teachers','action'=>'index'));
+					else
+						return $this->redirect(array('controller'=>'students','action'=>'index'));
+					}
+				else{
+					$this->Session->setFlash(__('ユーザ名又はパスワードが間違ってしまった'));
+					$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 第'.($user['User']['failedNo']+1).'回：ユーザ名又はパスワードが間違ってしまった';
+					$this->Log->writeLog('login.txt',$log);
+					}
+	
+				}else{
+					$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', アカウントが存在していない';
+					$this->Log->writeLog('login.txt',$log);
+					$this->Session->setFlash(__('アカウントは存在していない。新規アカウントを登録してください。'));
+					}	
+		}
+		
+		}
 	public function login(){
 		$this->layout = false;
 		$max = $this->Constant->findByName('MAX');
@@ -210,28 +293,9 @@ class UsersController extends AppController{
 							return $this->redirect(array('action'=>'login'));
 						}
 					}else{//Xu ly dang nhap cho manager
-						if($user['User']['state']=='deleted'){//Tai khoan da bi khoa
-							$this->Session->setFlash(__('アカウントは削除されたから、貴方は管理権が失ってしまった。'));
-							$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 削除したアカウントでログインした';
-							$this->Log->writeLog('login.txt',$log);
+							$this->Session->setFlash(__('管理者は別のログイン画面があります。'));
 							return $this->redirect(array('action'=>'login'));
-						}
 
-						$count=0;
-
-						//debug($user);die;
-						//debug($IP); die;
-						foreach ($user['Ip'] as $ip) {
-							if($ip['ip']==$IP)
-								$count++;
-						}
-						//$count=1;
-						if($count==0){
-							$this->Session->setFlash(__('間違ったIPアドレス'));
-							$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', このIPアドレスはIPアドレスリストにない';
-							$this->Log->writeLog('login.txt',$log);
-							return $this->redirect(array('action'=>'login'));
-						}
 					}
 					
 				}
