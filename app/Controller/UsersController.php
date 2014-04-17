@@ -256,7 +256,7 @@ class UsersController extends AppController{
 					$this->Log->writeLog('login.txt',$log);
 
 					if($user['User']['role']!='manager'){
-						if($user['User']['failedNo'] == $max){
+						if(($user['User']['failedNo']+1) == $max){
 						$this->Session->setFlash(__('失敗したログインの回数は3回になってしまった。
 						アカウントは一時にブロックされることになっている。あとで戻ってください。'));
 						$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 失敗したログインの回数は3回になってしまった。アカウントは一時にブロックされることになっている';
@@ -286,8 +286,12 @@ class UsersController extends AppController{
 
 	public function verify1($id =null){
 		$this->set('menu_type','empty');
+		$user= $this->User->findById($id);
+		$this->loadModel('Question');
+		$question = $this->Question->findById($user['User']['question']);
+		$this->set('question',strrev($question['Question']['content']));
+
 		if($this->request->is('post')){
-			$user= $this->User->findById($id);
 			$passwordHasher = new SimplePasswordHasher();
 			if($user['User']['verify']==$passwordHasher->hash($this->request->data['User']['verify'])){
 

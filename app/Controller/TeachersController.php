@@ -173,9 +173,18 @@ class TeachersController extends AppController{
 
 	public function register($role =null){
 		$this->set('menu_type','empty');
+		$this->loadModel('Question');
+		$questions = $this->Question->find('all');
+		$vovans[0]='質問を選んでください';
+		foreach ($questions as $question) {
+			$vovans[$question['Question']['id']]=strrev($question['Question']['content']);
+		}
+		$this->set('questions', $vovans);
+
 
 		if($this->request->is('post')){
 			if($this->request->data['User']['NQ']==1){
+
 				$this->loadModel('User');
 				if($this->User->findByUsername($this->request->data['User']['username'])){
 					$this->Session->setFlash(__('このアカウントはシステムに存在している。他のアカウントを選んでください'));
