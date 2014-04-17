@@ -271,7 +271,8 @@ class UsersController extends AppController{
 							if($distance_time > $time){
 								$this->User->id=$user['User']['id'];
 								$this->User->saveField('failedNo',0);
-								$this->Session->setFlash(__('アカウントはブロックする時間を過ごした。ログインできるように、確認するコードを入力してください'));
+								$this->User->saveField('state','normal');
+								$this->Session->setFlash(__('ブロックする時間を過ごしたばかりです。もう一度ログインしてください。'));
 								$log="INFO, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', アカウントはアンブロックしたばかりだ';
 								$this->Log->writeLog('login.txt',$log);
 								return $this->redirect(array('action'=>'login'));
@@ -372,6 +373,11 @@ class UsersController extends AppController{
 	public function verify2($id =null, $IP =null){
 
 		$this->set('menu_type','empty');
+		$user= $this->User->findById($id);
+		$this->loadModel('Question');
+		$question = $this->Question->findById($user['User']['question']);
+		$this->set('question',strrev($question['Question']['content']));
+
 		if($this->request->is('post')){
 			$user= $this->User->findById($id);
 			$passwordHasher = new SimplePasswordHasher();

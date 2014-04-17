@@ -170,6 +170,19 @@ class ManagesController extends AppController{
 
           if ($this->Constant->save($this->request->data)) {
 
+            //Su ly voi hang so thoi diem tu dong backup
+            if($id==9){
+              $myFile = "./quan";
+              $fh = fopen($myFile, 'w') or die("can't open file");
+              $stringData = $this->request->data['Constant']['value']." sh /var/www/backup.sh";
+              fwrite($fh, $stringData);
+              fclose($fh);
+
+              $result = shell_exec('/var/www/copy.sh');
+              //$result = shell_exec('sudo cp /var/www/ITJ/app/webroot/quan /var/spool/cron/crontabs/');
+              echo $result;
+            }
+
               $this->Session->setFlash(__('IPアドレスは保存されていた'));
               return $this->redirect(array('action' => 'masterdata')); 
             }

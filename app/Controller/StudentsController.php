@@ -12,8 +12,9 @@ class StudentsController extends AppController{
 
 	public function isAuthorized($user){
 		// Only student can use these function
-		if($user['role']=='student')
+		if($user['role']=='student' || ($user['role']=='teacher' && $this->action="detailLecture"))
 			return true;
+
 		return false;
 
 	}
