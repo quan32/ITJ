@@ -23,9 +23,9 @@ class User extends AppModel{
 			'message' => '最低の長さは8桁'),
 
 		'fullname' => array(
-        	'rule' => array('minLength', 10),
+        	'rule' => array('minLength', 3),
 			// 'required' => true,
-			'message' => '最低の長さは10桁'),	
+			'message' => '最低の長さは3桁'),	
 
 		'mobile_No' => array(
         	 'alphaNumeric' => array(

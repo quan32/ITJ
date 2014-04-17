@@ -256,7 +256,7 @@ class UsersController extends AppController{
 					$this->Log->writeLog('login.txt',$log);
 
 					if($user['User']['role']!='manager'){
-						if($user['User']['failedNo'] == $max){
+						if(($user['User']['failedNo']+1) == $max){
 						$this->Session->setFlash(__('失敗したログインの回数は3回になってしまった。
 						アカウントは一時にブロックされることになっている。あとで戻ってください。'));
 						$log="ERROR, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 失敗したログインの回数は3回になってしまった。アカウントは一時にブロックされることになっている';
