@@ -14,6 +14,7 @@ class ResultsController extends AppController{
 		$results = $this->Result->findAllByTestId($test_id);
 		$this->set('results', $results);
 		$this->set('test_id', $test_id);
+		$this->set('current_user_id',$this->Auth->user('id'));
 	}
 
 	public function view($id = null){
