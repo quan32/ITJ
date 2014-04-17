@@ -339,9 +339,18 @@ class ManagesController extends AppController{
      // var_dump($data);die();
        $this->User->create();
        $this->Ip->create();
-
+		
       if($user=$this->User->save($this->request->data)){
-      
+		 $precode = $this->User->find('count', array(
+        'conditions' => array('User.role' => 'manager')));
+		//$precode = $precode+1;
+      	if($precode<10) {
+						$code = "M00".$precode;
+					}else {
+						if($precode) { $code = "M0".$precode;
+							}else {$code = "M".$precode;}
+						}
+					$this->User->saveField('code',$code);
         $data['Ip']['user_id']=$user["User"]["id"];
         $this->Ip->save($data);
         $this->Session->setFlash(__('アカウントは保存されていた。'));
