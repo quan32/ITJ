@@ -466,6 +466,108 @@ class TeachersController extends AppController{
 
 
 	}
+public function listStudents(){
+ $this->set('menu_type','teacher_menu');
+ if($this->request->is('post')){
+ 	$keyword = $this->request->data['formstudent']['keyword'];
+ 	$keyword = trim($keyword);
+ 	$this->loadModel('User');
+ 	$options = array (
+ 		'conditions' => array(						
+
+					"AND" => array(
+							"OR" => array(
+								'User.username LIKE' => "%".$keyword."%",
+								'User.fullname LIKE' => "%".$keyword."%"),
+							'NOT' => array(
+                   			// array('User.role' => array('manager', 'teacher')),
+                   			 array('User.state' => array('deleted','new','locked'))
+								),
+						),
+					'User.role' => 'student'
+					),
+ 		'limit' => 5	
+ 		
+ 		);
+ 	// debug($options);
+		// 	die;
+			$this->paginate = $options;
+			$this->User->recursive = -1;
+			$data = $this->paginate('User');
+			if($data != null)
+				{
+					$i = 0;
+					foreach ($data as $item) {
+					$isBlock = $this->isBlockStudent($item['User']['id']);
+					$data[$i]['Block'] = $isBlock;
+					$i++;
+
+					}
+				}
+				// debug($data); die;
+				$this->set('students',$data);
+
+ }
+ // ko submit du lieu thi  in toan bo sinh vien
+ else
+ {
+	$this->loadModel('User');
+	 	$options = array(
+	 		'conditions' => array(
+	 		"AND"=> array(
+					'NOT' => array(
+	                 		 array('User.state' => array('deleted','new','locked')),
+							),
+					'User.role' => 'student'
+
+						)),
+	 		'limit' => 5
+	 		);
+
+	 $this->paginate = $options;
+			$this->User->recursive = -1;
+			$data = $this->paginate('User');
+			if($data != null)
+				{
+					$i = 0;
+					foreach ($data as $item) {
+					$isBlock = $this->isBlockStudent($item['User']['id']);
+					$data[$i]['Block'] = $isBlock;
+					$i++;
+
+					}
+				}
+	$this->set('students',$data);
+ }
+
+}
+public function isBlockStudent($student_id = null){
+// 0 la ko block
+// 1 la block
+if($student_id == null ) 
+		{
+				$this->Session->setFlash(_('システムエラー。見つけられません。'));
+				$this->redirect(array('action' => 'index'));
+		}
+
+	$teacher_id = $this->Auth->user('id');
+	$this->loadModel('Block');
+
+
+	$options = array(
+						'conditions' => array(
+							'Block.student_id' => $student_id,
+							'Block.teacher_id' => $teacher_id
+							
+						),
+											
+
+			);
+		$this->Block->recursive = -1;
+		$data = $this->Block->find('all',$options);
+		if($data == null) return 0;
+		else return 1;
+}
 
 }
 
