@@ -972,7 +972,7 @@ public function viewListTest($register_id = null)
 							),
 										
 						);
-		$options['fields'] = array('Register.id','Test.id','Test.name','Lecture.id','Lecture.name');
+		$options['fields'] = array('Register.id','Test.id','Test.name','Test.state','Lecture.id','Lecture.name');
 		$options['conditions'] = array('Register.id' => $register_id);
 
 		$this->Register->recursive = -1;
