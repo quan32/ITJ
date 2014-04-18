@@ -41,6 +41,7 @@ class SearchesController extends  AppController{
 				}
         $this->set('teacher_id',$this->Auth->user('id'));
         $conditions = array();
+		$this->loadModel('User');
         $data = array();
         if(!empty($this->passedArgs)){
             if(isset($this->passedArgs['Search.keyword'])) {
@@ -51,6 +52,7 @@ class SearchesController extends  AppController{
 					{
 						$conditions[] = array(
 							"AND" => array( 'Search.reported'=> "0",
+											'User.state' => "normal",
 												"OR" => array(
 															'Search.name LIKE' => "%$keywords%",
 															'Search.description LIKE' => "%$keywords%",
@@ -61,6 +63,7 @@ class SearchesController extends  AppController{
 						$conditions[] = array (
 							"AND" => array('Search.category_id' => "$catagory",
 											'Search.reported' => "0",
+											'User.state' => "normal",
 											"OR" => array(
 													'Search.name LIKE' => "%$keywords%",
 													'Search.description LIKE' => "%$keywords%",
@@ -71,10 +74,11 @@ class SearchesController extends  AppController{
 					if($catagory == "0")
 					{
 						$conditions[] = array(
+							"AND" => array( 'User.state' => "normal",
 												"OR" => array(
 															'Search.name LIKE' => "%$keywords%",
 															'Search.description LIKE' => "%$keywords%",
-															'User.fullname LIKE' => "%$keywords%" )
+															'User.fullname LIKE' => "%$keywords%" ))
 						);
 					}else
 					{

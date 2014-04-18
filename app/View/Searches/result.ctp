@@ -47,7 +47,7 @@ if(!empty($posts)){
     echo "<th>".$this->Paginator->sort("id","ID");
     echo "<th>".$this->Paginator->sort("name","タイトル");
     echo "<th>".$this->Paginator->sort("description","紹介する情報");
-    echo "<th>".$this->Paginator->sort("fullname","作成した先生");
+    echo "<th>".$this->Paginator->sort("User.fullname","作成した先生");
     echo "<th>登録した数 "; //TODO
 	if($view_regis ==0 ) echo "<th> | 状態 </th>";
     if($view_regis == 1) { echo "<th>| すぐ登録";}else{ echo "<th>| 操作</th>";}
