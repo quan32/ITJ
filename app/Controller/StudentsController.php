@@ -61,6 +61,16 @@ class StudentsController extends AppController{
 	}
 
 	public function index(){
+		$this->loadModel('Catagory');
+				$catas = $this->Catagory->find('all');
+				//debug($catas); die;
+				$vovans[0]='全部';
+				foreach ($catas as $cata) {
+					$vovans[$cata['Catagory']['id']]=($cata['Catagory']['name']);
+				}
+
+				//debug($vovans); die;
+				$this->set('catagory', $vovans);
 		$date = date('Y-m-d H:i:s');
 //set menu
 		$this->set('menu_type','student_menu');
@@ -382,8 +392,18 @@ class StudentsController extends AppController{
 		$constantCost = $this->Constant->findByName('cost');
 		$COST = $constantCost['Constant']['value'];
 		$this->set('COST',$COST);
-
+		
 		$catagory = "0";
+		$this->loadModel('Catagory');
+				$catas = $this->Catagory->find('all');
+				//debug($catas); die;
+				$vovans[0]='全部';
+				foreach ($catas as $cata) {
+					$vovans[$cata['Catagory']['id']]=($cata['Catagory']['name']);
+				}
+
+				//debug($vovans); die;
+				$this->set('catagory', $vovans);
 		if ($this->request->is('post'))
 		{	
 		$catagory = $this->request->data['Students']['catagory'];

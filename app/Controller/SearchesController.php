@@ -39,6 +39,16 @@ class SearchesController extends  AppController{
 			$this->set('view_regis',0);
 			$this->set('menu_type','manager_menu');
 				}
+		$this->loadModel('Catagory');
+				$catas = $this->Catagory->find('all');
+				//debug($catas); die;
+				$vovans[0]='全部';
+				foreach ($catas as $cata) {
+					$vovans[$cata['Catagory']['id']]=($cata['Catagory']['name']);
+				}
+
+				//debug($vovans); die;
+				$this->set('catagory', $vovans);
         $this->set('teacher_id',$this->Auth->user('id'));
         $conditions = array();
 		$this->loadModel('User');
