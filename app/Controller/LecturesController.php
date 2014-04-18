@@ -368,6 +368,8 @@ public function detail($id = null)
 		$canReport = 1;
 		if($user_id == $data['User']['id'])
 			$canReport = 0;
+		if($this->Auth->user('role')=='manager')
+			$canReport = 0;
 		$this->set('canReport',$canReport);
 
 		$this->set('comments', $this->Lecture->Comment->findAllByLectureId($id));
