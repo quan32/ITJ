@@ -342,7 +342,7 @@
 				<?php
 					foreach ($liked_people as $user) {
 						if($user['user_id'] == $current_user_id) continue;
-						echo $UserModel->username($user['user_id']).', ';
+						echo '<em>'.$UserModel->username($user['user_id']).'</em>'.', ';
 					}
 				?>
 				<ul class="nested-comments-complex">
