@@ -13,7 +13,8 @@ $paginator = $this->Paginator;
             echo "<th>" . $paginator->sort('User.username', 'ユーザ名') . "</th>";
             echo "<th>" . $paginator->sort('User.username', '氏名') . "</th>";
             echo "<th>" . $paginator->sort('User.role', '資格') . "</th>";
-            echo "<th> 詳細</th>";
+            echo "<th>詳細</th>";
+            echo "<th>情報変更</th>";
             echo "<th>管理</h1>";
 
         echo "</tr>";
@@ -30,7 +31,11 @@ $paginator = $this->Paginator;
 			echo '<td>';
 			echo $this->Html->link('詳細', 
 				array('controller'=>'manages','action' => 'detail', $user["User"]["id"]));
-			echo '</td>';			
+			echo '</td>';		
+			echo '<td>';
+			 echo $this->Html->link('変更', 
+                array('controller'=>'manages','action' => 'editinfo', $user["User"]["id"]));
+            echo '</td>'; 	
 	    echo '<td>';
        echo $this->Form->postLink('削除 | ', 
 				array('controller'=>'users','action' => 'delete', $user["User"]["id"]),

@@ -627,7 +627,7 @@ class ManagesController extends AppController{
 
     if ($this->request->is('post') || $this->request->is('put')) { 
       $data = $this->request->data['User'] ;
-      //var_dump($data);die();
+      
       $user_id = $data['id'];
      
       $this->User->id =$user_id;
@@ -641,39 +641,16 @@ class ManagesController extends AppController{
     
       if ($this->User->save($this->request->data)) {
                 $this->Session->setFlash(__('情報は更新されていた'));
-
-               // ghi log
-               $data = $this->User->find('all',array(
-                'conditions' => array('id' => $user_id),
-               'recursive' => -1)
-                );
-                
-                $date = date('Y-m-d H:i:s');
-                $file = "user_change_info.txt";
-              //"順番", “SUCCESS”, "時間", "ユーザーID", "ユーザー名", "tuoi", “sdt”, “email”, “dia chi”
-                $content =  "\"SUCCESS\","."\"".$date."\","."\"".$data[0]['User']['id']."\","."\"".$data[0]['User']['username']."\",\"基本情報変更\"";
-                
-                $this->Log->writeLog($file,$content);
+         //    var_dump($this->request->data);die();
+              
 
         //  return $this->redirect(array('action' => 'index')); 
                 //var_dump($this->request->data); die();
-                if ($this->request->data["User"]["role"]=="manager")
+                
                 return $this->redirect(array('action' => 'detail',$user_id));
-                else  return $this->redirect(array('action' => 'accept'));
+               
         }
-        //log loi 
-        // ghi log
-               $data = $this->User->find('all',array(
-                'conditions' => array('id' => $user_id),
-               'recursive' => -1)
-                );
-                
-                $date = date('Y-m-d H:i:s');
-                $file = "user_change_info.txt";
-              //"順番", “SUCCESS”, "時間", "ユーザーID", "ユーザー名", "tuoi", “sdt”, “email”, “dia chi”
-                $content =  "\"FAIL\","."\"".$date."\","."\"".$data[0]['User']['id']."\","."\"".$data[0]['User']['username']."\",\"基本情報変更\"";
-                
-                $this->Log->writeLog($file,$content);
+        
             $this->Session->setFlash(
                 __('エラーが起きてしまった。してみてください'));
     } else {
@@ -683,7 +660,7 @@ class ManagesController extends AppController{
       throw new NotFoundException(__('不当なユーザ'));
        }
         $this->request->data = $this->User->read(null, $id);
-          //  unset($this->request->data['User']['password']);
+         // unset($this->request->data['User']['mobile_No']);
         }
   }
 

@@ -10,7 +10,7 @@
 	<th>電話番号</th>
     <th>クレジットカード情報(学生)</th>
     <th>銀行口座情報(先生)</th>
-    <th>変更</th>
+    
     <th>確認</th>
 	</tr>
 <?php
@@ -25,10 +25,7 @@
 			echo '<td>'.$user["User"]["mobile_No"].'</td>';
 			echo '<td>'.$user["User"]["credit_card_No"].'</td>';
 			echo '<td>'.$user["User"]["bank_acc"].'</td>';
-			echo '<td>';
-			echo $this->Html->link('変更', 
-                array('controller'=>'manages','action' => 'editinfo', $user["User"]["id"]));
-            echo '</td>'; 
+			
 	        echo '<td>';
             echo $this->Form->create('User', array('url' => array('controller' => 'manages', 'action' => 'accept'))); 
             echo $this->Form->hidden('id', array('value' =>$user["User"]["id"] ));
