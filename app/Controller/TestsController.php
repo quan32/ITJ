@@ -20,7 +20,11 @@ class TestsController extends AppController {
 	}
 
 	public function index($lecture_id = null){
-		$this->set('menu_type','teacher_menu');
+		if($this->Auth->user('role')=='teacher')
+			$this->set('menu_type','teacher_menu');
+		elseif($this->Auth->user('role')=='manager')
+			$this->set('menu_type','manager_menu');
+		
 		$tests = $this->Test->findAllByLectureId($lecture_id);
 		$this->set('tests', $tests);
 		$this->set('lecture_id', $lecture_id);
