@@ -68,9 +68,10 @@ class SourcesController extends AppController{
 			
 
 			foreach ($sources as $source) {
-				list($part1, $part2)=explode("_", $source['Source']['filename'], 2);
-				$part2 = str_replace('_', ' ', $part2);
-				if($part2==$this->request->data['Source']['filename']['name']){
+				$part1 = str_replace(' - ', '_', $this->request->data['Source']['filename']['name']);
+				$part1 = str_replace('-', '_', $part1);
+				$part1 = str_replace(' ', '_', $part1);
+				if($part1==$source['Source']['filename']){
 					$this->Session->setFlash('エラー：このファイルはアップロードされた');
 					$this->redirect(array('action' => 'add', $id));
 				}	
@@ -104,6 +105,28 @@ class SourcesController extends AppController{
 		$this->set('sources', $sources);
 
 		if ($this->request->is('post')) {
+
+			if($this->request->data['Source']['filename']['type']==""){
+				$this->Session->setFlash('ファイルを選んでください');
+				$this->redirect(array('action' => 'add', $id));
+			}
+			// debug($this->request->data['Source']['filename']['type']);die;
+			if(!in_array($this->request->data['Source']['filename']['type'], array('image/gif','image/png','image/jpg','image/jpeg','video/mp4','audio/mp3','audio/wav', 'audio/x-wav', 'audio/mpeg', 'audio/x-mpeg-3'))){
+
+				$this->Session->setFlash('ファイルフォーマットが間違ってしまった。ビデオと音声とイメージでけできる');
+				$this->redirect(array('action' => 'add', $id));
+			}
+			
+
+			foreach ($sources as $source) {
+				$part1 = str_replace(' - ', '_', $this->request->data['Source']['filename']['name']);
+				$part1 = str_replace('-', '_', $part1);
+				$part1 = str_replace(' ', '_', $part1);
+				if($part1==$source['Source']['filename']){
+					$this->Session->setFlash('エラー：このファイルはアップロードされた');
+					$this->redirect(array('action' => 'add', $id));
+				}	
+			}
 			// debug($this->request->data);die;
 			$this->request->data['Source']['lecture_id']=$id;
 			$this->request->data['Source']['type']=$this->request->data['Source']['filename']['type'];
