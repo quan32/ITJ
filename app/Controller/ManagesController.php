@@ -249,7 +249,8 @@ class ManagesController extends AppController{
               // echo $result;
             }
             
-              $this->Session->setFlash(__('定数アドレスは保存されていた'));
+
+              $this->Session->setFlash(__('定数は保存されていた'));
               return $this->redirect(array('action' => 'masterdata')); 
             }
                 $this->Session->setFlash(

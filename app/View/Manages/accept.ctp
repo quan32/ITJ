@@ -34,12 +34,12 @@
             echo $this->Form->hidden('id', array('value' =>$user["User"]["id"] ));
             echo $this->Form->hidden('state', array('value' => 'normal'));
            
-            echo $this->Form->end('賛成');
+            echo $this->Form->end('承認');
             echo $this->Form->create('User', array('url' => array('controller' => 'manages', 'action' => 'accept'))); 
             echo $this->Form->hidden('id', array('value' =>$user["User"]["id"] ));
             echo $this->Form->hidden('state', array('value' => 'rejected'));
            
-            echo $this->Form->end('反対');
+            echo $this->Form->end('拒否');
             
           
 		    echo '</td>';
