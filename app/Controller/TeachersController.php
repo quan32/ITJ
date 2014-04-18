@@ -26,15 +26,11 @@ class TeachersController extends AppController{
 		$this->loadModel('Constant');
 		$constantCost = $this->Constant->findByName('cost');
 		$COST = $constantCost['Constant']['value'];
-
-		$constantRate = $this->Constant->findByName('rate');
-		$RATE = $constantRate['Constant']['value'];
+		$this->set('COST',$COST);
 
 		$user_id = $this->Auth->user('id');
 		// var_dump($user_id);
 		$this->loadModel('User');
-		$data = $this->User->findById($user_id);
-
 // ------------Lay 5 bai moi nhat---------------------------------
 		$this->loadModel('Lecture');
 		$this->loadModel('Register');
@@ -64,100 +60,6 @@ class TeachersController extends AppController{
 		}
 
 		$this->set("lectures",$fiveNewestLecture);
-//
-// -----------------------------------------------------------------------
-
-
-//-------xuan-----------------Tinh so tien + So hoc sinh dang ki--------------------------------
-//------------tien + so hoc sinh dang ki thang nay
-		$allLecture = $this->Lecture->find('all',array(
-		    'conditions' => array(
-			        'user_id' => $user_id),
-					'recursive' => '-1'
-						    ));
-
-
-		$moneyTemp =  0.0;
-		$numberStudent = 0;
-		foreach ($allLecture as $oneLecture) {
-			$numberTemp = $this->Register->find('count',
-					array(
-						'conditions' => array(
-					'lecture_id' => $oneLecture['Lecture']['id'],
-					'MONTH(Register.created)' => date('n')
-					)
-					)
-
-				);
-
-			
-		$moneyTemp = $moneyTemp + $numberTemp * $oneLecture['Lecture']['cost'];
-		$numberStudent = $numberStudent + $numberTemp;
-			
-		}
-		$moneyThisMonth = $moneyTemp * 0.6;
-		$this->set('numberStudentThisMonth', $numberStudent);
-		$this->set('moneyThisMonth',$moneyThisMonth);
-//----tien + so hoc sinh dang ki thang truoc---------
-	$allLecture = $this->Lecture->find('all',array(
-			    'conditions' => array(
-				        'user_id' => $user_id),
-						'recursive' => '-1'
-							    ));
-
-
-			$moneyTemp =  0.0;
-			$numberStudentLastMonth = 0;
-			foreach ($allLecture as $oneLecture) {
-				$numberTemp = $this->Register->find('count',
-						array(
-							'conditions' => array(
-						'lecture_id' => $oneLecture['Lecture']['id'],
-						'MONTH(Register.created)' => date('n',strtotime("-1 month"))
-						)
-						)
-
-					);
-
-			
-			$moneyTemp = $moneyTemp + $numberTemp * $oneLecture['Lecture']['cost'];
-			$numberStudentLastMonth = $numberStudentLastMonth + $numberTemp;
-				
-			}
-			$moneyLastMonth = $moneyTemp * 0.6;
-			
-			$this->set('numberStudentLastMonth', $numberStudentLastMonth);
-			$this->set('moneyLastMonth',$moneyLastMonth);
-// Tinh tong so tien va hoc sinh hoc bai:
-			$allLecture = $this->Lecture->find('all',array(
-			    'conditions' => array(
-				        'user_id' => $user_id),
-						'recursive' => '-1'
-							    ));
-
-
-			$moneyTemp =  0.0;
-			$numberStudentLearned = 0;
-			foreach ($allLecture as $oneLecture) {
-				$numberTemp = $this->Register->find('count',
-						array(
-							'conditions' => array(
-						'lecture_id' => $oneLecture['Lecture']['id'],
-						)
-						)
-
-					);
-
-			
-			$moneyTemp = $moneyTemp + $numberTemp * $oneLecture['Lecture']['cost'];
-			$numberStudentLearned = $numberStudentLearned + $numberTemp;
-				
-			}
-			$moneySum = $moneyTemp * 0.6;
-			
-			$this->set('moneySum', $moneySum);
-			$this->set('numberOfAllLearnedStudent',$numberStudentLearned);
-
 
 
 	}
