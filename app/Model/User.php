@@ -12,15 +12,15 @@ class User extends AppModel{
                 'message'  => '文字又は数字を入力してください'
             ),
             'between' => array(
-                'rule'    => array('between', 8, 30),
-                'message' => '8～30桁のユーザ名を入力してください'
+                'rule'    => array('between', 3, 30),
+                'message' => '3～30桁のユーザ名を入力してください'
             )
         ),
 
 		'password'=> array(
-			'rule' => array('minLength', 8),
+			'rule' => array('minLength', 6),
 			// 'required' => true,
-			'message' => '最低の長さは8桁'),
+			'message' => '最低の長さは6桁'),
 
 		'fullname' => array(
         	'rule' => array('minLength', 3),
@@ -41,28 +41,28 @@ class User extends AppModel{
 			'message'=>'メールフォーマットで入力してください'),
 
 		'currPassword' => array(
-			'rule' => array('minLength', 8),
+			'rule' => array('minLength', 6),
 			// 'required' => true,
-			'message' => '現在パスワードを８桁以上入力してください'),
+			'message' => '現在パスワードを6桁以上入力してください'),
 
 		'newPassword' => array(
-			'rule' => array('minLength', 8),
+			'rule' => array('minLength', 6),
 			// 'required' => true,
-			'message' => '８桁以上の新パスワードを８桁以上入力してください'),
+			'message' => '８桁以上の新パスワードを6桁以上入力してください'),
 
 		'confPassword' => array(
-			'rule' => array('minLength', 8),
+			'rule' => array('minLength', 6),
 			// 'required' => true,
-			'message' => '確認するパスワードを8桁以上入力してください'),
+			'message' => '確認するパスワードを6桁以上入力してください'),
 		'currVerify' => array(
 			'rule' => 'notEmpty',
 			// 'required' => true,
-			'message' => '現在確認するコードを8桁以上入力してください'),
+			'message' => '現在確認するコードを1桁以上入力してください'),
 
 		'newVerify' => array(
 			'rule' => 'notEmpty',
 			// 'required' => true,
-			'message' => '８桁以上の新確認するコードを入力してください'),
+			'message' => '1桁以上の新確認するコードを入力してください'),
 
 		'confVerify' => array(
 			'rule' => 'notEmpty',

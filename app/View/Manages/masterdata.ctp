@@ -11,6 +11,7 @@
 	//
 	
 	foreach ($cons as $con) {
+		if($con["Constant"]['name']!='login'){
 
         echo '<tr>';
 			echo '<td>'.$con["Constant"]["id"].'</td>';
@@ -25,6 +26,7 @@
 			echo '</td>';
 
 		echo '</tr>';
+	}
 	}
 ?>
 </table>
