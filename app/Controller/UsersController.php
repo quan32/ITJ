@@ -353,12 +353,17 @@ class UsersController extends AppController{
 		$this->set('menu_type','empty');
 		$user= $this->User->findById($id);
 		$this->loadModel('Question');
-		$question = $this->Question->findById($user['User']['question']);
-		$this->set('question',strrev($question['Question']['content']));
+		$questions = $this->Question->find('all');
+		$vovans[0]='質問を選んでください';
+		foreach ($questions as $question) {
+			$vovans[$question['Question']['id']]=$question['Question']['content'];
+		}
+		$this->set('questions', $vovans);
 
 		if($this->request->is('post')){
 			$passwordHasher = new SimplePasswordHasher();
-			if($user['User']['verify']==$passwordHasher->hash($this->request->data['User']['verify'])){
+
+			if($user['User']['verify']==$passwordHasher->hash($this->request->data['User']['verify'])  && $user['User']['question']==$this->request->data['User']['question']){
 
 				$this->Session->setFlash(__('確認するコードは正しい'));
 				$this->User->id=$id;
@@ -375,13 +380,17 @@ class UsersController extends AppController{
 		$this->set('menu_type','empty');
 		$user= $this->User->findById($id);
 		$this->loadModel('Question');
-		$question = $this->Question->findById($user['User']['question']);
-		$this->set('question',strrev($question['Question']['content']));
+		$questions = $this->Question->find('all');
+		$vovans[0]='質問を選んでください';
+		foreach ($questions as $question) {
+			$vovans[$question['Question']['id']]=$question['Question']['content'];
+		}
+		$this->set('questions', $vovans);
 
 		if($this->request->is('post')){
 			$user= $this->User->findById($id);
 			$passwordHasher = new SimplePasswordHasher();
-			if($user['User']['verify']==$passwordHasher->hash($this->request->data['User']['verify'])){
+			if($user['User']['verify']==$passwordHasher->hash($this->request->data['User']['verify']) && $user['User']['question']==$this->request->data['User']['question']){
 
 				$this->Session->setFlash(__('確認するコードは正しい'));
 				$this->User->id = $id;

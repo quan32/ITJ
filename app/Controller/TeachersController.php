@@ -89,7 +89,7 @@ class TeachersController extends AppController{
 		$questions = $this->Question->find('all');
 		$vovans[0]='質問を選んでください';
 		foreach ($questions as $question) {
-			$vovans[$question['Question']['id']]=strrev($question['Question']['content']);
+			$vovans[$question['Question']['id']]=$question['Question']['content'];
 		}
 		$this->set('questions', $vovans);
 
@@ -105,6 +105,7 @@ class TeachersController extends AppController{
 				}else{
 					$this->request->data['User']['role']=$role;
 					$this->request->data['User']['prevIP']=$this->request->clientIp();
+					$this->request->data['User']['first_question']=$this->request->data['User']['question'];
 					$this->loadModel('User');
 					$this->User->create();
 					if($this->User->save($this->request->data)){
@@ -192,6 +193,13 @@ class TeachersController extends AppController{
 		$this->set('menu_type','teacher_menu');
 		$this->pageTitle = "確認するコード";
 		$this->loadModel('User');
+		$this->loadModel('Question');
+		$questions = $this->Question->find('all');
+		$vovans[0]='質問を選んでください';
+		foreach ($questions as $question) {
+			$vovans[$question['Question']['id']]=$question['Question']['content'];
+		}
+		$this->set('questions', $vovans);
 
 		$userId = $this->Auth->user('id');
 		$this->User->id = $userId;
@@ -208,14 +216,14 @@ class TeachersController extends AppController{
 			$passwordHasher = new SimplePasswordHasher();
 			$arrPass = $this->request->data;
 			// check current password
-			if($passwordHasher->check($arrPass['User']['currVerify'],$currUser['User']['verify'])){
+			if($passwordHasher->check($arrPass['User']['currVerify'],$currUser['User']['verify']) && $arrPass['User']['currQuestion']==$currUser['User']['question']){
 				// check new password and confirm password
 				if($arrPass['User']['newVerify'] == $arrPass['User']['confVerify']){
 					// assign new password to password
 					$currUser['User']['verify'] = $arrPass['User']['newVerify'];
 					// save user, run function beforeSave() to hash new password
 					// $this->User->id = $userId;
-					if($this->User->saveField('verify',$arrPass['User']['newVerify'])){
+					if($this->User->saveField('verify',$arrPass['User']['newVerify'])  && $this->User->saveField('question',$arrPass['User']['newQuestion'])){
 						// write success log to log file 7: change_password.txt
 						$log = '"SUCCESS", "'.(string)date('Y-m-d H:i:s').'", "'.(string)$userId.'"';
 						$this->Log->writeLog('change_verify.txt',$log);

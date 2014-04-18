@@ -5,7 +5,7 @@
 		<legend>
 			<h1>確認する質問：</h1>
 		</legend>
-		<h1><?php echo $question;?></h1>
+		<?php echo $this->Form->input('question', array('label'=>'', 'options'=>$questions));?>
 		<?php 
 		echo $this->Form->input('verify', array('label'=>'答え：','type'=>'password'));
 		?>
