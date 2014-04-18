@@ -203,7 +203,7 @@ class TestsController extends AppController {
 
 
 	public function delete($id =null){
-		$this->request->onlyAllow('post');
+		// $this->request->onlyAllow('post');
 
 		$this->Test->id = $id;
 		if(!$this->Test->exists())
@@ -221,6 +221,35 @@ class TestsController extends AppController {
 		$this->Session->setFlash(__('テストはまだ削除していない'));
 		return $this->redirect(array('action' => 'index'));
 	}
+
+	public function block($id =null){
+		$this->Test->id = $id;
+		$test = $this->Test->findById($id);
+
+		if(!$this->Test->exists())
+			throw new NotFoundException(__('不当なテスト'));
+		if($this->Test->saveField('state','blocked')){
+			$this->Session->setFlash(__('テストはブロックした'));
+			return $this->redirect(array('action'=>'index',$test['Test']['lecture_id'])); 
+		}
+		$this->Session->setFlash(__('テストはまだブロックしていない'));
+		return $this->redirect(array('action'=>'index',$test['Test']['lecture_id']));
+	}
+
+	public function unblock($id =null){
+		$this->Test->id = $id;
+		$test = $this->Test->findById($id);
+
+		if(!$this->Test->exists())
+			throw new NotFoundException(__('不当なテスト'));
+		if($this->Test->saveField('state','normal')){
+			$this->Session->setFlash(__('テストはアンチブロックした'));
+			return $this->redirect(array('action'=>'index',$test['Test']['lecture_id'])); 
+		}
+		$this->Session->setFlash(__('テストはまだブロックしてる'));
+		return $this->redirect(array('action'=>'index',$test['Test']['lecture_id']));
+	}
+
 
 
 // mot so ham check

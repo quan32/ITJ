@@ -12,8 +12,9 @@ class StudentsController extends AppController{
 
 	public function isAuthorized($user){
 		// Only student can use these function
-		if($user['role']=='student')
+		if($user['role']=='student' || ($user['role']=='teacher' && $this->action="detailLecture"))
 			return true;
+
 		return false;
 
 	}
@@ -36,6 +37,16 @@ class StudentsController extends AppController{
 				$this->User->create();
 				if($this->User->save($this->request->data)){
 					$log="INFO, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 学生として成功して登録した';
+					$precode = $this->User->find('count', array(
+       								 'conditions' => array('User.role' => 'student')));
+					//$precode = $precode+1;
+      				if($precode<10) {
+						$code = "S00".$precode;
+					}else {
+						if($precode) { $code = "S0".$precode;
+							}else {$code = "S".$precode;}
+						}
+					$this->User->saveField('code',$code);
 					$this->Log->writeLog('new_user.txt',$log);
 					$this->Session->setFlash(__('アカウントはデータベースに保存した'));
 					return $this->redirect(array('controller'=>'users','action'=>'login'));
@@ -961,7 +972,7 @@ public function viewListTest($register_id = null)
 							),
 										
 						);
-		$options['fields'] = array('Register.id','Test.id','Test.name','Lecture.id','Lecture.name');
+		$options['fields'] = array('Register.id','Test.id','Test.name','Test.state','Lecture.id','Lecture.name');
 		$options['conditions'] = array('Register.id' => $register_id);
 
 		$this->Register->recursive = -1;

@@ -7,7 +7,7 @@
 		</legend>
 		<h1><?php echo $question;?></h1>
 		<?php 
-		echo $this->Form->input('verify', array('label'=>'答え：'));
+		echo $this->Form->input('verify', array('label'=>'答え：','type'=>'password'));
 		?>
 	</fieldset>
 	<?php echo $this->Form->end(array('label'=>'確認')); ?>

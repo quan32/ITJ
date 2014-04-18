@@ -40,24 +40,24 @@ class User extends AppModel{
 			'rule'=>'email',
 			'message'=>'メールフォーマットで入力してください'),
 
-		'currpassword' => array(
+		'currPassword' => array(
 			'rule' => array('minLength', 8),
 			// 'required' => true,
-			'message' => '現在パスワードを入力してください'),
+			'message' => '現在パスワードを８桁以上入力してください'),
 
-		'newpassword' => array(
+		'newPassword' => array(
 			'rule' => array('minLength', 8),
 			// 'required' => true,
-			'message' => '８桁以上の新パスワードを入力してください'),
+			'message' => '８桁以上の新パスワードを８桁以上入力してください'),
 
-		'confpassword' => array(
+		'confPassword' => array(
 			'rule' => array('minLength', 8),
 			// 'required' => true,
-			'message' => '確認するパスワードを入力してください'),
+			'message' => '確認するパスワードを8桁以上入力してください'),
 		'currVerify' => array(
 			'rule' => 'notEmpty',
 			// 'required' => true,
-			'message' => '現在確認するコードを入力してください'),
+			'message' => '現在確認するコードを8桁以上入力してください'),
 
 		'newVerify' => array(
 			'rule' => 'notEmpty',

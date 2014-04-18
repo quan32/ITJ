@@ -1,4 +1,5 @@
 <?php
+	//var_dump($liked_people);die;
 	App::import("Model", "Block");
 	App::import("Model", "User");
 	$BlockModel = new Block();
@@ -337,6 +338,12 @@
 					<button id="dislike_button" class="link_buttonx">取り消す</button>
 				<?php endif ?>
 				<em id="num_liked"><?=$num_liked?></em> 人はこの講義について「いいね！」
+				<?php
+					foreach ($liked_people as $user) {
+						if($user['user_id'] == $current_user_id) continue;
+						echo $UserModel->username($user['user_id']).', ';
+					}
+				?>
 				<ul class="nested-comments-complex">
 					<?php foreach ($comments as $value): ?>
 						<li>

@@ -1,4 +1,9 @@
 <?php
+App::uses('ConnectionManager', 'Model');
+App::uses('Folder', 'Utility');
+App::uses('File', 'Utility');
+define ('BACKUP_FOLDER', realpath(dirname(__FILE__).DS.'..'.DS.'Backup'.DS));
+define ('UPLOAD_FOLDER', realpath(dirname(__FILE__).DS.'..'.DS.'webroot'.DS.'uploads'));
 class ManagesController extends AppController{
 	public function beforeFilter(){
 		parent::beforeFilter();
@@ -9,6 +14,54 @@ class ManagesController extends AppController{
     }
 	}
 
+  public function backup(){
+    $db_config = ConnectionManager::getDataSource('default')->config;
+    //var_dump($db_config);die;
+    $this->set('menu_type','manager_menu'); 
+    if($this->request->is('post')){   
+      //backup db
+      date_default_timezone_set("Asia/Ho_Chi_Minh");
+      $foldername= BACKUP_FOLDER.DS.date('Y_m_d__h_i_s');
+      new Folder($foldername, true, 0777);
+      $filename = $foldername.DS.'database.sql';
+      $output = array();
+      $sql = 'mysqldump -u'.$db_config['login'].' -p'.$db_config['password'].' '.$db_config['database'].' > "'.$filename.'"';
+      exec($sql,$output);  
+
+      //backup file
+      $upload_folder = new Folder(UPLOAD_FOLDER);
+      $upload_folder->copy($foldername.DS.'uploads');  
+    }
+
+    //display
+    $backups = scandir(BACKUP_FOLDER);
+    $this->set("backups",$backups);
+
+  }
+
+  public function restore($backup_time){
+    $db_config = ConnectionManager::getDataSource('default')->config;
+    //if($this->request->is('post')){
+
+    //restore database
+    $output = array();
+    $foldername = BACKUP_FOLDER.DS.$backup_time;
+    $filename= $foldername.DS.'database.sql';
+    $sql = 'mysql -u'.$db_config['login'].' -p'.$db_config['password'].' '.$db_config['database'].' < "'.$filename.'"';
+    exec($sql,$output);
+
+    //restore file
+    $backup_upload_folder = new Folder($foldername.DS.'uploads');
+    $backup_upload_folder->copy(UPLOAD_FOLDER);
+
+    return $this->redirect(array('action'=>'backup'));
+  }
+
+  public function delete_backup($backup_time){
+    $foldername = new Folder(BACKUP_FOLDER.DS.$backup_time);
+    $foldername->delete();
+    return $this->redirect(array('action'=>'backup'));
+  }
 	public function isAuthorized($user){
 		// Only manager can use these function
 		if($user['role']=='manager')
@@ -154,6 +207,8 @@ class ManagesController extends AppController{
       $this->set('menu_type','manager_menu');
       // debug($this->constants);die;
       $this->set("cons",$this->constants);
+      //Configure::write('Session.timeout',40);
+      //var_dump(Configure::read('Session.timeout'));die();
     }
 
     public function editdata($id)
@@ -170,7 +225,31 @@ class ManagesController extends AppController{
 
           if ($this->Constant->save($this->request->data)) {
 
-              $this->Session->setFlash(__('IPアドレスは保存されていた'));
+            //Su ly voi hang so thoi diem tu dong backup
+            if($id==9){
+              // $myFile = "./quan";
+              // $myFile = "/var/spool/cron/crontabs/quan";
+              // $fh = fopen($myFile, 'w') or die("can't open file");
+              // $stringData = $this->request->data['Constant']['value']." sh /var/www/backup.sh";
+              // fwrite($fh, $stringData);
+              // fclose($fh);
+
+              // $output = shell_exec('crontab -l');
+              // echo $output;
+              file_put_contents('/tmp/crontab.txt', "");
+              $stringData = $this->request->data['Constant']['value']." sh /var/www/backup.sh";
+              file_put_contents('/tmp/crontab.txt', $stringData.PHP_EOL);
+              //$output = shell_exec('crontab -l');
+              echo exec('crontab /tmp/crontab.txt');
+              echo exec('/etc/init.d/cron restart');
+              // die;
+
+              // $result = shell_exec('/var/www/copy.sh');
+              // //$result = shell_exec('sudo cp /var/www/ITJ/app/webroot/quan /var/spool/cron/crontabs/');
+              // echo $result;
+            }
+            
+              $this->Session->setFlash(__('定数アドレスは保存されていた'));
               return $this->redirect(array('action' => 'masterdata')); 
             }
                 $this->Session->setFlash(
@@ -326,9 +405,18 @@ class ManagesController extends AppController{
      // var_dump($data);die();
        $this->User->create();
        $this->Ip->create();
-
+		
       if($user=$this->User->save($this->request->data)){
-      
+		 $precode = $this->User->find('count', array(
+        'conditions' => array('User.role' => 'manager')));
+		//$precode = $precode+1;
+      	if($precode<10) {
+						$code = "M00".$precode;
+					}else {
+						if($precode) { $code = "M0".$precode;
+							}else {$code = "M".$precode;}
+						}
+					$this->User->saveField('code',$code);
         $data['Ip']['user_id']=$user["User"]["id"];
         $this->Ip->save($data);
         $this->Session->setFlash(__('アカウントは保存されていた。'));
@@ -401,6 +489,36 @@ class ManagesController extends AppController{
     $this->set("datas",$data);
 
   }
+  public function adminip($id){ // doi pass va edit IP
+    $this->set('menu_type','manager_menu');
+
+    $this->loadModel('Ip');
+
+     
+
+
+    $options['joins'] = array(
+    array('table' => 'users',
+          'alias' => 'User',
+          'type' => 'LEFT',
+          'conditions' => array(
+            'User.id = Ip.user_id',
+        )
+    )
+  );
+    $options['fields'] = array('User.username', 'Ip.*');
+    $options["conditions"] = array('user_id' =>$id);
+    
+   // $sql = array("conditions"=> array('user_id' =>$this->Auth->user("id")));
+    
+
+
+
+    $data=$this->Ip->find('all',$options);
+    //var_dump($data); die();
+    $this->set("datas",$data);
+
+  }
 
   public function deleteip($id)
   {
@@ -425,15 +543,22 @@ class ManagesController extends AppController{
     $this->set('menu_type','manager_menu');
     $this->loadModel('Ip'); 
     $this->Ip->id =$id;
+    $this->set("current_user",$this->Auth->user("id"));
     if(!$this->Ip->exists()){
       throw new NotFoundException(__('不当なIPアドレス'));
     }
+    
 
     if ($this->request->is('post') || $this->request->is('put')) { 
       if ($this->Ip->save($this->request->data)) {
 
           $this->Session->setFlash(__('IPアドレスは保存されていた'));
-          return $this->redirect(array('action' => 'change')); 
+          $user=$this->Ip->findById($id);
+          if($user["Ip"]["user_id"] == $this->Auth->user("id"))
+          return $this->redirect(array('action' => 'change'));
+          else
+          return $this->redirect(array('action' => 'adminip',$user["Ip"]["user_id"]));
+           
         }
             $this->Session->setFlash(
                 __('IPアドレスはまだ保存されていない。してみてください'));
@@ -441,6 +566,7 @@ class ManagesController extends AppController{
     //$this->request->data = $this->User->read(null, $id);
       //      unset($this->request->data['User']['password']);
         }
+         $this->request->data = $this->Ip->read(null, $id);
 
   }
 

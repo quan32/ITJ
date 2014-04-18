@@ -99,6 +99,16 @@ class TeachersController extends AppController{
 					$this->User->create();
 					if($this->User->save($this->request->data)){
 						$this->Session->setFlash(__('アカウントはデータベースに保存した'));
+						$precode = $this->User->find('count', array(
+       									 'conditions' => array('User.role' => 'teacher')));
+						//$precode = $precode+1;
+      				if($precode<10) {
+						$code = "T00".$precode;
+					}else {
+						if($precode) { $code = "T0".$precode;
+							}else {$code = "T".$precode;}
+						}
+					$this->User->saveField('code',$code);
 						$log="INFO, ".date('Y-m-d H:i:s').', '.$this->request->data['User']['username'].', 先生として成功して登録した';
 						$this->Log->writeLog('new_user.txt',$log);
 						return $this->redirect(array('controller'=>'users','action'=>'login'));

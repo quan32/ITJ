@@ -6,14 +6,11 @@ class Lecture extends AppModel {
 
 	public $validate = array(
 		'name' => array(
-			'rule' => array('minLength', 10),
-			'required' => true,
-			'message' => '10桁～の講義名を入力してください'),
+			'rule' => 'notEmpty',
+			'message' => '空きフィールドはだめ！'),
 		'description' => array(
-            'between' => array(
-                'rule'    => array('between', 30, 225),
-                'message' => '30～225桁の紹介する情報を入力してください'
-            ))
+            'rule' => 'notEmpty',
+			'message' => '空きフィールドはだめ！')
 		
 	);
 	
