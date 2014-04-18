@@ -503,7 +503,7 @@ class StudentsController extends AppController{
 
 	public function calcMoney($month , $year )
 	{
-		//Tinh tien tu dau thang den ngay hien tai
+
 		//load hang so he thong
 		$this->loadModel('Constant');
 		$constantCost = $this->Constant->findByName('cost');
@@ -512,15 +512,30 @@ class StudentsController extends AppController{
 		$user_id = $this->Auth->user('id');
 		$this->loadModel('Register');
 		$options = array(
-					'conditions' => array(
+			'joins' => array(
+				array(
+					'table' => 'lectures',
+					'alias' => 'Lecture',
+					'type' => 'inner',
+					'conditions' => array('Lecture.id = Register.lecture_id')
+					),
+				array('table' => 'users',
+					    	'alias' => 'User',
+					    	'type' => 'inner',
+					    	'conditions' => array('User.id = Lecture.user_id')
+					    	)
+				),
+			'conditions' => array(
 						'Register.user_id' => $user_id,
 						'MONTH(Register.created)' => $month,
-						'YEAR(Register.created)' => $year
+						'YEAR(Register.created)' => $year,
+						'NOT' => array('User.state' => array('locked','deleted')),
 					),
 					'fields' => array( 'count(Register.id) as money')
 					
 
 			);
+		$this->Register->recursive = -1;
 		$data = $this->Register->find('all',$options);
 		$money = $data[0][0]['money'] * $COST;
 		
@@ -564,7 +579,6 @@ class StudentsController extends AppController{
 					if ($money == null||$money == 0) {
 						// du dieu kien xoa tai khoan
 						$data = array('id' => $user_id, 'state' => 'deleted');
-						// This will update Recipe with id 10
 						if($this->User->save($data))
 						{
 								//log
