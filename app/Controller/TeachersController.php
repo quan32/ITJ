@@ -20,6 +20,16 @@ class TeachersController extends AppController{
 
 	
 	public function index (){
+		$this->loadModel('Catagory');
+				$catas = $this->Catagory->find('all');
+				//debug($catas); die;
+				$vovans[0]='全部';
+				foreach ($catas as $cata) {
+					$vovans[$cata['Catagory']['id']]=($cata['Catagory']['name']);
+				}
+
+				//debug($vovans); die;
+				$this->set('catagory', $vovans);
 	
 		$this->set('menu_type','teacher_menu');
 		//lay hang so he thong

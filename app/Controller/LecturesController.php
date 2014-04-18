@@ -8,6 +8,7 @@ class LecturesController extends AppController{
 			$this->redirect(array('controller'=>'pages','action'=>'display', 'error'));
 		}
 		$this->set('user_role', $this->Auth->user('role'));
+		
 	}
 
 	public function isAuthorized($user){
@@ -33,9 +34,18 @@ class LecturesController extends AppController{
 
 	public function add(){
 		$this->set('menu_type','teacher_menu');
+		$this->loadModel('Catagory');
+				$catas = $this->Catagory->find('all');
+				//debug($catas); die;
+				$vovans[0]='カテゴリを選んでください';
+				foreach ($catas as $cata) {
+					$vovans[$cata['Catagory']['id']]=($cata['Catagory']['name']);
+				}
+
+				//debug($vovans); die;
+				$this->set('catagory', $vovans);
 		if ($this->request->is('post')) {
 			if($this->request->data['Lecture']['NQ']==1){
-
 				$exist = $this->Lecture->findByName($this->request->data['Lecture']['name']);
 				if($exist){
 					$this->Session->setFlash(__('この講義のタイトルは使用されているから、他のタイトルを選んでください。'));
