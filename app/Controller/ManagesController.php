@@ -113,7 +113,7 @@ class ManagesController extends AppController{
       }
       } 
        
-        $sql["conditions"] = array("role = 'student' AND state !='deleted' AND state !='locked' ");
+        $sql["conditions"] = array("role = 'student' AND state !='deleted' AND state !='rejected' AND state !='locked' ");
         $sql["limit"] = 6;
        
         $this->paginate = $sql;
@@ -136,7 +136,7 @@ class ManagesController extends AppController{
       }
       } 
        
-        $sql["conditions"] = array("role = 'teacher' AND state !='deleted' AND state !='locked' ");
+        $sql["conditions"] = array("role = 'teacher' AND state !='deleted' AND state !='rejected' AND state !='locked' ");
         $sql["limit"] = 6;
        
         $this->paginate = $sql;
@@ -279,15 +279,57 @@ class ManagesController extends AppController{
     $this->set('menu_type','manager_menu');
      $users = array();
      $alls=null;
+     $users_st = array();
+     $alls_st=null;
      $this->loadModel('Constant');
      $cost=$this->Constant->findByName("cost");
+     $tmp=$this->Constant->findByName("rate");
+     $rate=$tmp["Constant"]["value"]/100;
+
 
     if($this->request->is('post')) {
      $month=$this->request->data['Manage']['month'];
      $year=$this->request->data['Manage']['year'];
      $this->loadModel('Register');
      $this->loadModel('User');
-   
+    
+
+     $sql_st = array("conditions"=> array('MONTH(Register.created)' => $month),
+                   'group' => 'Register.user_id');
+     
+     $sql_st['fields']=array('Register.user_id','COUNT(Register.id) AS total');
+     //debug($sql);
+     $ok_st=$this->Register->find('all',$sql_st);
+     $j=0;
+     foreach ($ok_st as $all_st ) {
+     //
+     $x_st=$all_st[0]["total"]*$cost["Constant"]["value"];
+     //var_dump($x); die();
+     $ok_st[$j][0]["total"]=$x_st;
+     $j++;
+     }
+     //var_dump($ok_st);die();
+     $j=0;
+    foreach ($ok_st as $all_st ) {
+     $id_st=$all_st["Register"]["user_id"];
+     $data_st=$this->User->findAllById($id_st);
+     if($data_st !=null )
+     {
+      if($data_st[0]["User"]["state"] != "deleted") {
+       $users_st[$id_st]=$data_st[0];
+       $alls_st[$j]=$all_st;
+       $j++;
+      }
+      
+     }
+   }
+    // var_dump($alls_st);die();
+    
+
+
+
+
+     //sensei
      $sql = array("conditions"=> array('MONTH(Register.created)' => $month),
                    'group' => 'Lecture.user_id');
      
@@ -297,7 +339,7 @@ class ManagesController extends AppController{
      $i=0;
      foreach ($ok as $all ) {
      //
-     $x=$all[0]["total"]*$cost["Constant"]["value"];
+     $x=$all[0]["total"]*$cost["Constant"]["value"]*$rate;
      //var_dump($x); die();
      $ok[$i][0]["total"]=$x;
      $i++;
@@ -346,12 +388,20 @@ class ManagesController extends AppController{
    foreach ($alls as $all ) {
 
    $id=$all["Lecture"]["user_id"];
-   $log=$users[$id]["User"]["id"].','.$users[$id]["User"]["username"].','.$all[0]["total"].','.$users[$id]["User"]["address"].','.$users[$id]["User"]["mobile_No"].','.$users[$id]["User"]["credit_card_No"].','.$users[$id]["User"]["bank_acc"];
+   $log=$users[$id]["User"]["id"].','.$users[$id]["User"]["fullname"].','.$all[0]["total"].','.$users[$id]["User"]["address"].','.$users[$id]["User"]["mobile_No"].',54,'.$users[$id]["User"]["bank_acc"];
+   $this->Log->writeOder($file,$log);
+    
+    }
+
+    foreach ($alls_st as $all ) {
+
+   $id=$all["Register"]["user_id"];
+   $log=$users_st[$id]["User"]["id"].','.$users_st[$id]["User"]["fullname"].','.$all[0]["total"].','.$users_st[$id]["User"]["address"].','.$users_st[$id]["User"]["mobile_No"].',18,'.$users_st[$id]["User"]["credit_card_No"];
    $this->Log->writeOder($file,$log);
     
     }
    
-   $log="END___END___END";
+   $log="END___END___END,".date('Y').','.date('m');
    $this->Log->writeOder($file,$log);
    
 
@@ -366,6 +416,8 @@ class ManagesController extends AppController{
 
      }
    $this->set("users",$users);
+   $this->set("users_st",$users_st);
+   $this->set("alls_st",$alls_st);
    $this->set("alls",$alls);
 
   }
@@ -385,7 +437,8 @@ class ManagesController extends AppController{
      $this->loadModel('Constant');
      $this->loadModel('User');
      $cost=$this->Constant->findByName("cost");
-
+     $tmp=$this->Constant->findByName("rate");
+     $rate=$tmp["Constant"]["value"]/100;
      foreach ($alls as $all) {
     //var_dump($all);
     
@@ -396,7 +449,7 @@ class ManagesController extends AppController{
           
      }
     
-    $moneyThisMonth = $moneyTemp * 0.4;
+    $moneyThisMonth = $moneyTemp * (1-$rate);
  
     }
    $this->set('moneyThisMonth',$moneyThisMonth);

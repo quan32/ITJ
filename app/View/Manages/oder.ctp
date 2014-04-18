@@ -14,7 +14,7 @@ echo $this->Form->end(array('label'=>'表現'));
 <table>
 <tr>
 	<th>ユーザID</th>
-	<th>ユーザ名</th>
+	<th>氏名</th>
 	<th>お金</th>
 	<th>アドレス</th>
 	<th>携帯電話</th>
@@ -30,7 +30,7 @@ $id=$all["Lecture"]["user_id"];
 //debug($users);
 echo '<tr>';
             echo '<td>'.$users[$id]["User"]["id"].'</td>';
-            echo '<td>'.$users[$id]["User"]["username"].'</td>';
+            echo '<td>'.$users[$id]["User"]["fullname"].'</td>';
 			echo '<td>'.$all[0]["total"].'</td>';
 			echo '<td>'.$users[$id]["User"]["address"].'</td>';
 			echo '<td>'.$users[$id]["User"]["mobile_No"].'</td>';
@@ -40,6 +40,23 @@ echo '<tr>';
 echo '</tr>';          
 
 }
+
+foreach ($alls_st as $all ) {
+$id=$all["Register"]["user_id"];
+
+echo '<tr>';
+            echo '<td>'.$users_st[$id]["User"]["id"].'</td>';
+            echo '<td>'.$users_st[$id]["User"]["username"].'</td>';
+			echo '<td>'.$all[0]["total"].'</td>';
+			echo '<td>'.$users_st[$id]["User"]["address"].'</td>';
+			echo '<td>'.$users_st[$id]["User"]["mobile_No"].'</td>';
+			echo '<td>'.$users_st[$id]["User"]["credit_card_No"].'</td>';
+			echo '<td>'.$users_st[$id]["User"]["bank_acc"].'</td>';
+			
+echo '</tr>';          
+
+}
+
 echo '</table>';
 echo $this->Form->create('Manage', array('url' => array('controller' => 'manages', 'action' => 'oder'))); 
 echo $this->Form->hidden('month', array('value' => $month));
@@ -48,6 +65,7 @@ echo $this->Form->hidden('print', array('value' => true));
 echo $this->Form->end('作成');
 
 }
+
 
 ?>
 <style type="text/css">
