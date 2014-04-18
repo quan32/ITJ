@@ -100,8 +100,18 @@ class ReportsController extends AppController{
 	public function reported($rep_id = null,$lec_id = null) {
 		$this->set('menu_type','manager_menu');
 		$this->loadModel('Report');
-		$this->Report->id = $rep_id;
-		$this->Report->saveField('status',2);
+		$options = array(
+			'conditions' => array('Report.lecture_id' => $lec_id
+				)
+	 	);
+		 $this->Report->recursive = -1;
+		 $data = $this->Report->find('all', $options);
+		//debug($data); die;
+		foreach($data as $rep) {
+					//debug($rep); die;
+					$this->Report->id = $rep['Report']['id'];
+					$this->Report->saveField('status',2);
+			}
 		$this->loadModel('Lecture');
 		$this->Lecture->id = $lec_id;
 		$this->Lecture->saveField('reported',1);
@@ -112,6 +122,18 @@ class ReportsController extends AppController{
 		$this->set('menu_type','manager_menu');
 		$this->loadModel('Report');
 		$this->Report->delete(array('id'=>$rep_id));
+		$options = array(
+			'conditions' => array('Report.lecture_id' => $lec_id
+				)
+	 	);
+		 $this->Report->recursive = -1;
+		 $data = $this->Report->find('all', $options);
+		//debug($data); die;
+		foreach($data as $rep) {
+					//debug($rep); die;
+					$this->Report->id = $rep['Report']['id'];
+					$this->Report->saveField('status',1);
+			}
 		$this->loadModel('Lecture');
 		$this->Lecture->id = $lec_id;
 		$this->Lecture->saveField('reported',0);
@@ -129,8 +151,8 @@ class ReportsController extends AppController{
 		$user_id = $this->Auth->user('id');
 		$options = array(
 			'conditions' => array('Report.lecture_id' => $lec_id,
-									'Report.user_id' => $user_id
-				)
+									'Report.user_id' => $user_id),
+			'order' => array('Report.created' => 'DESC')
 	 	);
 
 		 $this->loadModel('Report');

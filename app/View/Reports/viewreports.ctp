@@ -22,7 +22,7 @@ if($reportsdata){
                 echo "<td>".$item['Report']['lecture_id']."</td>";
                 echo "<td>".$item['Report']['user_id']."</td>";
                 echo "<td>".$item['Report']['created']."</td>";
-				if($item['Report']['status'] == 2) {echo "<td>賛成しました</td>";} else {echo "<td></td>";}
+				if($item['Report']['status'] == 2) {echo "<td>賛成しました</td>";} else {echo "<td>まだ</td>";}
                 echo "<td>".$this->Html->link('詳しく',array('controller' => 'Reports','action' => 'detail',$item['Report']['id'], $item['Report']['lecture_id'],$item['Report']['user_id'],$item['Report']['status']));
                               
                 echo "</tr>";
