@@ -7,7 +7,7 @@
         <table class="search_box">
             <tr>
                 <td class="td1"><?php echo $this->Form->input('keyword',array('label'=>'')); ?></td>
-                <td class="td2"><?php echo $this->Form->input('catagory', array('label'=>'','options'=>array('0'=>'全部','1'=>'数学','2'=>'文学','3'=>'外国語','4'=>'体育','5'=>'普通科学','6'=>'IT','7'=>'食品','8'=>'社会','9'=>'心理','10'=>'芸術'))); ?></td>
+                <td class="td2"><?php echo $this->Form->input('catagory', array('label'=>'','options'=>$catagory)); ?></td>
                 <td class="td3"><?php echo $this->Form->submit('検索'); ?></td>
             </tr>
         </table>

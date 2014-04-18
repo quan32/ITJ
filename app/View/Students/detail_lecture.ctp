@@ -85,7 +85,7 @@ else{
                 if($backLink != null)
                     echo $this->Form->input('backLink', array('value' => $backLink,'type' => 'hidden'));
                 else 
-                    echo $this->Form->input('backLink', array('value' => 'registedLectureThisWeek','type' => 'hidden'));
+                    echo $this->Form->input('backLink', array('value' => 'recentRegistedLecture','type' => 'hidden'));
 
                 echo "<br><table><tr>";
                     if(isset($backLink)){

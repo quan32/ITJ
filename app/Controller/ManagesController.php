@@ -93,6 +93,16 @@ class ManagesController extends AppController{
 
 	public function index(){ // quan ly' User
      $this->set('menu_type','manager_menu');
+	 $this->loadModel('Catagory');
+				$catas = $this->Catagory->find('all');
+				//debug($catas); die;
+				$vovans[0]='全部';
+				foreach ($catas as $cata) {
+					$vovans[$cata['Catagory']['id']]=($cata['Catagory']['name']);
+				}
+
+				//debug($vovans); die;
+				$this->set('catagory', $vovans);
 		 $this->loadModel('User');
       if (!empty($this->request->data)) 
       {         

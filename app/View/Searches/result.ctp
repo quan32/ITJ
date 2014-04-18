@@ -7,7 +7,7 @@
      <table class="search_box">
             <tr>
                 <td class="td1"><?php echo $this->Form->input('keyword',array('label'=>'','value'=>$key)); ?></td>
-                <td class="td2"><?php echo $this->Form->input('catagory', array('label'=>'','options'=>array('0'=>'全部','1'=>'数学','2'=>'文学','3'=>'外国語','4'=>'体育','5'=>'普通科学','6'=>'IT','7'=>'食品','8'=>'社会','9'=>'心理','10'=>'芸術'))); ?></td>
+                <td class="td2"><?php echo $this->Form->input('catagory', array('label'=>'','options'=>$catagory)); ?></td>
                 <td class="td3"><?php echo $this->Form->submit('検索'); ?></td>
             </tr>
         </table>
@@ -47,7 +47,7 @@ if(!empty($posts)){
     echo "<th>".$this->Paginator->sort("id","ID");
     echo "<th>".$this->Paginator->sort("name","タイトル");
     echo "<th>".$this->Paginator->sort("description","紹介する情報");
-    echo "<th>".$this->Paginator->sort("fullname","作成した先生");
+    echo "<th>".$this->Paginator->sort("User.fullname","作成した先生");
     echo "<th>登録した数 "; //TODO
 	if($view_regis ==0 ) echo "<th> | 状態 </th>";
     if($view_regis == 1) { echo "<th>| すぐ登録";}else{ echo "<th>| 操作</th>";}
