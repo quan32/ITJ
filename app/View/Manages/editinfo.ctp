@@ -12,7 +12,12 @@
 
 	echo $this->Form->input('mail', array('label' => 'メール'));
 	echo $this->Form->input('mobile_No',array('label' => '電話番号' ));
+	if ($this->Form->data['User']['role']=='student') {
+		echo $this->Form->input('credit_card_No', array('label' => 'クレジットカード情報'));
+	}
+	else
 	echo $this->Form->input('bank_acc', array('label' => '銀行口座'));
+
 	echo $this->Form->button('リセット', array('type' => 'reset'));
 	if ($this->Form->data['User']['role']=='manager') {
 	echo $this->Html->link('キャンセル', array('action'=>'manager'), array('class'=>'link_buttonx'));
