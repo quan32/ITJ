@@ -17,11 +17,21 @@ class TagsController extends AppController{
 
 	public function view($id){
 		if($this->Auth->user('role')=='student')
-			$this->set('menu_type','student_menu');
+			{
+				$this->set('menu_type','student_menu');
+				$this->set('role','student');
+			}
+
 		elseif($this->Auth->user('role')=='teacher')
+		{
 			$this->set('menu_type','teacher_menu');
+			$this->set('role','teacher');
+		}
 		else
+		{
 			$this->set('menu_type','manager_menu');
+			$this->set('role','manager');
+		}
 
 		$this->loadModel('Vovan');
 		$this->loadModel('Lecture');
