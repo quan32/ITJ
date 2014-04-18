@@ -312,7 +312,8 @@
 				<?php
 					if(isset($tags)){
 						foreach ($tags as $tag) {
-						 echo "<a class='tag' href='/ITJ/tags/view/".$tag['Tag']['id']."'>".$tag['Tag']['content']."</a>";
+						 // echo "<a class='tag' href='/ITJ/tags/view/".$tag['Tag']['id']."'>".$tag['Tag']['content']."</a>";
+						 echo $this->Html->link($tag['Tag']['content'], array('controller'=>'tags', 'action'=>'view', $tag['Tag']['id']), array('class'=>'tag'));
 						}
 					}
 					
