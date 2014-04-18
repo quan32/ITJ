@@ -14,7 +14,7 @@ class LecturesController extends AppController{
 		// Only teacher can use teacher's function
 		if( ($user['role']=='manager') || ($user['role']=='teacher'))
 			return true;
-		elseif($user['role']=='student' && in_array($this->action, array('detail','view')))
+		elseif($user['role']=='student' && in_array($this->action, array('view')))
 			return true;
 		return false;
 	}
@@ -326,79 +326,59 @@ class LecturesController extends AppController{
 // //------xuan----2014/4/9 
 // 	//hien thi chi tiet bai giang
 
-// 	public function detail($id = null,$currentLocation = null)
-// 	{
-// 		$this->set('menu_type','student_menu');
-// 		if($id == null) 
-// 		{
-// 			if($currentLocation != null)
-// 				{
-// 				$this->Session->setFlash(__('すみません,見つけられない!'));
-// 				return $this->redirect(array('controller'=>'students','action' => $currentLocation));
-// 				}
-// 			else
-// 				{
-// 				$this->Session->setFlash(__('すみません,見つけられない!'));
-// 				return $this->redirect(array('controller'=>'students','action' => 'index'));
-// 				}
+public function detail($id = null)
+	{
+		// set menu
+		if($this->Auth->user('role')=='student')
+			return $this->redirect(array('controller'=>'pages','action'=>'display', 'error'));
+		elseif($this->Auth->user('role')=='teacher')
+			$this->set('menu_type','teacher_menu');
+		else
+			$this->set('menu_type','manager_menu');
 
-// 		}
-// 		else
-// 		{
-// 		$this->loadModel('Lecture');
+		//lay hang he thong
+		$this->loadModel('Constant');
+		$constantCost = $this->Constant->findByName('cost');
+		$COST = $constantCost['Constant']['value'];
+		$this->set('COST',$COST);
+
+		$user_id = $this->Auth->user('id');
+		$this->loadModel('Lecture');
+		// Xu ly report va teacher bi lock, 
+		$data = $this->Lecture->findById($id);
+		
+		if($data != null)
+		{
+			if($data['Lecture']['reported'] != 0)
+			{
+				$this->Session->setFlash(__('この講義をレポートされています。'));
+				return $this->redirect(array('controller'=>'pages','action'=>'display', 'error'));				
+			}
+			if(($data['User']['state'] == 'deleted')||($data['User']['state'] == 'locked'))
+			{
+				$this->Session->setFlash(__('すみません,見つけられない。'));
+				return $this->redirect(array('controller'=>'pages','action'=>'display', 'error'));				
+			}
+		}
+		else
+		{
+			$this->Session->setFlash(__('すみません,見つけられない。'));
+			return $this->redirect(array('controller'=>'pages','action'=>'display', 'error'));
+		}
+		$canReport = 1;
+		if($user_id == $data['User']['id'])
+			$canReport = 0;
+		$this->set('canReport',$canReport);
+
+		$this->set('comments', $this->Lecture->Comment->findAllByLectureId($id));
+		
+		$this->set('num_liked',count($data['Favorite']));
 	
+		$this->set('lecture',$data);
 
-// 		$options['joins'] = array(
-// 					    array('table' => 'users',
-// 					        'alias' => 'User',
-// 					        'type' => 'inner',
-// 					        'conditions' => array('Lecture.user_id = User.id' )));
-			
-
-// 		$options['conditions'] = array('Lecture.id' => $id);
-// 		$options['fields'] =array('Lecture.id','Lecture.name','User.fullname','User.id','User.username','User.mobile_No','User.mail','Lecture.cost','Lecture.description');
-// 		$this->Lecture->recursive = -1;
-
-// 		$data = $this->Lecture->find('all',$options);
-// 		$user_id = $this->Auth->user('id');
-// 		if($data != null)
-// 		{
-// 		// kiem tra bi block ko
-// 		$this->loadModel('Block');
-// 		$isBlock = $this->Block->find('all', array(
-// 			'conditions' => array(
-// 				'student_id' => $user_id,
-// 				'teacher_id' => $data[0]['User']['id']
-// 				)
-
-// 			));
-// 		if($isBlock != null) 
-// 			$data[0]['Block'] = 1;
-// 		else 
-// 			$data[0]['Block'] = 0;
-// 		}
+	}
 
 
-// 		$this->set('lecture',$data);
-// 		$this->set('currentLocation',$currentLocation);
-// // list cac bai da dang ki cua user nay
-// 		$user_id = $this->Auth->user('id');
-// 		$this->loadModel('Register');
-// 			$data_register = $this->Register->find('all',
-// 				array(
-// 					'conditions' => array('Register.user_id' => $user_id,
-// 					'Register.status <>' => 3,
-// 					"Register.created >=" => date('Y-m-d H:i:s', strtotime("-1 weeks"))
-// 						),
-// 					'limit' => 100000000000,
-// 					'fields' => array( 'lecture_id','status','user_id')
-// 					)
-
-// 				);
-// 			$this->set('list_lectures', $data_register);
-
-// 		}
-// 	}
 // 	//___________--
 
 /*

@@ -13,7 +13,7 @@
 			echo '<td>'.$lecture['Lecture']["id"].'</td>';
 			echo '<td>'.$lecture['Lecture']['name'].'</td>';
 			echo '<td>'.$lecture['Lecture']['created'].'</td>';
-			echo "<td>".$this->Html->link('詳しく',array('controller' => 'Students','action' => 'detailLecture',$lecture['Lecture']['id'], 'lecturesStatistics'));
+			echo "<td>".$this->Html->link('詳しく',array('controller' => 'Lecture','action' => 'detail',$lecture['Lecture']['id']));
 			echo '</td>';
 		echo '</tr>';
 	}
