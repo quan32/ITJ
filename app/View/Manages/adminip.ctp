@@ -21,7 +21,7 @@
 			echo '<td>'.$data["User"]['username'].'</td>';
 			
 			echo '<td>';
-			echo $this->Html->link('Edit', 
+			echo $this->Html->link('編集', 
 			array('controller'=>'manages','action' => 'editip',$data["Ip"]["id"]));
 			echo '</td>';
 
