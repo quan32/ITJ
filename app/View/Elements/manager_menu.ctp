@@ -68,7 +68,7 @@ echo $this->Html->link('新管理者追加',
   <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-caret-square-o-down"></i>統計<b class="caret"></b></a>
   <ul class="dropdown-menu">
     <li><?php 
-echo $this->Html->link('先生', 
+echo $this->Html->link('請求', 
 	array('controller' => 'manages', 'action' => 'oder'));
 ?></li>
 
