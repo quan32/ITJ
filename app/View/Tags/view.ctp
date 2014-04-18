@@ -13,6 +13,9 @@
 			echo '<td>'.$lecture['Lecture']["id"].'</td>';
 			echo '<td>'.$lecture['Lecture']['name'].'</td>';
 			echo '<td>'.$lecture['Lecture']['created'].'</td>';
+			if($this->Auth->user('role')=='student')
+				echo "<td>".$this->Html->link('詳しく',array('controller' => 'Students','action' => 'detailLecture',$item['Lecture']['id']));
+			else
 			echo "<td>".$this->Html->link('詳しく',array('controller' => 'lectures','action' => 'detail',$lecture['Lecture']['id']));
 			echo '</td>';
 		echo '</tr>';
