@@ -149,6 +149,47 @@ class SourcesController extends AppController{
 
 	}
 
+	public function edit1($lecture_id,$id,$type){
+		$this->set('menu_type','teacher_menu');
+
+		if ($this->request->is('post')) {
+			
+			if($this->request->data['Source']['filename']['type']==""){
+				$this->Session->setFlash('ファイルを選んでください');
+				$this->redirect(array('action' => 'add', $id));
+			}
+			// debug($this->request->data['Source']['filename']['type']);die;
+			if(!in_array($this->request->data['Source']['filename']['type'], array('image/gif','image/png','image/jpg','image/jpeg','video/mp4','audio/mp3','audio/wav', 'audio/x-wav', 'audio/mpeg', 'audio/x-mpeg-3'))){
+
+				$this->Session->setFlash('ファイルフォーマットが間違ってしまった。ビデオと音声とイメージでけできる');
+				$this->redirect(array('action' => 'add', $id));
+			}
+			
+			$this->delete1($id);
+			$this->request->data['Source']['lecture_id']=$lecture_id;
+			$this->request->data['Source']['type']=$this->request->data['Source']['filename']['type'];
+
+			$this->Source->create();
+
+			// attempt to save
+			if ($this->Source->save($this->request->data)) {
+				$this->Session->setFlash('修正しました');
+				if($type=="add")
+					$this->redirect(array('action' => 'add', $lecture_id));
+				elseif($type=="edit")
+					$this->redirect(array('action' => 'edit', $lecture_id));
+
+			// form validation failed
+			} else {
+				// check if file has been uploaded, if so get the file path
+				if (!empty($this->Source->data['Source']['filepath']) && is_string($this->Source->data['Source']['filepath'])) {
+					$this->request->data['Source']['filepath'] = $this->Source->data['Source']['filepath'];
+				}
+			}
+		}
+
+	}
+
 	public function block($id =null){
 	    $source = $this->Source->findById($id);
 	    $lecture_id = $source['Source']['lecture_id'];
@@ -204,6 +245,32 @@ class SourcesController extends AppController{
 	    }
 	}
 
+
+	public function delete1($id){
+		$source = $this->Source->findById($id);
+		$lecture_id = $source['Source']['lecture_id'];
+
+		$this->Source->id = $id;
+		if(!$this->Source->exists())
+			throw new NotFoundException(__('不当な資料'));
+
+		$target=$source['Source']['filename'];
+		$target='uploads/'. $target;
+		// debug($target);die;
+
+		if($this->Source->delete()){
+			
+			if (file_exists($target)) {
+			    unlink($target); // Delete now
+				} 
+			// See if it exists again to be sure it was removed
+			if (file_exists($target)) {
+			    echo "Problem deleting " . $target;
+				} else {
+			    echo "Successfully deleted " . $target;
+				}
+		}
+	}
 
 	public function delete($id){
 
