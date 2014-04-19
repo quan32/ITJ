@@ -416,7 +416,7 @@ public function listStudents(){
 
 					"AND" => array(
 							"OR" => array(
-								'User.username LIKE' => "%".$keyword."%",
+								//'User.username LIKE' => "%".$keyword."%",
 								'User.fullname LIKE' => "%".$keyword."%"),
 							'NOT' => array(
                    			// array('User.role' => array('manager', 'teacher')),
