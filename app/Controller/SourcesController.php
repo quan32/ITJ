@@ -152,11 +152,13 @@ class SourcesController extends AppController{
 
 		if ($this->request->is('post')) {
 			
+
 			$source = $this->Source->findById($id);
 			if($this->request->data['Source']['filename']['type']==""){
 				$this->Session->setFlash('ファイルを選んでください');
 				$this->redirect(array('action' => 'add', $id));
 			}
+
 			if($source['Source']['type'] == "application/pdf"){
 				if($this->request->data['Source']['filename']['type']!="application/pdf"){
 					$this->Session->setFlash('PDFファイルのみができる');
@@ -181,7 +183,7 @@ class SourcesController extends AppController{
 			// 	$this->Session->setFlash('ファイルフォーマットが間違ってしまった。ビデオと音声とイメージでけできる');
 			// 	$this->redirect(array('action' => 'add', $id));
 			// }
-			
+
 			$this->delete1($id);
 			$this->request->data['Source']['lecture_id']=$lecture_id;
 			$this->request->data['Source']['type']=$this->request->data['Source']['filename']['type'];
