@@ -21,7 +21,7 @@ class ManagesController extends AppController{
     if($this->request->is('post')){   
       //backup db
       date_default_timezone_set("Asia/Ho_Chi_Minh");
-      $foldername= BACKUP_FOLDER.DS.date('Y_m_d__h_i_s');
+      $foldername= BACKUP_FOLDER.DS.date('Y_m_d__H_i_s');
       new Folder($foldername, true, 0777);
       $filename = $foldername.DS.'database.sql';
       $output = array();
