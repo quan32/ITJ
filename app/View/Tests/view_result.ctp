@@ -27,6 +27,11 @@
 	 	font-weight: normal;
 	 }
 </style>
+<div>
+	<h1><?php echo $test_title?></h1>
+	<h3><?php echo $test_sub_title?></h3>
+</div>
+<hr>
 <h1>あなたの選択</h1>
 <form>
 <?php

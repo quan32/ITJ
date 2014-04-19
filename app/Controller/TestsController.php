@@ -141,7 +141,6 @@ class TestsController extends AppController {
 	public function add($lecture_id = null){
 		$this->set('menu_type','teacher_menu');
 		if($this->request->is('post')){
-			// var_dump($this->request->data);die;
 			if($this->request->data['Test']['tsv_file']['type']!='text/tab-separated-values'){
 				$this->Session->setFlash('ファイルフォーマットが間違ってしまった。TSVだけできる');
 				$this->redirect(array('action' => 'add', $lecture_id));
@@ -154,6 +153,13 @@ class TestsController extends AppController {
 			$file_path = UPLOAD_FOLDER.DS.$filename;
       		if (move_uploaded_file($this->data['Test']['tsv_file']['tmp_name'],$file_path)) {	        
 		        //create test
+		        //TODO check test
+        		$data = $this->Test->read_file($file_path);
+        		if(count($data['errors'])>0){
+        			unlink($file_path);
+        			$this->Session->setFlash('ファイル構造が間違ってしまった。');
+					$this->redirect(array('action' => 'add', $lecture_id));
+        		}
 				$this->Test->create();
 				if($this->Test->save($this->request->data)){
 					//create file
