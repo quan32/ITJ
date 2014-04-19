@@ -53,51 +53,120 @@ class SearchesController extends  AppController{
         $conditions = array();
 		$this->loadModel('User');
         $data = array();
+        $con_type = 0;
         if(!empty($this->passedArgs)){
             if(isset($this->passedArgs['Search.keyword'])) {
     			$keywords = $this->passedArgs['Search.keyword'];
+    			if(strpos($keywords,'+')){
+	    			if($keywords!=''){
+	    				$kw = explode('+',$keywords);
+	    				$con_type = 1;
+
+	    			}
+	    		}
+	    		else if(strpos($keywords,'-')){
+
+	    			if($keywords!=''){
+	    				$kw = explode('-',$keywords);
+	    				$con_type = 2;
+	    			}
+
+}
+    			else
+    				$kw = array($keywords,'');
+    			//var_dump($kw);die;
+    			if(count($kw)<2) $kw[1] ='';
 				$catagory = $this->passedArgs['Search.catagory'];
+				$keywords2 = '';
+
 				if($this->Auth->user('role')!='manager') {
 					if($catagory == "0")
 					{
-						$conditions[] = array(
-							"AND" => array( 'Search.reported'=> "0",
-											'User.state' => "normal",
-												"OR" => array(
-															'Search.name LIKE' => "%$keywords%",
-															'Search.description LIKE' => "%$keywords%",
-															'User.fullname LIKE' => "%$keywords%" ))
-						);
+						if($con_type!=2)
+							$conditions[] = array(
+								"AND" => array( 'Search.reported'=> "0",
+												'User.state' => "normal",
+													array("OR" => array(
+																'Search.name LIKE' => "%$kw[0]%",
+																'Search.description LIKE' => "%$kw[0]%",
+																'User.fullname LIKE' => "%$kw[0]%" )),
+													array("OR" => array(
+																'Search.name LIKE' => "%$kw[1]%",
+																'Search.description LIKE' => "%$kw[1]%",
+																'User.fullname LIKE' => "%$kw[1]%" )))
+							);
+						else
+							$conditions[] = array(
+								"AND" => array( 'Search.reported'=> "0",
+												'User.state' => "normal",
+													"OR"=>array(array("OR" => array(
+																'Search.name LIKE' => "%$kw[0]%",
+																'Search.description LIKE' => "%$kw[0]%",
+																'User.fullname LIKE' => "%$kw[0]%" )),
+													array("OR" => array(
+																'Search.name LIKE' => "%$kw[1]%",
+																'Search.description LIKE' => "%$kw[1]%",
+																'User.fullname LIKE' => "%$kw[1]%" ))))
+							);
 					}else
 					{
-						$conditions[] = array (
-							"AND" => array('Search.category_id' => "$catagory",
-											'Search.reported' => "0",
-											'User.state' => "normal",
-											"OR" => array(
-													'Search.name LIKE' => "%$keywords%",
-													'Search.description LIKE' => "%$keywords%",
-													'User.fullname LIKE' => "%$keywords%"))
-						);
+
+						if($con_type!=2)
+							$conditions[] = array(
+								"AND" => array( 'Search.reported'=> "0",
+												'Search.category_id' => "$catagory",
+												'User.state' => "normal",
+													array("OR" => array(
+																'Search.name LIKE' => "%$kw[0]%",
+																'Search.description LIKE' => "%$kw[0]%",
+																'User.fullname LIKE' => "%$kw[0]%" )),
+													array("OR" => array(
+																'Search.name LIKE' => "%$kw[1]%",
+																'Search.description LIKE' => "%$kw[1]%",
+																'User.fullname LIKE' => "%$kw[1]%" )))
+							);
+						else
+							$conditions[] = array(
+								"AND" => array( 'Search.category_id' => "$catagory",
+												'Search.reported'=> "0",
+												'User.state' => "normal",
+													"OR"=>array(array("OR" => array(
+																'Search.name LIKE' => "%$kw[0]%",
+																'Search.description LIKE' => "%$kw[0]%",
+																'User.fullname LIKE' => "%$kw[0]%" )),
+													array("OR" => array(
+																'Search.name LIKE' => "%$kw[1]%",
+																'Search.description LIKE' => "%$kw[1]%",
+																'User.fullname LIKE' => "%$kw[1]%" ))))
+							);
+						
 						}
 				}else {
 					if($catagory == "0")
 					{
 						$conditions[] = array(
 							"AND" => array( 'User.state' => "normal",
-												"OR" => array(
-															'Search.name LIKE' => "%$keywords%",
-															'Search.description LIKE' => "%$keywords%",
-															'User.fullname LIKE' => "%$keywords%" ))
+												array("OR" => array(
+															'Search.name LIKE' => "%$kw[0]%",
+															'Search.description LIKE' => "%$kw[0]%",
+															'User.fullname LIKE' => "%$kw[0]%" )),
+												array("OR" => array(
+															'Search.name LIKE' => "%$kw[1]%",
+															'Search.description LIKE' => "%$kw[1]%",
+															'User.fullname LIKE' => "%$kw[1]%" )))
 						);
 					}else
 					{
 						$conditions[] = array (
 							"AND" => array('Search.category_id' => "$catagory",
-											"OR" => array(
-													'Search.name LIKE' => "%$keywords%",
-													'Search.description LIKE' => "%$keywords%",
-													'User.fullname LIKE' => "%$keywords%"))
+												array("OR" => array(
+															'Search.name LIKE' => "%$kw[0]%",
+															'Search.description LIKE' => "%$kw[0]%",
+															'User.fullname LIKE' => "%$kw[0]%" )),
+												array("OR" => array(
+															'Search.name LIKE' => "%$kw[1]%",
+															'Search.description LIKE' => "%$kw[1]%",
+															'User.fullname LIKE' => "%$kw[1]%" )))
 						);
 						}
 					}

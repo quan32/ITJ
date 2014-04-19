@@ -9,8 +9,8 @@ class Test extends AppModel{
 	public function read_file($file){		
 		$f = fopen($file, "r");
 		$tests=array();
-		$test_title = mb_convert_encoding(substr(fgets($f, 1000),10),"UTF-8", "Shift-JIS");
-		$test_sub_title = mb_convert_encoding(substr(fgets($f, 1000),13),"UTF-8", "Shift-JIS");
+		$test_title = mb_convert_encoding(substr(fgets($f, 1000),10),"UTF-8", "UTF-8");
+		$test_sub_title = mb_convert_encoding(substr(fgets($f, 1000),13),"UTF-8", "UTF-8");
 		
 		while ( $line = fgets($f, 1000) ) {
 			$line_first_char = substr($line, 0, 1);
@@ -22,10 +22,10 @@ class Test extends AppModel{
 				$i = substr($line,2,$extra_index + 1);
 				$type_first_char = substr($line,$extra_index + 5,1);
 				if($type_first_char == 'Q'){
-					$tests[$i]['qs'] = mb_convert_encoding(substr($line,$extra_index + 8), "UTF-8", "Shift-JIS");
+					$tests[$i]['qs'] = mb_convert_encoding(substr($line,$extra_index + 8), "UTF-8", "UTF-8");
 				}
 				if($type_first_char == 'S'){
-					$tests[$i]['s'][] = mb_convert_encoding(substr($line,$extra_index + 10), "UTF-8", "Shift-JIS");
+					$tests[$i]['s'][] = mb_convert_encoding(substr($line,$extra_index + 10), "UTF-8", "UTF-8");
 				}
 				if($type_first_char == 'K'){
 					$tests[$i]['ks'] = substr($line,$extra_index + 10,1) -1;
@@ -33,6 +33,7 @@ class Test extends AppModel{
 				}
 			}
 		}
+		var_dump($line);die;
 		$data=array();
 		$data['tests'] = $tests;
 		$data['test_title'] = $test_title;
