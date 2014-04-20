@@ -279,6 +279,8 @@ class ManagesController extends AppController{
      $alls=null;
      $users_st = array();
      $alls_st=null;
+     $log=null;
+     $log1=null;
      $this->loadModel('Constant');
      $cost=$this->Constant->findByName("cost");
      $tmp=$this->Constant->findByName("rate");
@@ -363,13 +365,10 @@ class ManagesController extends AppController{
 
    // var_dump($alls); die();
      
- 
-   if ($this->request->data['Manage']['print']==true) {
-
- 
    $admin_id=$this->Auth->user("id");
    $admin_name=$this->Auth->user("fullname"); 
-   
+  
+   if ($this->request->data['Manage']['print']==true) {
 
    $file='ELS-UBT-'.$year.'-'.$month.'.tsv';
    $dir=new Folder('oder');
@@ -381,6 +380,7 @@ class ManagesController extends AppController{
     $file_delete->delete();
    }
    $log = 'ELS-UBT-GWK54M78,'.$year.','.$month.','.date('Y').','.date('m').','.date('d').','.date('H').','.date('i').','.date('s').','.$admin_id.','.$admin_name;  
+   $log1=$log;
    $this->Log->writeOder($file,$log);
     
    foreach ($alls as $all ) {
@@ -407,7 +407,11 @@ class ManagesController extends AppController{
    $this->Session->setFlash(__('データはファイルに書き込んだ'));
    //return $this->redirect(array('action'=>'oder'));
    }
-   
+   else
+   {
+    $log1= 'ELS-UBT-GWK54M78,'.$year.','.$month.','.date('Y').','.date('m').','.date('d').','.date('H').','.date('i').','.date('s').','.$admin_id.','.$admin_name;  
+    $log="END___END___END,".date('Y').','.date('m');
+   }
 
     $this->set("month",$month);
     $this->set("year",$year);
@@ -417,7 +421,8 @@ class ManagesController extends AppController{
    $this->set("users_st",$users_st);
    $this->set("alls_st",$alls_st);
    $this->set("alls",$alls);
-
+   $this->set("data",$log);
+   $this->set("data1",$log1);
   }
   public function statistic(){
     $this->set('menu_type','manager_menu');
