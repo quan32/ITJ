@@ -38,10 +38,11 @@ echo '<table style="border:1px dotted #4c66a4!important;
             echo "<br>";
 
 //-----------
-    // echo '<h2>課金状況 : </h2><br/>';
-    // echo '<h3>全部 : '.$payedMoney+$notPayedMoney.'VND</h3><br/>';
-    // echo '<h3>払わない : '.$notPayedMoney.'VND</h3><br/>';
-    // echo '<h3>払った : '.$payedMoney.'VND</h3><br/>';
+            echo '<h2>課金状況 : </h2><br/>';
+            echo  '<h3>学生の支払った金額の'.$RATE.'％を報酬として受け取ります。</h3>';
+            echo '<h3>全部 : '.$sumMoney.'VND</h3><br/>';
+            echo '<h3>払わない : '.$notPayedMoney.'VND</h3><br/>';
+            echo '<h3>払った : '.$payedMoney.'VND</h3><br/>';
             
     echo "<table>";
 
