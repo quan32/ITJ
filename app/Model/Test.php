@@ -47,7 +47,7 @@ class Test extends AppModel{
 					$tests[$i]['ks'] = substr($line,$extra_index + 10,1) -1;
 					//check loi xem ks co trong s khong
 					$max_answer_index = count($tests[$i]['s'])-1;
-					if($tests[$i]['ks'] <0 || $tests[$i]['ks']>$max_answer_index)
+					if(!($tests[$i]['ks'] >= 0 && $tests[$i]['ks']<=$max_answer_index))
 						$data['errors'][] = "Loi phan Ks o cau so ".($i);
 					$tests[$i]['point'] = substr($line,$extra_index + 13,2);
 				}
@@ -57,7 +57,16 @@ class Test extends AppModel{
 		//check loi ko ket thuc voi End
 		if(substr($last_line,0,3) != 'End')
 			$data['errors'][] = "loi khong ket thu voi End";
-		//var_dump($tests['errors']);die;
+		$i=1;
+		foreach ($tests as $test) {
+			if(!isset($test['qs'])) $data['errors'][]= "loi thieu cau hoi o cau so ".$i;
+			if(count($test['s']) == 0) $data['errors'][] = "loi thieu cau tra loi o cau so ".$i;
+			if($test['point'] <= 0) $data['errors'][] = "loi diem o cau so ".$i;
+			$i++;
+		}
+		//check title, subtitle, number of questions
+		if(count($tests)==0) $data['errors'][]= "loi khong co cau hoi nao";
+		if($test_title=='' || $test_sub_title=='') $data['errors'][]= "loi thieu title hoac subtitle";
 		$data['tests'] = $tests;
 		$data['test_title'] = $test_title;
 		$data['test_sub_title'] = $test_sub_title;
