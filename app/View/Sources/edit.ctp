@@ -1,19 +1,21 @@
 <table>
 <tr>
-	<th>ID</th>
 	<th>タイトル</th>
 	<th>管理</th>
+	<th>タイム</th>
 </tr>
 <legend>アップロードしたファイル:</legend>
 <?php
 	foreach ($sources as $source) {
 		echo '<tr>';
-		echo '<td>'.$source["Source"]["id"].'</td>';
-		echo '<td>'.$source["Source"]["filename"].'</td>';
+		echo '<td>'.$source["Source"]["name"].'</td>';
 		echo '<td>';
+		echo $this->Html->link('修正 ', array('controller'=>'sources', 'action'=>'edit1', 
+					 $source["Source"]["lecture_id"],$source["Source"]["id"],"edit"));
 		echo $this->Form->postLink('削除', array('controller'=>'sources', 'action'=>'delete', 
 			$source["Source"]["id"]), array('confirm'=>'本気？'));
 		echo '</td>';
+		echo '<td>'.$source["Source"]["modified"].'</td>';
 		echo '</tr>';
 	}
 ?>

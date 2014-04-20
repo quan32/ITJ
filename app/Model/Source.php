@@ -72,7 +72,6 @@ class Source extends AppModel{
 	 * @return boolean
 	 */
 	public function processUpload($check=array()) {
-		$rdnumber=rand(1,1000000).'_';
 		// deal with uploaded file
 		if (!empty($check['filename']['tmp_name'])) {
 
@@ -83,8 +82,9 @@ class Source extends AppModel{
 
 			// build full filename
 			// $filename = WWW_ROOT . $this->uploadDir . DS . Inflector::slug(pathinfo($check['filename']['name'], PATHINFO_FILENAME)).'.'.pathinfo($check['filename']['name'], PATHINFO_EXTENSION);
-			$filename =$rdnumber.Inflector::slug(pathinfo($check['filename']['name'], PATHINFO_FILENAME)).'.'.pathinfo($check['filename']['name'], PATHINFO_EXTENSION);
-			$fullpath = WWW_ROOT . $this->uploadDir . DS .$rdnumber. Inflector::slug(pathinfo($check['filename']['name'], PATHINFO_FILENAME)).'.'.pathinfo($check['filename']['name'], PATHINFO_EXTENSION);
+			// $filename =Inflector::slug(pathinfo($check['filename']['name'], PATHINFO_FILENAME)).'.'.pathinfo($check['filename']['name'], PATHINFO_EXTENSION);
+			$filename = "File_".time();
+			$fullpath = WWW_ROOT . $this->uploadDir . DS .$filename;
 			// @todo check for duplicate filename
 
 			// try moving file
@@ -94,7 +94,7 @@ class Source extends AppModel{
 			// file successfully uploaded
 			} else {
 				// save the file path relative from WWW_ROOT e.g. uploads/example_filename.jpg
-				$this->data[$this->alias]['filepath'] = $filename;
+				$this->data[$this->alias]['filename'] = $filename;
 			}
 		}
 

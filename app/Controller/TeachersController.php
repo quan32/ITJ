@@ -89,7 +89,7 @@ class TeachersController extends AppController{
 		$questions = $this->Question->find('all');
 		$vovans[0]='質問を選んでください';
 		foreach ($questions as $question) {
-			$vovans[$question['Question']['id']]=strrev($question['Question']['content']);
+			$vovans[$question['Question']['id']]=$question['Question']['content'];
 		}
 		$this->set('questions', $vovans);
 
@@ -105,6 +105,7 @@ class TeachersController extends AppController{
 				}else{
 					$this->request->data['User']['role']=$role;
 					$this->request->data['User']['prevIP']=$this->request->clientIp();
+					$this->request->data['User']['first_question']=$this->request->data['User']['question'];
 					$this->loadModel('User');
 					$this->User->create();
 					if($this->User->save($this->request->data)){
@@ -192,6 +193,13 @@ class TeachersController extends AppController{
 		$this->set('menu_type','teacher_menu');
 		$this->pageTitle = "確認するコード";
 		$this->loadModel('User');
+		$this->loadModel('Question');
+		$questions = $this->Question->find('all');
+		$vovans[0]='質問を選んでください';
+		foreach ($questions as $question) {
+			$vovans[$question['Question']['id']]=$question['Question']['content'];
+		}
+		$this->set('questions', $vovans);
 
 		$userId = $this->Auth->user('id');
 		$this->User->id = $userId;
@@ -208,14 +216,14 @@ class TeachersController extends AppController{
 			$passwordHasher = new SimplePasswordHasher();
 			$arrPass = $this->request->data;
 			// check current password
-			if($passwordHasher->check($arrPass['User']['currVerify'],$currUser['User']['verify'])){
+			if($passwordHasher->check($arrPass['User']['currVerify'],$currUser['User']['verify']) && $arrPass['User']['currQuestion']==$currUser['User']['question']){
 				// check new password and confirm password
 				if($arrPass['User']['newVerify'] == $arrPass['User']['confVerify']){
 					// assign new password to password
 					$currUser['User']['verify'] = $arrPass['User']['newVerify'];
 					// save user, run function beforeSave() to hash new password
 					// $this->User->id = $userId;
-					if($this->User->saveField('verify',$arrPass['User']['newVerify'])){
+					if($this->User->saveField('verify',$arrPass['User']['newVerify'])  && $this->User->saveField('question',$arrPass['User']['newQuestion'])){
 						// write success log to log file 7: change_password.txt
 						$log = '"SUCCESS", "'.(string)date('Y-m-d H:i:s').'", "'.(string)$userId.'"';
 						$this->Log->writeLog('change_verify.txt',$log);
@@ -408,11 +416,11 @@ public function listStudents(){
 
 					"AND" => array(
 							"OR" => array(
-								'User.username LIKE' => "%".$keyword."%",
+								//'User.username LIKE' => "%".$keyword."%",
 								'User.fullname LIKE' => "%".$keyword."%"),
 							'NOT' => array(
                    			// array('User.role' => array('manager', 'teacher')),
-                   			 array('User.state' => array('deleted','new','locked'))
+                   			 array('User.state' => array('deleted','new','locked','rejected'))
 								),
 						),
 					'User.role' => 'student'
@@ -447,7 +455,7 @@ public function listStudents(){
 	 		'conditions' => array(
 	 		"AND"=> array(
 					'NOT' => array(
-	                 		 array('User.state' => array('deleted','new','locked')),
+	                 		 array('User.state' => array('deleted','new','locked','rejected')),
 							),
 					'User.role' => 'student'
 
@@ -478,9 +486,15 @@ public function statisticsStudent($student_id = null)
 	$this->set('menu_type', 'teacher_menu');
 		//hang so he thong
 		$this->loadModel('Constant');
+		$constantRate = $this->Constant->findByName('rate');
+		$RATE = $constantRate['Constant']['value'];
+		$this->set('RATE',$RATE);
+
 		$constantCost = $this->Constant->findByName('cost');
 		$COST = $constantCost['Constant']['value'];
 		$this->set('COST',$COST);
+
+
 
 		$teacher_id = $this->Auth->User('id');
 		$options['joins'] = array(
@@ -500,50 +514,65 @@ public function statisticsStudent($student_id = null)
 							 'User.role' => 'student',
 							 'Lecture.user_id' => $teacher_id
 			);
+
+		$this->loadModel('Register');
+		$this->Register->recursive = -1;
+		$numRegister = $this->Register->find('count',$options);
 		$options['order'] = array(
 					'Register.created' => 'DESC' 
 					);
 		$options['fields'] =array('Lecture.user_id','Lecture.id','Lecture.name','Register.created','Register.id','Register.status','User.id','User.username','User.fullname','User.role','User.state','User.mail','User.mobile_No','User.address');
 		$options['limit'] = 5;
-		$this->loadModel('Register');
-		$this->Register->recursive = -1;
-
+		
+		
 		$this->paginate = $options;
-
 		$data = $this->paginate('Register');
 		$currentMonth = date('n');
 		$currentYear = date('Y');
 		
 		if($data != null)
 			{
-				$payedNum = 0;
-				$notPayedNum = 0;
 				$i = 0;
 				foreach ($data as $item) {
 					$registerDate = strtotime($item['Register']['created']);
 					$registerMonth = date('n',$registerDate);
 					$registerYear = date('Y',$registerDate);
 					if(($currentYear == $registerYear) && ($currentMonth == $registerMonth))
-						{
 							$notPayed = 1;
-							$notPayedNum ++;
-
-						}
 					else
-					{
 						$notPayed = 0;
-						$payedNum ++;
-					}
 					$data[$i]['notPayed'] = $notPayed;
-
 					$i++;
-
 				}
 			}
-		// debug($data);die;
+	//-------- tinh tong so tien no
+
+		$options1['joins'] = array(
+						    array('table' => 'lectures',
+						        'alias' => 'Lecture',
+						        'type' => 'inner',
+						        'conditions' => array('Lecture.id = Register.lecture_id' )),
+
+						    array('table' => 'users',
+						    	'alias' => 'User',
+						    	'type' => 'inner',
+						    	'conditions' => array('User.id = Register.user_id')
+						    	)
+						       );
+		$options1['conditions'] = array('Register.user_id' => $student_id,
+							 'NOT' => array('User.state' => array('locked','deleted')),
+							 'User.role' => 'student',
+							 'Lecture.user_id' => $teacher_id,
+							 'MONTH(Register.created)' => date('n'),
+							 'YEAR(Register.created)' =>  date('Y')
+			);
+		$notPayedNum = $this->Register->find('count',$options1);
+
+	//----------------end------------		
 	$this->set('registedLectures',$data);
-	// $this->set('payedMoney',$payedNum*$COST);
-	// $this->set('notPayedMoney',$notPayedNum*$COST);
+	$this->set('notPayedMoney',$notPayedNum*$COST*$RATE/100);
+	$this->set('sumMoney',$numRegister*$COST*$RATE/100);
+	$this->set('payedMoney',($numRegister-$notPayedNum)*$COST*$RATE/100);
 	
 
 

@@ -14,6 +14,11 @@
  	font-weight: normal;
  }
 </style>
+<div>
+	<h1><?php echo $test_title?></h1>
+	<h3><?php echo $test_sub_title?></h3>
+</div>
+<hr>
 <?php
 	//Hien thi form
 	echo $this->Form->create('Questions', array('url' => array('controller' => 'tests', 'action' => 'view_result')));

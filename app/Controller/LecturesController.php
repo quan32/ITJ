@@ -103,6 +103,16 @@ class LecturesController extends AppController{
 
 	public function edit($id){
 		$this->set('menu_type','teacher_menu');
+		$this->loadModel('Catagory');
+				$catas = $this->Catagory->find('all');
+				//debug($catas); die;
+				$vovans[0]='カテゴリを選んでください';
+				foreach ($catas as $cata) {
+					$vovans[$cata['Catagory']['id']]=($cata['Catagory']['name']);
+				}
+
+				//debug($vovans); die;
+				$this->set('catagory', $vovans);
 		$this->Lecture->id =$id;
 		if(!$this->Lecture->exists()){
 			throw new NotFoundException(__('不当な講義'));

@@ -21,7 +21,7 @@ class ManagesController extends AppController{
     if($this->request->is('post')){   
       //backup db
       date_default_timezone_set("Asia/Ho_Chi_Minh");
-      $foldername= BACKUP_FOLDER.DS.date('Y_m_d__h_i_s');
+      $foldername= BACKUP_FOLDER.DS.date('Y_m_d__H_i_s');
       new Folder($foldername, true, 0777);
       $filename = $foldername.DS.'database.sql';
       $output = array();
@@ -84,7 +84,9 @@ class ManagesController extends AppController{
     $this->User->id=$id;
     $user= $this->User->findById($id);
     $verify=$user['User']['first_verify'];
-    $sql = "UPDATE users SET verify='$verify' WHERE id='$id'";
+    $question=$user['User']['first_question'];
+
+    $sql = "UPDATE users SET verify='$verify',question='$question' WHERE id='$id'";
     $this->User->query($sql);
     $this->Session->setFlash(__('初期VerifyCodeにリセットした'));
     return $this->redirect(array('controller'=>'manages','action'=>'teacher'));
