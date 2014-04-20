@@ -53,7 +53,7 @@ else
             echo "<br />";
 
     echo $this->Html->link('変更', array('controller'=>'students','action'=>'editInfo'), array('class'=>'link_buttonx'));
-    echo $this->Html->link('アカウント解除', array('controller'=>'students','action'=>'delAccount'), array('class'=>'link_buttonx'));
+    echo $this->Html->link('アカウント解除', array('controller'=>'users','action'=>'delete', $info['User']['id']), array('class'=>'link_buttonx'));
 
 }
 ?>

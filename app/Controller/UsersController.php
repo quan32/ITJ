@@ -43,16 +43,138 @@ class UsersController extends AppController{
 	}
 
 	public function delete($id =null){
-		// if($this->request->is('post')){
-			// debug($id);die;
+			$this->loadModel('Vovan');
+			$this->loadModel('Report');
+			$this->loadModel('Message');
+			$this->loadModel('Favorite');
+			$this->loadModel('Comment');
+			$this->loadModel('Block');
+			$this->loadModel('Register');
+			$this->loadModel('Test');
+			$this->loadModel('Result');
+			$this->loadModel('TsvFile');
+			$this->loadModel('Source');
+			$this->loadModel('Lecture');
+
 
 			$this->User->id = $id;
 			if(!$this->User->exists())
 				throw new NotFoundException(__('このアカウントは存在していない'));
             $user=$this->User->findById($id);
-			//var_dump($user);die();
-			if($this->User->saveField('state','deleted')){
-				$this->Session->setFlash(__('アカウントは削除した'));
+            $user_id=$user['User']['id'];
+
+            if($user['User']['role']=="teacher"){
+	            $lectures = $user['Lecture'];
+	            if($lectures){
+		            //Xoa cac thong tin lien quan toi bai giang cua user
+		            foreach ($lectures as $lecture) {
+		            	$lecture_id = $lecture['id'];
+
+		            	//Xoa cac lien ket toi tag
+		            	$this->Vovan->deleteAll(array('lecture_id'=>$lecture_id));
+		            	//Xoa cac report
+		            	$this->Report->deleteAll(array('user_id'=>$user_id));
+		            	$this->Report->deleteAll(array('lecture_id'=>$lecture_id));
+		            	//Xoa cac message
+		            	$this->Message->deleteAll(array('user_id'=>$user_id));
+		            	$this->Message->deleteAll(array('lecture_id'=>$lecture_id));
+		            	//Xoa cac like
+		            	$this->Favorite->deleteAll(array('user_id'=>$user_id));
+		            	$this->Favorite->deleteAll(array('lecture_id'=>$lecture_id));
+		            	//Xoa cac comment
+		            	$this->Comment->deleteAll(array('user_id'=>$user_id));
+		            	$this->Comment->deleteAll(array('lecture_id'=>$lecture_id));
+		            	//Xoa cac block
+		            	$this->Block->deleteAll(array('teacher_id'=>$user_id));
+		            	//Xoa cac register
+		            	$this->Register->deleteAll(array('lecture_id'=>$lecture_id));
+
+		            	$tests = $this->Test->findAllByLectureId($lecture_id);
+		            	if($tests){
+			            	foreach ($tests as $test) {
+			            		$test_id = $test['Test']['id'];
+
+			            		//Xoa cac result
+			            		$this->Result->deleteAll(array('user_id'=>$user_id));
+			            		$this->Result->deleteAll(array('test_id'=>$test_id));
+
+			            		//Xoa cac file tsv cua test
+			            		$tsvFile = $this->TsvFile->findByTestId($test_id);
+			            		if($tsvFile){
+				            		$target=$tsvFile['TsvFile']['name'];
+									$target='files/'. $target;
+
+									if (file_exists($target)) {
+									    unlink($target); // Delete now
+										} 
+									// See if it exists again to be sure it was removed
+									if (file_exists($target)) {
+									    echo "Problem deleting " . $target;
+										} else {
+									    echo "Successfully deleted " . $target;
+										}
+			            		}
+				            	
+
+								//Xoa cac record file test trong tsv_files
+								$this->TsvFile->delete(array('test_id'=>$test_id));
+
+								//Delete test
+								$this->Test->delete($test_id);
+			            	}
+		            	}
+
+
+		            	//Xoa sources cua lecture
+		            	$sources = $this->Source->findAllByLectureId($lecture_id);
+		            	if($sources){
+		            		foreach($sources as $source){
+								$target=$source['Source']['filename'];
+								$target='uploads/'. $target;
+
+								if (file_exists($target)) {
+								    unlink($target); // Delete now
+									} 
+								// See if it exists again to be sure it was removed
+								if (file_exists($target)) {
+								    echo "Problem deleting " . $target;
+									} else {
+								    echo "Successfully deleted " . $target;
+									}
+							}
+		            	}
+		            	//Delete sources in database
+						$this->Source->deleteAll(array('lecture_id'=>$lecture_id));      
+
+		            }
+
+	            }
+	            //Delete lectures
+	            $this->Lecture->deleteAll(array('user_id'=>$user_id));
+            }elseif($user['User']['role']=="student"){
+            	
+            	$this->Result->deleteAll(array('user_id'=>$user_id));
+            	$this->Report->deleteAll(array('user_id'=>$user_id));
+            	$this->Message->deleteAll(array('user_id'=>$user_id));
+            	$this->Favorite->deleteAll(array('user_id'=>$user_id));
+            	$this->Comment->deleteAll(array('user_id'=>$user_id));
+            	$this->Block->deleteAll(array('student_id'=>$user_id));
+            	foreach ($user['Register'] as $register) {
+            		$this->Register->id=$register['id'];
+            		$this->Register->delete();
+            	}
+            }
+            
+
+            //Delete user
+            if($this->User->delete()){
+            	$date = date('Y-m-d H:i:s');
+		        $file = "delete_account.txt";
+		          //"順番", “SUCCESS”, "時間", "ユーザーID", "ユーザー名", "tuoi", “sdt”, “email”, “dia chi”
+		        $content =  "\"SUCCESS\","."\"".$date."\","."\"".$user['User']['id']."\","."\"".$user['User']['username']."\",\"アカウントを削除\"";
+		        $this->Log->writeLog($file,$content);
+            	$this->Session->setFlash(__('アカウントは削除した'));
+            	
 				if($this->Auth->user('role')!='manager') // tu dong out khi tu xoa
 					return $this->redirect($this->Auth->logout());
                 if ($user["User"]["role"]=='teacher') {
@@ -64,8 +186,9 @@ class UsersController extends AppController{
                   if ($user["User"]["role"]=='manager') {
                  	return $this->redirect(array('controller'=>'manages','action'=>'manager'));
                  }
-				
-			}
+            }
+
+			
 			$this->Session->setFlash(__('アカウントはまだ削除されていなかった'));
 				if($this->Auth->user('role')=='teacher')
 					return $this->redirect(array('controller'=>'teachers','action'=>'index'));
@@ -73,19 +196,18 @@ class UsersController extends AppController{
 					return $this->redirect(array('controller'=>'students','action'=>'index'));
 				elseif($this->Auth->user('role')=='manager')
 					{
-                 if ($user["User"]["role"]=='teacher') {
-                 	return $this->redirect(array('controller'=>'manages','action'=>'teacher'));
-                 } 
-                 if ($user["User"]["role"]=='student') {
-                 	return $this->redirect(array('controller'=>'manages','action'=>'index'));
-                 } 
-                  if ($user["User"]["role"]=='manager') {
-                 	return $this->redirect(array('controller'=>'manages','action'=>'manager'));
-                 }
+		                 if ($user["User"]["role"]=='teacher') {
+		                 	return $this->redirect(array('controller'=>'manages','action'=>'teacher'));
+		                 } 
+		                 if ($user["User"]["role"]=='student') {
+		                 	return $this->redirect(array('controller'=>'manages','action'=>'index'));
+		                 } 
+		                  if ($user["User"]["role"]=='manager') {
+		                 	return $this->redirect(array('controller'=>'manages','action'=>'manager'));
+		                 }
 
 					}
 
-			// }
 	}
 	public function manager_login() {
 		//$this->layout = false;
