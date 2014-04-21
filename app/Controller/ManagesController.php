@@ -317,11 +317,11 @@ class ManagesController extends AppController{
      $data_st=$this->User->findAllById($id_st);
      if($data_st !=null )
      {
-      if($data_st[0]["User"]["state"] != "deleted") {
+     
        $users_st[$id_st]=$data_st[0];
        $alls_st[$j]=$all_st;
        $j++;
-      }
+      
       
      }
    }
