@@ -66,7 +66,7 @@ class Test extends AppModel{
 		}
 		//check title, subtitle, number of questions
 		if(count($tests)==0) $data['errors'][]= "loi khong co cau hoi nao";
-		if($test_title=='' || $test_sub_title=='') $data['errors'][]= "loi thieu title hoac subtitle";
+		if($test_title=='') $data['errors'][]= "loi thieu title hoac subtitle";
 		$data['tests'] = $tests;
 		$data['test_title'] = $test_title;
 		$data['test_sub_title'] = $test_sub_title;

@@ -593,10 +593,10 @@ class StudentsController extends AppController{
 		if($this->request->is('post') || $this->request->is('put')){
 					$user_id = $this->Auth->user('id');
 					$this->loadModel('User');
-					$month = date('n');
- 					$year = date('Y');
-					$money = $this->calcMoney($month,$year);
-					if ($money == null||$money == 0) {
+					// $month = date('n');
+ 				// 	$year = date('Y');
+					// $money = $this->calcMoney($month,$year);
+					// if ($money == null||$money == 0) {
 						// du dieu kien xoa tai khoan
 						$data = array('id' => $user_id, 'state' => 'deleted');
 						if($this->User->save($data))
@@ -616,18 +616,18 @@ class StudentsController extends AppController{
 							$this->Session->setFlash(_('アカウントは削除した'));
 							$this->redirect($this->Auth->logout());
 						}
-						else 
-							{
-								$this->Session->setFlash(_('システムエラー'));
-								$this->redirect(array('action' => 'index'));
-							}
-					}
-					else
-					{
-						// de xoa tai khoan ban can thanh toan het tien
-						$this->Session->setFlash(__('アカウントを削除できるように、残りの費用を支払っておいてください'));
-						$this->redirect(array('action' => 'index'));
-					}
+					else 
+						{
+							$this->Session->setFlash(_('システムエラー'));
+							$this->redirect(array('action' => 'index'));
+						}
+					// }
+					// else
+					// {
+					// 	// de xoa tai khoan ban can thanh toan het tien
+					// 	$this->Session->setFlash(__('アカウントを削除できるように、残りの費用を支払っておいてください'));
+					// 	$this->redirect(array('action' => 'index'));
+					// }
 			}
 
 		
