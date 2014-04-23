@@ -28,10 +28,6 @@ class User extends AppModel{
 			'message' => '最低の長さは3桁'),	
 
 		'mobile_No' => array(
-        	 'alphaNumeric' => array(
-                'rule'     => 'numeric',
-                // 'required' => true,
-                'message'  => '数字を入力してください'),
             'between' => array(
                 'rule'    => array('between', 10, 15),
                 'message' => '10～15桁の電話番号を入力してください')),
@@ -75,13 +71,16 @@ class User extends AppModel{
 			'message' => '住所を入力してください'),
 
 		'bank_acc' => array(
-			'rule' => 'notEmpty',
-			// 'required' => true,
-			'message' => '銀行口座を入力してください'),
+            'between' => array(
+                'rule'    => array('between', 18, 18),
+                'message' => '18桁の銀行口座アカウントを入力してください'
+            )),
 
 		'credit_card_No' => array(
-			'rule' => 'notEmpty',
-			'message' => 'クレジットカードを入力してください'),
+			'between' => array(
+                'rule'    => array('between', 28, 28),
+                'message' => '28桁のクレジットカードを入力してください'
+            )),
 
 		'verify' => array(
 			'rule' => 'notEmpty',

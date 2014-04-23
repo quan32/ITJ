@@ -172,9 +172,75 @@ class LecturesController extends AppController{
 
 	public function delete($id =null){
 		if ($this->request->is(array('post','get'))){
-			$this->Lecture->id = $id;
-			$this->loadModel('Source');
 			$this->loadModel('Vovan');
+			$this->loadModel('Report');
+			$this->loadModel('Message');
+			$this->loadModel('Favorite');
+			$this->loadModel('Comment');
+			$this->loadModel('Register');
+			$this->loadModel('Test');
+			$this->loadModel('Result');
+			$this->loadModel('TsvFile');
+			$this->loadModel('Source');
+			$this->loadModel('Lecture');
+
+
+
+			$lecture_id = $id;
+			$lecture = $this->Lecture->findById($id);
+			// debug($lecture);die;
+
+        	//Xoa cac lien ket toi tag
+        	$this->Vovan->deleteAll(array('lecture_id'=>$lecture_id));
+        	//Xoa cac report
+        	$this->Report->deleteAll(array('lecture_id'=>$lecture_id));
+        	//Xoa cac message
+        	$this->Message->deleteAll(array('lecture_id'=>$lecture_id));
+        	//Xoa cac like
+        	$this->Favorite->deleteAll(array('lecture_id'=>$lecture_id));
+        	//Xoa cac comment
+        	$this->Comment->deleteAll(array('lecture_id'=>$lecture_id));
+        	//Xoa cac register
+        	$this->Register->deleteAll(array('lecture_id'=>$lecture_id));
+
+        	$tests = $this->Test->findAllByLectureId($lecture_id);
+        	if($tests){
+            	foreach ($tests as $test) {
+            		$test_id = $test['Test']['id'];
+
+            		//Xoa cac result
+            		$this->Result->deleteAll(array('user_id'=>$user_id));
+            		$this->Result->deleteAll(array('test_id'=>$test_id));
+
+            		//Xoa cac file tsv cua test
+            		$tsvFile = $this->TsvFile->findByTestId($test_id);
+            		if($tsvFile){
+	            		$target=$tsvFile['TsvFile']['name'];
+						$target='files/'. $target;
+
+						if (file_exists($target)) {
+						    unlink($target); // Delete now
+							} 
+						// See if it exists again to be sure it was removed
+						if (file_exists($target)) {
+						    echo "Problem deleting " . $target;
+							} else {
+						    echo "Successfully deleted " . $target;
+							}
+            		}
+	            	
+
+					//Xoa cac record file test trong tsv_files
+					$this->TsvFile->delete(array('test_id'=>$test_id));
+
+					//Delete test
+					$this->Test->delete($test_id);
+            	}
+        	}
+
+
+
+
 
 			//Delete sources in hard disk
 			$sources = $this->Source->findAllByLectureId($id);
@@ -197,17 +263,15 @@ class LecturesController extends AppController{
 			//Delete tag of lectures
 			$this->Vovan->deleteAll(array('lecture_id'=>$id));
 			
-
-			if(!$this->Lecture->exists())
+			$this->Lecture->id=$id;
+			if(!$this->Lecture->exists()){
 				throw new NotFoundException(__('Invalid lecture'));
+			}
+				
 
 			if($this->Lecture->delete()){
 				$this->Session->setFlash(__('講義は削除した'));
 				return $this->redirect(array('controller'=>'lectures','action'=>'index'));
-				// if($this->Auth->user('role')=='teacher')
-				// 	return $this->redirect(array('controller'=>'teachers','action'=>'index'));
-				// else if($this->Auth->user('role')=='manager')
-				// 	return $this->redirect(array('controller'=>'manages','action'=>'lecture'));
 
 			}
 			$this->Session->setFlash(__('講義の削除するのは失敗した'));

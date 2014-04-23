@@ -4,6 +4,7 @@ App::uses('Folder', 'Utility');
 App::uses('File', 'Utility');
 define ('BACKUP_FOLDER', realpath(dirname(__FILE__).DS.'..'.DS.'Backup'.DS));
 define ('UPLOAD_FOLDER', realpath(dirname(__FILE__).DS.'..'.DS.'webroot'.DS.'uploads'));
+define ('FILES_FOLDER', realpath(dirname(__FILE__).DS.'..'.DS.'webroot'.DS.'files'));
 class ManagesController extends AppController{
 	public function beforeFilter(){
 		parent::beforeFilter();
@@ -30,7 +31,10 @@ class ManagesController extends AppController{
 
       //backup file
       $upload_folder = new Folder(UPLOAD_FOLDER);
-      $upload_folder->copy($foldername.DS.'uploads');  
+      $upload_folder->copy($foldername.DS.'uploads');
+
+      $files_folder = new Folder(FILES_FOLDER);
+      $files_folder->copy($foldername.DS.'files');
     }
 
     //display
@@ -53,6 +57,9 @@ class ManagesController extends AppController{
     //restore file
     $backup_upload_folder = new Folder($foldername.DS.'uploads');
     $backup_upload_folder->copy(UPLOAD_FOLDER);
+
+    $backup_files_folder = new Folder($foldername.DS.'files');
+    $backup_files_folder->copy(FILES_FOLDER);
 
     return $this->redirect(array('action'=>'backup'));
   }
