@@ -369,10 +369,13 @@ class ManagesController extends AppController{
      
    $admin_id=$this->Auth->user("id");
    $admin_name=$this->Auth->user("fullname"); 
-  
+   if ($month<10) {
+     $m='0'.$month;
+   }
    if ($this->request->data['Manage']['print']==true) {
 
-   $file='ELS-UBT-'.$year.'-'.$month.'.tsv';
+  
+   $file='ELS-UBT-'.$year.'-'.$m.'.tsv';
    $dir=new Folder('oder');
    $files=$dir->find($file);
 
@@ -381,7 +384,7 @@ class ManagesController extends AppController{
     $file_delete = new File($dir->pwd() . DS . $file);
     $file_delete->delete();
    }
-   $log = 'ELS-UBT-GWK54M78,'.$year.','.$month.','.date('Y').','.date('m').','.date('d').','.date('H').','.date('i').','.date('s').','.$admin_id.','.$admin_name;  
+   $log = 'ELS-UBT-GWK54M78,'.$year.','.$m.','.date('Y').','.ltrim(date('m'),'0').','.ltrim(date('d'),'0').','.ltrim(date('H'),'0').','.ltrim(date('i'),'0').','.ltrim(date('s'),'0').','.$admin_id.','.$admin_name;   
    $log1=$log;
    $this->Log->writeOder($file,$log);
     
@@ -401,7 +404,7 @@ class ManagesController extends AppController{
     
     }
    
-   $log="END___END___END,".date('Y').','.date('m');
+   $log="END___END___END,".$year.','.$m;
    $this->Log->writeOder($file,$log);
    
 
@@ -411,8 +414,9 @@ class ManagesController extends AppController{
    }
    else
    {
-    $log1= 'ELS-UBT-GWK54M78,'.$year.','.$month.','.date('Y').','.date('m').','.date('d').','.date('H').','.date('i').','.date('s').','.$admin_id.','.$admin_name;  
-    $log="END___END___END,".date('Y').','.date('m');
+
+    $log1='ELS-UBT-GWK54M78,'.$year.','.$m.','.date('Y').','.ltrim(date('m'),'0').','.ltrim(date('d'),'0').','.ltrim(date('H'),'0').','.ltrim(date('i'),'0').','.ltrim(date('s'),'0').','.$admin_id.','.$admin_name;  
+    $log="END___END___END,".$year.','.$m;
    }
 
     $this->set("month",$month);
