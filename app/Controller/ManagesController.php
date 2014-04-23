@@ -379,6 +379,8 @@ class ManagesController extends AppController{
    if ($month<10) {
      $m='0'.$month;
    }
+   else
+    $m=$month;
    if ($this->request->data['Manage']['print']==true) {
 
   

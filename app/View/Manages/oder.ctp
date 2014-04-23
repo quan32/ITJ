@@ -3,7 +3,7 @@
 <?php 
 
 echo $this->Form->create('Manage', array('url' => array('controller' => 'manages', 'action' => 'oder'))); 
-echo $this->Form->input('year', array('label'=>'年', 'options'=>array('2014'=>'2014','2013'=>'2013')));
+echo $this->Form->input('year', array('label'=>'年', 'options'=>array('2014'=>'2014')));
 echo $this->Form->input('month', array('label'=>'月', 'options'=>array('1'=>'01','2'=>'02','3'=>'03','4'=>'04','5'=>'05','6'=>'06','7'=>'07','8'=>'08','9'=>'09','10'=>'10','11'=>'11','12'=>'12')));
 echo $this->Form->hidden('print', array('value' => false));
 echo $this->Form->end(array('label'=>'表現'));
